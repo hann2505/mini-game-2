@@ -1,7 +1,7 @@
 ---
 phase: 3
 title: "Target Kinematics & Boundary Wrap"
-status: pending
+status: completed
 priority: P1
 effort: "1h"
 dependencies: ["phase-01-start"]
@@ -49,10 +49,10 @@ Implements Object B (Target enemy) with autonomous, flexible 4-way movement and 
 4. Add audio trigger on hit referencing `Assets/Audio/SFX/explosion.wav`.
 
 ## Success Criteria
-- [ ] Object B moves smoothly across the screen demonstrating flexible 4-way motion (up, down, left, right).
-- [ ] When Object B crosses the Left screen boundary, it completely exits view before wrapping.
-- [ ] Object B reappears on the Right screen boundary at a newly randomized vertical (Y) coordinate.
-- [ ] Object C colliding with Object B triggers explosion sound effect and resets Object B.
+- [x] Object B moves smoothly across the screen demonstrating flexible 4-way motion (up, down, left, right).
+- [x] When Object B crosses the Left screen boundary, it completely exits view before wrapping.
+- [x] Object B reappears on the Right screen boundary at a newly randomized vertical (Y) coordinate.
+- [x] Object C colliding with Object B triggers explosion sound effect and resets Object B.
 
 ## Risk Assessment
 - Risk: Object B spawns too close to the edge or outside screen viewport on respawn.

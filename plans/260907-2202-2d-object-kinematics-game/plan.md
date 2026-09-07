@@ -1,7 +1,7 @@
 ---
 title: "2d-object-kinematics-game"
 description: "Implementation of responsive 2D kinematics game featuring Object A (Player), Object B (Target), and Object C (Projectile) with dynamic axis spawning, size parity, 4-way movement, touch/mouse firing, and boundary wrapping."
-status: pending
+status: completed
 priority: P1
 effort: "4h"
 tags: ["unity", "2d", "kinematics", "input-system", "urp"]
@@ -34,15 +34,15 @@ A functional 2D Unity scene demonstrating precise screen-boundary spawning, inpu
 | 1 | [Phase 1: Viewport & Screen Bounds Foundation](./phase-01-start.md) | Completed | P1 | None |
 | 2 | [Phase 2: Player Controller & Projectile Mechanics](./phase-02-player-projectile-mechanics.md) | Completed | P1 | Phase 1 |
 | 3 | [Phase 3: Target Kinematics & Boundary Wrap](./phase-03-target-kinematics-boundary-wrap.md) | Completed | P1 | Phase 1 |
-| 4 | [Phase 4: Game Orchestration, Dynamic Axis Config & Scene Setup](./phase-04-orchestration-and-scene-setup.md) | Pending | P1 | Phase 1, 2, 3 |
+| 4 | [Phase 4: Game Orchestration, Dynamic Axis Config & Scene Setup](./phase-04-orchestration-and-scene-setup.md) | Completed | P1 | Phase 1, 2, 3 |
 
 ## Success Criteria
 
-- [ ] Object A spawns exactly at `Viewport(0, 0.5)` (Mid-Left) and Object B at `Viewport(1, 0.5)` (Mid-Right) in Horizontal mode (or Top/Bottom equivalent in Vertical mode).
-- [ ] Object A and Object B have identical bounding box dimensions on screen regardless of sprite resolution.
-- [ ] Object A responds to WASD/Touch controls with 4-way movement clamped within the screen view.
-- [ ] Object B moves autonomously in 4 directions with configurable speeds.
-- [ ] Touching the screen or clicking the mouse fires Object C from Object A with customizable trajectory and speed.
-- [ ] When Object B crosses the boundary behind Object A, it respawns at the opposite edge with a randomized perpendicular position without visual popping.
+- [x] Object A spawns exactly at `Viewport(0, 0.5)` (Mid-Left) and Object B at `Viewport(1, 0.5)` (Mid-Right) in Horizontal mode (or Top/Bottom equivalent in Vertical mode).
+- [x] Object A and Object B have identical bounding box dimensions on screen regardless of sprite resolution.
+- [x] Object A responds to WASD/Touch controls with 4-way movement clamped within the screen view.
+- [x] Object B moves autonomously in 4 directions with configurable speeds.
+- [x] Touching the screen or clicking the mouse fires Object C from Object A with customizable trajectory and speed.
+- [x] When Object B crosses the boundary behind Object A, it respawns at the opposite edge with a randomized perpendicular position without visual popping.
 
 <!-- slug: 2d-object-kinematics-game -->

@@ -1,7 +1,7 @@
 ---
 phase: 4
 title: "Game Orchestration, Dynamic Axis Config & Scene Setup"
-status: pending
+status: completed
 priority: P1
 effort: "1h"
 dependencies: ["phase-01-start", "phase-02-player-projectile-mechanics", "phase-03-target-kinematics-boundary-wrap"]
@@ -56,10 +56,10 @@ Coordinates the initial placement of Object A and Object B at opposing mid-edges
 4. Verify dynamic axis switching and scale parity in both Horizontal and Vertical configurations.
 
 ## Success Criteria
-- [ ] On Play, Object A and Object B spawn directly opposite each other at the exact center of opposing edges.
-- [ ] In the Scene view and Game view, Object A and Object B have identical dimensions on screen.
-- [ ] Toggling between Horizontal and Vertical orientation places objects correctly (Left-Right vs Top-Bottom).
-- [ ] Clicking/tapping on AVD fires projectiles from A towards B; B wraps seamlessly when reaching the opposite edge.
+- [x] On Play, Object A and Object B spawn directly opposite each other at the exact center of opposing edges.
+- [x] In the Scene view and Game view, Object A and Object B have identical dimensions on screen.
+- [x] Toggling between Horizontal and Vertical orientation places objects correctly (Left-Right vs Top-Bottom).
+- [x] Clicking/tapping on AVD fires projectiles from A towards B; B wraps seamlessly when reaching the opposite edge.
 
 ## Risk Assessment
 - Risk: `SampleScene.unity` meta or YAML conflict if modified externally.

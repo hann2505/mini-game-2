@@ -1,7 +1,7 @@
 ---
 phase: 2
 title: "Player Controller & Projectile Mechanics"
-status: pending
+status: completed
 priority: P1
 effort: "1h"
 dependencies: ["phase-01-start"]
@@ -47,11 +47,11 @@ Implements Object A (Player spaceship) with responsive 4-way movement clamped to
 4. Construct Object A prefab using `Assets/Sprites/Characters/Players/Ships/spaceship1.png` and Object C prefab using `Assets/Sprites/Weapons/Bullets/bullet1.png`.
 
 ## Success Criteria
-- [ ] Pressing W/A/S/D or arrow keys moves Object A smoothly in all 4 directions.
-- [ ] Object A stops at screen edges and cannot move off-screen.
-- [ ] Clicking mouse or tapping screen fires Object C from Object A immediately.
-- [ ] Object C travels continuously in its configured direction and disappears cleanly when leaving the screen.
-- [ ] No double-firing occurs on single tap events on touch devices.
+- [x] Pressing W/A/S/D or arrow keys moves Object A smoothly in all 4 directions.
+- [x] Object A stops at screen edges and cannot move off-screen.
+- [x] Clicking mouse or tapping screen fires Object C from Object A immediately.
+- [x] Object C travels continuously in its configured direction and disappears cleanly when leaving the screen.
+- [x] No double-firing occurs on single tap events on touch devices.
 
 ## Risk Assessment
 - Risk: Rapid clicking spawns hundreds of projectile instances leading to frame drops.

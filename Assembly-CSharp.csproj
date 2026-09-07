@@ -6,6 +6,7 @@
     <AssemblyName>Assembly-CSharp</AssemblyName>
     <RootNamespace></RootNamespace>
     <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
+    <NoWarn>0649;0169</NoWarn>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Assets/Scripts/**/*.cs" />

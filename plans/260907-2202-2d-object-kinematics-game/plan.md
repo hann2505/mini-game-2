@@ -32,7 +32,7 @@ A functional 2D Unity scene demonstrating precise screen-boundary spawning, inpu
 | # | Phase | Status | Priority | Dependencies |
 |---|-------|--------|----------|--------------|
 | 1 | [Phase 1: Viewport & Screen Bounds Foundation](./phase-01-start.md) | Completed | P1 | None |
-| 2 | [Phase 2: Player Controller & Projectile Mechanics](./phase-02-player-projectile-mechanics.md) | Pending | P1 | Phase 1 |
+| 2 | [Phase 2: Player Controller & Projectile Mechanics](./phase-02-player-projectile-mechanics.md) | Completed | P1 | Phase 1 |
 | 3 | [Phase 3: Target Kinematics & Boundary Wrap](./phase-03-target-kinematics-boundary-wrap.md) | Pending | P1 | Phase 1 |
 | 4 | [Phase 4: Game Orchestration, Dynamic Axis Config & Scene Setup](./phase-04-orchestration-and-scene-setup.md) | Pending | P1 | Phase 1, 2, 3 |
 

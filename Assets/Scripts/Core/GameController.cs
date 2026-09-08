@@ -318,7 +318,6 @@ namespace KinematicsGame.Core
 
                 if (targetInstance != null)
                 {
-                    targetInstance.transform.rotation = Quaternion.Euler(0f, 0f, 180f);
                     targetInstance.IsHorizontal = true;
                     Vector2 extentsB = srB != null && srB.sprite != null ? (Vector2)srB.bounds.extents : Vector2.one * 0.5f;
                     Vector3 posB = ViewportManager.Instance.GetViewportWorldPosition(1f, 0.5f);

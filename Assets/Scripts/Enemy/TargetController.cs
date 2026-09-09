@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using KinematicsGame.Core;
 using KinematicsGame.Combat;
@@ -7,11 +8,12 @@ namespace KinematicsGame.Enemy
     /// <summary>
     /// Controls Object B (Target Enemy):
     /// - Autonomous 4-way kinematics (primary drift + sinusoidal perpendicular oscillation).
-    /// - Seamless edge wrapping when crossing the boundary where Object A originated.
-    /// - Collision detection with Projectiles, triggering explosion SFX and respawn.
+    /// - Archetype configuration via TargetProfile with effective speed/wave multipliers.
+    /// - Flyweight pooled lifecycle (IsPooled) or standalone edge-wrapping mode.
+    /// - Collision detection with Projectiles, triggering hit event and recycling/respawn.
     /// </summary>
     [RequireComponent(typeof(Rigidbody2D))]
-    [RequireComponent(typeof(Collider2D))]
+    [RequireComponent(typeof(CircleCollider2D))]
     [DisallowMultipleComponent]
     public class TargetController : MonoBehaviour
     {
@@ -22,6 +24,10 @@ namespace KinematicsGame.Enemy
         [SerializeField] private float waveAmplitude = 1.5f;
         [SerializeField] private float boundaryBuffer = 0.5f;
 
+        [Header("Archetype & Pooling")]
+        [SerializeField] private TargetProfile currentProfile;
+        [SerializeField] private bool isPooled = false;
+
         [Header("Audio Settings")]
         [SerializeField] private AudioClip hitClip;
         [SerializeField] private AudioSource audioSource;
@@ -30,6 +36,13 @@ namespace KinematicsGame.Enemy
         [SerializeField] private SpriteRenderer spriteRenderer;
         [SerializeField] private Rigidbody2D rb;
         [SerializeField] private Collider2D col;
+
+        public static event Action<TargetController, TargetProfile, Vector3> OnTargetHit;
+
+        public static void ClearEventSubscribers()
+        {
+            OnTargetHit = null;
+        }
 
         public bool IsHorizontal
         {
@@ -68,6 +81,22 @@ namespace KinematicsGame.Enemy
             set => boundaryBuffer = value;
         }
 
+        public TargetProfile CurrentProfile
+        {
+            get => currentProfile;
+            set => currentProfile = value;
+        }
+
+        public bool IsPooled
+        {
+            get => isPooled;
+            set => isPooled = value;
+        }
+
+        public float EffectiveSpeed => baseSpeed * (currentProfile != null ? currentProfile.SpeedMultiplier : 1f);
+        public float EffectiveWaveFrequency => waveFrequency * (currentProfile != null ? currentProfile.WaveFrequencyMultiplier : 1f);
+        public float EffectiveWaveAmplitude => waveAmplitude * (currentProfile != null ? currentProfile.WaveAmplitudeMultiplier : 1f);
+
         public AudioClip HitClip
         {
             get => hitClip;
@@ -95,11 +124,15 @@ namespace KinematicsGame.Enemy
         private float anchorPerpendicular;
         private float elapsedTime;
 
-        private void Awake()
+        public void EnsureComponents()
         {
             if (rb == null)
             {
                 rb = GetComponent<Rigidbody2D>();
+                if (rb == null)
+                {
+                    rb = gameObject.AddComponent<Rigidbody2D>();
+                }
             }
 
             if (rb != null)
@@ -111,6 +144,10 @@ namespace KinematicsGame.Enemy
             if (col == null)
             {
                 col = GetComponent<Collider2D>();
+                if (col == null)
+                {
+                    col = gameObject.AddComponent<CircleCollider2D>();
+                }
             }
 
             if (col != null)
@@ -127,22 +164,60 @@ namespace KinematicsGame.Enemy
             {
                 audioSource = GetComponent<AudioSource>();
             }
+        }
 
-            // Anchor initial perpendicular coordinate
+        private void Reset()
+        {
+            EnsureComponents();
+        }
+
+        private void Awake()
+        {
+            EnsureComponents();
             anchorPerpendicular = isHorizontal ? transform.position.y : transform.position.x;
         }
 
         /// <summary>
-        /// Configures target kinematic parameters.
+        /// Applies an archetype profile, updating sprite and resetting phase timing.
+        /// </summary>
+        public void ApplyProfile(TargetProfile profile)
+        {
+            EnsureComponents();
+            currentProfile = profile;
+
+            if (profile != null && profile.Sprite != null && spriteRenderer != null)
+            {
+                spriteRenderer.sprite = profile.Sprite;
+                if (ViewportManager.Instance != null)
+                {
+                    ViewportManager.Instance.MatchObjectUniformSize(spriteRenderer, 1.5f);
+                }
+            }
+
+            elapsedTime = 0f;
+        }
+
+        /// <summary>
+        /// Configures target kinematic parameters (legacy signature).
         /// </summary>
         public void Initialize(bool horizontal, float speed, float freq, float amp)
         {
+            EnsureComponents();
             isHorizontal = horizontal;
             baseSpeed = speed;
             waveFrequency = freq;
             waveAmplitude = amp;
             anchorPerpendicular = isHorizontal ? transform.position.y : transform.position.x;
             elapsedTime = 0f;
+        }
+
+        /// <summary>
+        /// Configures target kinematic parameters and archetype profile.
+        /// </summary>
+        public void Initialize(TargetProfile profile, bool horizontal, float speed = 4f, float freq = 2f, float amp = 1f)
+        {
+            Initialize(horizontal, speed, freq, amp);
+            ApplyProfile(profile);
         }
 
         private void Update()
@@ -153,13 +228,17 @@ namespace KinematicsGame.Enemy
 
         /// <summary>
         /// Calculates autonomous 4-way movement: primary linear drift and perpendicular sinusoidal wave.
+        /// Supports optional explicit delta time for deterministic testing.
         /// </summary>
-        public void UpdateKinematics()
+        public void UpdateKinematics(float deltaTime = -1f)
         {
-            elapsedTime += Time.deltaTime;
+            EnsureComponents();
 
-            // Calculate anchored wave oscillation
-            float waveOffset = Mathf.Sin(elapsedTime * waveFrequency) * waveAmplitude;
+            float dt = deltaTime >= 0f ? deltaTime : (Time.deltaTime > 0f ? Time.deltaTime : 0.0166667f);
+            elapsedTime += dt;
+
+            // Calculate anchored wave oscillation using effective multipliers
+            float waveOffset = Mathf.Sin(elapsedTime * EffectiveWaveFrequency) * EffectiveWaveAmplitude;
 
             Vector2 extents = spriteRenderer != null && spriteRenderer.sprite != null
                 ? (Vector2)spriteRenderer.bounds.extents
@@ -170,7 +249,7 @@ namespace KinematicsGame.Enemy
             if (isHorizontal)
             {
                 // Primary drift along X axis (moving Left towards Object A origin)
-                pos.x -= baseSpeed * Time.deltaTime;
+                pos.x -= EffectiveSpeed * dt;
 
                 // Perpendicular oscillation along Y axis
                 float targetY = anchorPerpendicular + waveOffset;
@@ -191,7 +270,7 @@ namespace KinematicsGame.Enemy
             else
             {
                 // Primary drift along Y axis (moving Up towards Object A origin at Mid-Top)
-                pos.y += baseSpeed * Time.deltaTime;
+                pos.y += EffectiveSpeed * dt;
 
                 // Perpendicular oscillation along X axis
                 float targetX = anchorPerpendicular + waveOffset;
@@ -218,7 +297,8 @@ namespace KinematicsGame.Enemy
         }
 
         /// <summary>
-        /// Checks if Object B completely crosses the origin screen boundary and wraps to the opposite edge.
+        /// Checks if Object B completely crosses the origin screen boundary.
+        /// If pooled, deactivates to return control to TargetSpawner; otherwise respawns at opposite edge.
         /// </summary>
         public void CheckBoundaryWrap()
         {
@@ -226,6 +306,8 @@ namespace KinematicsGame.Enemy
             {
                 return;
             }
+
+            EnsureComponents();
 
             Vector2 extents = spriteRenderer != null && spriteRenderer.sprite != null
                 ? (Vector2)spriteRenderer.bounds.extents
@@ -238,7 +320,14 @@ namespace KinematicsGame.Enemy
                 float exitThreshold = ViewportManager.Instance.MinX - extents.x - boundaryBuffer;
                 if (pos.x < exitThreshold)
                 {
-                    RespawnAtOppositeEdge();
+                    if (isPooled)
+                    {
+                        gameObject.SetActive(false);
+                    }
+                    else
+                    {
+                        RespawnAtOppositeEdge();
+                    }
                 }
             }
             else
@@ -247,7 +336,14 @@ namespace KinematicsGame.Enemy
                 float exitThreshold = ViewportManager.Instance.MaxY + extents.y + boundaryBuffer;
                 if (pos.y > exitThreshold)
                 {
-                    RespawnAtOppositeEdge();
+                    if (isPooled)
+                    {
+                        gameObject.SetActive(false);
+                    }
+                    else
+                    {
+                        RespawnAtOppositeEdge();
+                    }
                 }
             }
         }
@@ -263,6 +359,8 @@ namespace KinematicsGame.Enemy
                 return;
             }
 
+            EnsureComponents();
+
             Vector2 extents = spriteRenderer != null && spriteRenderer.sprite != null
                 ? (Vector2)spriteRenderer.bounds.extents
                 : Vector2.zero;
@@ -277,7 +375,7 @@ namespace KinematicsGame.Enemy
                 // Randomize Y position within visible camera viewport
                 float minY = ViewportManager.Instance.MinY + extents.y;
                 float maxY = ViewportManager.Instance.MaxY - extents.y;
-                newPos.y = minY < maxY ? Random.Range(minY, maxY) : (minY + maxY) * 0.5f;
+                newPos.y = minY < maxY ? UnityEngine.Random.Range(minY, maxY) : (minY + maxY) * 0.5f;
 
                 anchorPerpendicular = newPos.y;
             }
@@ -289,7 +387,7 @@ namespace KinematicsGame.Enemy
                 // Randomize X position within visible camera viewport
                 float minX = ViewportManager.Instance.MinX + extents.x;
                 float maxX = ViewportManager.Instance.MaxX - extents.x;
-                newPos.x = minX < maxX ? Random.Range(minX, maxX) : (minX + maxX) * 0.5f;
+                newPos.x = minX < maxX ? UnityEngine.Random.Range(minX, maxX) : (minX + maxX) * 0.5f;
 
                 anchorPerpendicular = newPos.x;
             }
@@ -305,6 +403,8 @@ namespace KinematicsGame.Enemy
         /// </summary>
         public void TeleportTo(Vector3 newPosition, bool resetAnchor = true)
         {
+            EnsureComponents();
+
             if (col != null)
             {
                 col.enabled = false;
@@ -343,10 +443,13 @@ namespace KinematicsGame.Enemy
         }
 
         /// <summary>
-        /// Handles collision with Object C: plays sound, cleans up bullet, and teleports to opposite edge.
+        /// Handles collision with Object C: dispatches OnTargetHit, cleans up bullet,
+        /// and either deactivates (if pooled) or plays local sound and teleports (if standalone).
         /// </summary>
         public void HandleHitByProjectile(GameObject projectileObj)
         {
+            Vector3 impactPos = transform.position;
+
             if (projectileObj != null)
             {
 #if UNITY_EDITOR
@@ -363,14 +466,24 @@ namespace KinematicsGame.Enemy
 #endif
             }
 
-            PlayExplosionSound();
-            RespawnAtOppositeEdge();
+            OnTargetHit?.Invoke(this, currentProfile, impactPos);
+
+            if (isPooled)
+            {
+                gameObject.SetActive(false);
+            }
+            else
+            {
+                PlayExplosionSound();
+                RespawnAtOppositeEdge();
+            }
         }
 
         private void PlayExplosionSound()
         {
             if (audioSource != null && hitClip != null)
             {
+                audioSource.volume = 0.2f;
                 audioSource.PlayOneShot(hitClip);
             }
         }

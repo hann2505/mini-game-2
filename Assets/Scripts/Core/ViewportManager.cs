@@ -66,6 +66,11 @@ namespace KinematicsGame.Core
         /// </summary>
         public void Initialize()
         {
+            if (Instance == null)
+            {
+                Instance = this;
+            }
+
             if (targetCamera == null)
             {
                 targetCamera = Camera.main;

@@ -1,10 +1,13 @@
 using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
+using UnityEngine.UI;
+using TMPro;
 using KinematicsGame.Core;
 using KinematicsGame.Player;
 using KinematicsGame.Enemy;
 using KinematicsGame.Combat;
+using KinematicsGame.UI;
 
 namespace KinematicsGame.Editor
 {
@@ -132,9 +135,13 @@ namespace KinematicsGame.Editor
             }
             SpriteRenderer bgSr = bgGo.GetComponent<SpriteRenderer>();
             if (bgSr == null) bgSr = bgGo.AddComponent<SpriteRenderer>();
-            bgSr.sprite = LoadSprite("Assets/Sprites/Backgrounds/background1.png");
+            bgSr.sprite = LoadSprite("Assets/Sprites/Backgrounds/background12.jpg");
             bgSr.sortingOrder = -100;
             gc.BackgroundRenderer = bgSr;
+
+            BackgroundScroller scroller = bgGo.GetComponent<BackgroundScroller>();
+            if (scroller == null) scroller = bgGo.AddComponent<BackgroundScroller>();
+            gc.BackgroundScroller = scroller;
 
             // Load and assign Prefabs, Sprites and Audio
             var serializedGc = new SerializedObject(gc);
@@ -145,12 +152,119 @@ namespace KinematicsGame.Editor
             serializedGc.FindProperty("playerSprite").objectReferenceValue = LoadSprite("Assets/Sprites/Characters/Players/Ships/spaceship1.png");
             serializedGc.FindProperty("targetSprite").objectReferenceValue = LoadSprite("Assets/Sprites/Characters/Enemies/Birds/bird1.png");
             serializedGc.FindProperty("projectileSprite").objectReferenceValue = LoadSprite("Assets/Sprites/Weapons/Bullets/bullet1.png");
+            serializedGc.FindProperty("backgroundRenderer").objectReferenceValue = bgSr;
             serializedGc.FindProperty("backgroundSprite").objectReferenceValue = bgSr.sprite;
+            serializedGc.FindProperty("backgroundScroller").objectReferenceValue = scroller;
 
             serializedGc.FindProperty("backgroundMusic").objectReferenceValue = AssetDatabase.LoadAssetAtPath<AudioClip>("Assets/Audio/Music/music.mp3");
             serializedGc.FindProperty("fireSfx").objectReferenceValue = AssetDatabase.LoadAssetAtPath<AudioClip>("Assets/Audio/SFX/click.ogg");
             serializedGc.FindProperty("explosionSfx").objectReferenceValue = AssetDatabase.LoadAssetAtPath<AudioClip>("Assets/Audio/SFX/explosion.wav");
             serializedGc.ApplyModifiedProperties();
+
+            // ── TargetSpawner ────────────────────────────────────────────────────
+            TargetSpawner spawner = Object.FindFirstObjectByType<TargetSpawner>();
+            if (spawner == null)
+            {
+                GameObject spawnerGo = new GameObject("TargetSpawner");
+                spawner = spawnerGo.AddComponent<TargetSpawner>();
+            }
+            gc.TargetSpawner = spawner;
+
+            // Assign bird sprites to TargetSpawner profiles
+            Sprite[] birdSprites = new Sprite[]
+            {
+                LoadSprite("Assets/Sprites/Characters/Enemies/Birds/bird1.png"),
+                LoadSprite("Assets/Sprites/Characters/Enemies/Birds/bird2.png"),
+                LoadSprite("Assets/Sprites/Characters/Enemies/Birds/bird3.png"),
+                LoadSprite("Assets/Sprites/Characters/Enemies/Birds/bird4.png"),
+            };
+            TargetProfile[] profiles = TargetProfile.CreateDefaultPresets(birdSprites);
+            spawner.TargetProfiles = profiles;
+            spawner.PlayerInstance = gc.PlayerInstance;
+
+            // ── ScoreManager ─────────────────────────────────────────────────────
+            ScoreManager scoreMgr = Object.FindFirstObjectByType<ScoreManager>();
+            if (scoreMgr == null)
+            {
+                GameObject scoreMgrGo = new GameObject("ScoreManager");
+                scoreMgr = scoreMgrGo.AddComponent<ScoreManager>();
+                AudioSource scoreAudio = scoreMgrGo.AddComponent<AudioSource>();
+                scoreAudio.playOnAwake = false;
+            }
+            gc.ScoreManager = scoreMgr;
+            var serializedSm = new SerializedObject(scoreMgr);
+            serializedSm.FindProperty("hitClip").objectReferenceValue = AssetDatabase.LoadAssetAtPath<AudioClip>("Assets/Audio/SFX/explosion.wav");
+            serializedSm.FindProperty("comboClip").objectReferenceValue = AssetDatabase.LoadAssetAtPath<AudioClip>("Assets/Audio/SFX/eat.ogg");
+            serializedSm.FindProperty("highScoreClip").objectReferenceValue = AssetDatabase.LoadAssetAtPath<AudioClip>("Assets/Audio/SFX/congratulation.wav");
+            serializedSm.ApplyModifiedProperties();
+
+            // ── FloatingTextPool ──────────────────────────────────────────────────
+            FloatingTextPool fctPool = Object.FindFirstObjectByType<FloatingTextPool>();
+            if (fctPool == null)
+            {
+                GameObject fctPoolGo = new GameObject("FloatingTextPool");
+                fctPool = fctPoolGo.AddComponent<FloatingTextPool>();
+            }
+
+            // ── HUD Canvas ────────────────────────────────────────────────────────
+            GameHUDController hudCtrl = Object.FindFirstObjectByType<GameHUDController>();
+            if (hudCtrl == null)
+            {
+                GameObject canvasGo = new GameObject("HUD_Canvas");
+                Canvas canvas = canvasGo.AddComponent<Canvas>();
+                canvas.renderMode = RenderMode.ScreenSpaceOverlay;
+                canvas.sortingOrder = 100;
+                canvasGo.AddComponent<CanvasScaler>();
+                canvasGo.AddComponent<GraphicRaycaster>();
+                hudCtrl = canvasGo.AddComponent<GameHUDController>();
+
+                // Score label
+                GameObject scoreLblGo = new GameObject("ScoreLabel");
+                scoreLblGo.transform.SetParent(canvasGo.transform, false);
+                TextMeshProUGUI scoreLabel = scoreLblGo.AddComponent<TextMeshProUGUI>();
+                scoreLabel.text = "0";
+                scoreLabel.fontSize = 48;
+                scoreLabel.alignment = TextAlignmentOptions.TopRight;
+                RectTransform scoreRect = scoreLblGo.GetComponent<RectTransform>();
+                scoreRect.anchorMin = new Vector2(1f, 1f);
+                scoreRect.anchorMax = new Vector2(1f, 1f);
+                scoreRect.pivot = new Vector2(1f, 1f);
+                scoreRect.anchoredPosition = new Vector2(-20f, -20f);
+                scoreRect.sizeDelta = new Vector2(300f, 60f);
+
+                // High score label
+                GameObject hslGo = new GameObject("HighScoreLabel");
+                hslGo.transform.SetParent(canvasGo.transform, false);
+                TextMeshProUGUI highScoreLabel = hslGo.AddComponent<TextMeshProUGUI>();
+                highScoreLabel.text = "Best: 0";
+                highScoreLabel.fontSize = 24;
+                highScoreLabel.color = new Color(1f, 0.9f, 0.2f);
+                highScoreLabel.alignment = TextAlignmentOptions.TopRight;
+                RectTransform hsRect = hslGo.GetComponent<RectTransform>();
+                hsRect.anchorMin = new Vector2(1f, 1f);
+                hsRect.anchorMax = new Vector2(1f, 1f);
+                hsRect.pivot = new Vector2(1f, 1f);
+                hsRect.anchoredPosition = new Vector2(-20f, -90f);
+                hsRect.sizeDelta = new Vector2(300f, 40f);
+
+                // Combo label
+                GameObject comboGo = new GameObject("ComboLabel");
+                comboGo.transform.SetParent(canvasGo.transform, false);
+                TextMeshProUGUI comboLabel = comboGo.AddComponent<TextMeshProUGUI>();
+                comboLabel.text = "x2 COMBO";
+                comboLabel.fontSize = 32;
+                comboLabel.color = new Color(1f, 0.9f, 0.2f);
+                comboLabel.alignment = TextAlignmentOptions.Bottom;
+                comboGo.SetActive(false);
+                RectTransform comboRect = comboGo.GetComponent<RectTransform>();
+                comboRect.anchorMin = new Vector2(0.5f, 0f);
+                comboRect.anchorMax = new Vector2(0.5f, 0f);
+                comboRect.pivot = new Vector2(0.5f, 0f);
+                comboRect.anchoredPosition = new Vector2(0f, 40f);
+                comboRect.sizeDelta = new Vector2(400f, 60f);
+
+                hudCtrl.SetLabels(scoreLabel, highScoreLabel, comboLabel);
+            }
 
             EditorSceneManager.MarkSceneDirty(EditorSceneManager.GetActiveScene());
             EditorSceneManager.SaveOpenScenes();

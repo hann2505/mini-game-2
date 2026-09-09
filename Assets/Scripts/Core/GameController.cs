@@ -38,6 +38,9 @@ namespace KinematicsGame.Core
         [SerializeField] private PlayerController playerInstance;
         [SerializeField] private TargetController targetInstance;
         [SerializeField] private SpriteRenderer backgroundRenderer;
+        [SerializeField] private BackgroundScroller backgroundScroller;
+        [SerializeField] private TargetSpawner targetSpawner;
+        [SerializeField] private ScoreManager scoreManager;
 
         [Header("Sizing & Kinematics Parameters")]
         [SerializeField] private float targetUniformSize = 1.5f;
@@ -52,6 +55,8 @@ namespace KinematicsGame.Core
         [SerializeField] private AudioClip backgroundMusic;
         [SerializeField] private AudioClip fireSfx;
         [SerializeField] private AudioClip explosionSfx;
+
+        [SerializeField] private float musicVolume = 0.5f;
 
         [Header("Sprite Asset References (Optional Fallbacks)")]
         [SerializeField] private Sprite playerSprite;
@@ -110,6 +115,24 @@ namespace KinematicsGame.Core
         {
             get => backgroundRenderer;
             set => backgroundRenderer = value;
+        }
+
+        public BackgroundScroller BackgroundScroller
+        {
+            get => backgroundScroller;
+            set => backgroundScroller = value;
+        }
+
+        public TargetSpawner TargetSpawner
+        {
+            get => targetSpawner;
+            set => targetSpawner = value;
+        }
+
+        public ScoreManager ScoreManager
+        {
+            get => scoreManager;
+            set => scoreManager = value;
         }
 
         public float TargetUniformSize
@@ -257,6 +280,19 @@ namespace KinematicsGame.Core
                     targetInstance.HitClip = explosionSfx;
                 }
             }
+
+            if (scoreManager == null)
+            {
+                scoreManager = FindFirstObjectByType<ScoreManager>();
+            }
+            if (scoreManager != null)
+            {
+                scoreManager.EnsureComponents();
+                if (explosionSfx != null && scoreManager.HitClip == null)
+                {
+                    scoreManager.HitClip = explosionSfx;
+                }
+            }
         }
 
         /// <summary>
@@ -286,6 +322,25 @@ namespace KinematicsGame.Core
             else if (srTarget != null && srTarget.sprite != null)
             {
                 ViewportManager.Instance.MatchObjectUniformSize(srTarget, targetUniformSize);
+            }
+
+            if (targetSpawner != null && targetSpawner.Pool != null)
+            {
+                for (int i = 0; i < targetSpawner.Pool.Length; i++)
+                {
+                    TargetController tc = targetSpawner.Pool[i];
+                    if (tc != null && tc.SpriteRenderer != null && tc.SpriteRenderer.sprite != null)
+                    {
+                        if (srPlayer != null && srPlayer.sprite != null)
+                        {
+                            ViewportManager.Instance.MatchObjectBounds(tc.SpriteRenderer, srPlayer, uniform: true);
+                        }
+                        else
+                        {
+                            ViewportManager.Instance.MatchObjectUniformSize(tc.SpriteRenderer, targetUniformSize);
+                        }
+                    }
+                }
             }
         }
 
@@ -347,10 +402,21 @@ namespace KinematicsGame.Core
                     targetInstance.TeleportTo(posB, resetAnchor: true);
                 }
             }
+
+            if (backgroundScroller != null)
+            {
+                backgroundScroller.SetOrientation(newOrientation);
+            }
+
+            if (targetSpawner != null)
+            {
+                targetSpawner.SetOrientation(newOrientation);
+            }
         }
 
         /// <summary>
         /// Scales background sprite to encompass camera view with zero black bars across any aspect ratio.
+        /// When BackgroundScroller is active, delegates to dual-segment scaling and disables parent renderer.
         /// </summary>
         public void ScaleBackground()
         {
@@ -369,12 +435,30 @@ namespace KinematicsGame.Core
                 }
             }
 
-            if (backgroundRenderer == null || backgroundRenderer.sprite == null || ViewportManager.Instance == null)
+            if (backgroundScroller == null)
+            {
+                backgroundScroller = FindFirstObjectByType<BackgroundScroller>();
+                if (backgroundScroller == null && backgroundRenderer != null)
+                {
+                    backgroundScroller = backgroundRenderer.GetComponent<BackgroundScroller>();
+                }
+            }
+
+            Sprite bgSprite = backgroundSprite != null
+                ? backgroundSprite
+                : (backgroundRenderer != null ? backgroundRenderer.sprite : null);
+
+            if (bgSprite == null && backgroundScroller != null && backgroundScroller.SegmentA != null)
+            {
+                bgSprite = backgroundScroller.SegmentA.sprite;
+            }
+
+            if (bgSprite == null || ViewportManager.Instance == null)
             {
                 return;
             }
 
-            Vector2 spriteSize = backgroundRenderer.sprite.rect.size / backgroundRenderer.sprite.pixelsPerUnit;
+            Vector2 spriteSize = bgSprite.rect.size / bgSprite.pixelsPerUnit;
             if (spriteSize.x <= 0.001f || spriteSize.y <= 0.001f)
             {
                 return;
@@ -382,10 +466,33 @@ namespace KinematicsGame.Core
 
             float viewWidth = ViewportManager.Instance.Width;
             float viewHeight = ViewportManager.Instance.Height;
-
             float scaleFactor = Mathf.Max(viewWidth / spriteSize.x, viewHeight / spriteSize.y);
-            backgroundRenderer.transform.localScale = new Vector3(scaleFactor, scaleFactor, 1f);
-            backgroundRenderer.transform.position = new Vector3(ViewportManager.Instance.Center.x, ViewportManager.Instance.Center.y, 5f);
+
+            if (backgroundScroller != null)
+            {
+                // Disable parent renderer to prevent Z-fighting and double-rendering
+                if (backgroundRenderer != null)
+                {
+                    backgroundRenderer.enabled = false;
+                    backgroundRenderer.transform.localScale = Vector3.one;
+                }
+
+                if (!backgroundScroller.IsInitialized)
+                {
+                    backgroundScroller.Initialize(bgSprite, scaleFactor, ViewportManager.Instance, orientation);
+                }
+                else
+                {
+                    backgroundScroller.RefreshScale(scaleFactor);
+                }
+            }
+            else if (backgroundRenderer != null)
+            {
+                backgroundRenderer.enabled = true;
+                backgroundRenderer.transform.localScale = new Vector3(scaleFactor, scaleFactor, 1f);
+                backgroundRenderer.transform.position = new Vector3(ViewportManager.Instance.Center.x, ViewportManager.Instance.Center.y, 5f);
+            }
+
             lastViewportWidth = viewWidth;
             lastViewportHeight = viewHeight;
         }
@@ -399,6 +506,7 @@ namespace KinematicsGame.Core
 
             if (musicSource != null && backgroundMusic != null && !musicSource.isPlaying)
             {
+                musicSource.volume = musicVolume;
                 musicSource.clip = backgroundMusic;
                 musicSource.loop = true;
                 musicSource.Play();

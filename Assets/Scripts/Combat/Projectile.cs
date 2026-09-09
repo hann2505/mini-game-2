@@ -8,7 +8,7 @@ namespace KinematicsGame.Combat
     /// Moves with customizable speed/direction and self-destructs upon exiting the screen viewport.
     /// </summary>
     [RequireComponent(typeof(Rigidbody2D))]
-    [RequireComponent(typeof(Collider2D))]
+    [RequireComponent(typeof(CircleCollider2D))]
     [DisallowMultipleComponent]
     public class Projectile : MonoBehaviour
     {
@@ -20,6 +20,7 @@ namespace KinematicsGame.Combat
         [Header("Components")]
         [SerializeField] private SpriteRenderer spriteRenderer;
         [SerializeField] private Rigidbody2D rb;
+        [SerializeField] private Collider2D col;
 
         public Vector2 Direction => direction;
         public float Speed => speed;
@@ -29,11 +30,21 @@ namespace KinematicsGame.Combat
             set => exitBuffer = value;
         }
 
-        private void Awake()
+        public SpriteRenderer SpriteRenderer
+        {
+            get => spriteRenderer;
+            set => spriteRenderer = value;
+        }
+
+        public void EnsureComponents()
         {
             if (rb == null)
             {
                 rb = GetComponent<Rigidbody2D>();
+                if (rb == null)
+                {
+                    rb = gameObject.AddComponent<Rigidbody2D>();
+                }
             }
 
             if (rb != null)
@@ -42,17 +53,34 @@ namespace KinematicsGame.Combat
                 rb.useFullKinematicContacts = false;
             }
 
-            if (spriteRenderer == null)
+            if (col == null)
             {
-                spriteRenderer = GetComponent<SpriteRenderer>();
+                col = GetComponent<Collider2D>();
+                if (col == null)
+                {
+                    col = gameObject.AddComponent<CircleCollider2D>();
+                }
             }
 
-            // Ensure trigger collider exists
-            Collider2D col = GetComponent<Collider2D>();
             if (col != null)
             {
                 col.isTrigger = true;
             }
+
+            if (spriteRenderer == null)
+            {
+                spriteRenderer = GetComponent<SpriteRenderer>();
+            }
+        }
+
+        private void Reset()
+        {
+            EnsureComponents();
+        }
+
+        private void Awake()
+        {
+            EnsureComponents();
         }
 
         /// <summary>
@@ -60,6 +88,8 @@ namespace KinematicsGame.Combat
         /// </summary>
         public void Initialize(Vector2 flightDirection, float flightSpeed)
         {
+            EnsureComponents();
+
             if (flightDirection.sqrMagnitude > 0.001f)
             {
                 direction = flightDirection.normalized;
@@ -68,16 +98,27 @@ namespace KinematicsGame.Combat
 
             // Rotate projectile to face flight direction if 2D sprite orientation matches
             float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
-            transform.rotation = Quaternion.AngleAxis(angle, Vector3.forward);
+            transform.rotation = Quaternion.Euler(0f, 0f, angle);
         }
 
         private void Update()
         {
-            // Frame-rate independent translation
-            Vector3 delta = (Vector3)(direction.normalized * (speed * Time.deltaTime));
-            transform.position += delta;
-
+            UpdateKinematics();
             CheckViewportBounds();
+        }
+
+        public void UpdateKinematics(float deltaTime = -1f)
+        {
+            EnsureComponents();
+
+            float dt = deltaTime >= 0f ? deltaTime : (Time.deltaTime > 0f ? Time.deltaTime : 0.0166667f);
+            Vector3 movement = (Vector3)(direction * speed * dt);
+            transform.position += movement;
+
+            if (rb != null)
+            {
+                rb.position = (Vector2)transform.position;
+            }
         }
 
         /// <summary>
@@ -90,6 +131,8 @@ namespace KinematicsGame.Combat
             {
                 return;
             }
+
+            EnsureComponents();
 
             Vector2 extents = Vector2.zero;
             if (spriteRenderer != null && spriteRenderer.sprite != null)

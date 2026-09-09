@@ -40,20 +40,19 @@ namespace KinematicsGame.Tests
         }
 
         [Test]
-        public void TargetProfile_CreateDefaultPresets_ReturnsFourDistinctArchetypes()
+        public void TargetProfile_CreateDefaultPresets_ReturnsThreeDistinctArchetypes_ExcludingBird3()
         {
             Sprite[] sprites = new Sprite[]
             {
                 CreateDummySprite("Bird1"),
                 CreateDummySprite("Bird2"),
-                CreateDummySprite("Bird3"),
                 CreateDummySprite("Bird4")
             };
 
             TargetProfile[] presets = TargetProfile.CreateDefaultPresets(sprites);
 
             Assert.That(presets, Is.Not.Null);
-            Assert.That(presets.Length, Is.EqualTo(4));
+            Assert.That(presets.Length, Is.EqualTo(3));
 
             // Bird 1: Pigeon (Common)
             Assert.That(presets[0].ProfileName, Is.EqualTo("Common Pigeon"));
@@ -62,7 +61,7 @@ namespace KinematicsGame.Tests
             Assert.That(presets[0].WaveFrequencyMultiplier, Is.EqualTo(1.0f));
             Assert.That(presets[0].WaveAmplitudeMultiplier, Is.EqualTo(1.0f));
             Assert.That(presets[0].PointValue, Is.EqualTo(10));
-            Assert.That(presets[0].SpawnWeight, Is.EqualTo(50f));
+            Assert.That(presets[0].SpawnWeight, Is.EqualTo(60f));
 
             // Bird 2: Hummingbird (Agile)
             Assert.That(presets[1].ProfileName, Is.EqualTo("Agile Hummingbird"));
@@ -73,23 +72,14 @@ namespace KinematicsGame.Tests
             Assert.That(presets[1].PointValue, Is.EqualTo(30));
             Assert.That(presets[1].SpawnWeight, Is.EqualTo(25f));
 
-            // Bird 3: Albatross (Sweeper)
-            Assert.That(presets[2].ProfileName, Is.EqualTo("Sweeper Albatross"));
-            Assert.That(presets[2].Sprite, Is.EqualTo(sprites[2]));
-            Assert.That(presets[2].SpeedMultiplier, Is.EqualTo(0.7f));
-            Assert.That(presets[2].WaveFrequencyMultiplier, Is.EqualTo(0.5f));
-            Assert.That(presets[2].WaveAmplitudeMultiplier, Is.EqualTo(2.2f));
-            Assert.That(presets[2].PointValue, Is.EqualTo(20));
-            Assert.That(presets[2].SpawnWeight, Is.EqualTo(15f));
-
             // Bird 4: Golden Eagle (Rare)
-            Assert.That(presets[3].ProfileName, Is.EqualTo("Rare Golden Eagle"));
-            Assert.That(presets[3].Sprite, Is.EqualTo(sprites[3]));
-            Assert.That(presets[3].SpeedMultiplier, Is.EqualTo(2.2f));
-            Assert.That(presets[3].WaveFrequencyMultiplier, Is.EqualTo(0.0f));
-            Assert.That(presets[3].WaveAmplitudeMultiplier, Is.EqualTo(0.0f));
-            Assert.That(presets[3].PointValue, Is.EqualTo(100));
-            Assert.That(presets[3].SpawnWeight, Is.EqualTo(10f));
+            Assert.That(presets[2].ProfileName, Is.EqualTo("Rare Golden Eagle"));
+            Assert.That(presets[2].Sprite, Is.EqualTo(sprites[2]));
+            Assert.That(presets[2].SpeedMultiplier, Is.EqualTo(2.2f));
+            Assert.That(presets[2].WaveFrequencyMultiplier, Is.EqualTo(0.0f));
+            Assert.That(presets[2].WaveAmplitudeMultiplier, Is.EqualTo(0.0f));
+            Assert.That(presets[2].PointValue, Is.EqualTo(100));
+            Assert.That(presets[2].SpawnWeight, Is.EqualTo(15f));
         }
 
         [Test]

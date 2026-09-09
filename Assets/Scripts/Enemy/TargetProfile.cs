@@ -82,21 +82,26 @@ namespace KinematicsGame.Enemy
         }
 
         /// <summary>
-        /// Creates the canonical 4 archetype presets using provided sprites (or null fallbacks).
+        /// Creates default archetype presets using provided sprites (or null fallbacks),
+        /// excluding bird3 (Sweeper Albatross).
         /// </summary>
         public static TargetProfile[] CreateDefaultPresets(Sprite[] birdSprites = null)
         {
             Sprite s1 = birdSprites != null && birdSprites.Length > 0 ? birdSprites[0] : null;
             Sprite s2 = birdSprites != null && birdSprites.Length > 1 ? birdSprites[1] : null;
-            Sprite s3 = birdSprites != null && birdSprites.Length > 2 ? birdSprites[2] : null;
-            Sprite s4 = birdSprites != null && birdSprites.Length > 3 ? birdSprites[3] : null;
+            // Support passing either [bird1, bird2, bird4] (length 3) or legacy [bird1, bird2, bird3, bird4] (length 4)
+            Sprite sRare = null;
+            if (birdSprites != null)
+            {
+                if (birdSprites.Length >= 4) sRare = birdSprites[3];
+                else if (birdSprites.Length >= 3) sRare = birdSprites[2];
+            }
 
             return new TargetProfile[]
             {
-                new TargetProfile("Common Pigeon", s1, 1.0f, 1.0f, 1.0f, 10, 50f),
+                new TargetProfile("Common Pigeon", s1, 1.0f, 1.0f, 1.0f, 10, 60f),
                 new TargetProfile("Agile Hummingbird", s2, 1.5f, 2.5f, 0.8f, 30, 25f),
-                new TargetProfile("Sweeper Albatross", s3, 0.7f, 0.5f, 2.2f, 20, 15f),
-                new TargetProfile("Rare Golden Eagle", s4, 2.2f, 0.0f, 0.0f, 100, 10f)
+                new TargetProfile("Rare Golden Eagle", sRare, 2.2f, 0.0f, 0.0f, 100, 15f)
             };
         }
     }

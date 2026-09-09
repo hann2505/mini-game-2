@@ -166,7 +166,7 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4294967295
+    rgba: 4281591551
   m_fontColor: {r: 1, g: 0.9, b: 0.2, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
@@ -179,7 +179,7 @@ MonoBehaviour:
   m_spriteAsset: {fileID: 0}
   m_tintAllSprites: 0
   m_StyleSheet: {fileID: 0}
-  m_TextStyleHashCode: 0
+  m_TextStyleHashCode: -1183493901
   m_overrideHtmlColors: 0
   m_faceColor:
     serializedVersion: 2
@@ -1124,7 +1124,7 @@ MonoBehaviour:
     waveFrequencyMultiplier: 1
     waveAmplitudeMultiplier: 1
     pointValue: 10
-    spawnWeight: 50
+    spawnWeight: 60
   - profileName: Agile Hummingbird
     sprite: {fileID: -2131785505994478718, guid: 93a25756a9e5a45aa853b5d344da573d, type: 3}
     speedMultiplier: 1.5
@@ -1132,20 +1132,13 @@ MonoBehaviour:
     waveAmplitudeMultiplier: 0.8
     pointValue: 30
     spawnWeight: 25
-  - profileName: Sweeper Albatross
-    sprite: {fileID: -4367358208268341643, guid: 394f27c723a034d099160ae830d99f67, type: 3}
-    speedMultiplier: 0.7
-    waveFrequencyMultiplier: 0.5
-    waveAmplitudeMultiplier: 2.2
-    pointValue: 20
-    spawnWeight: 15
   - profileName: Rare Golden Eagle
     sprite: {fileID: 1139019418450769134, guid: 051a390f489674cf9baedc96c88391e0, type: 3}
     speedMultiplier: 2.2
     waveFrequencyMultiplier: 0
     waveAmplitudeMultiplier: 0
     pointValue: 100
-    spawnWeight: 10
+    spawnWeight: 15
   playerInstance: {fileID: 0}
   baseSpeed: 3
   baseWaveFrequency: 2
@@ -1320,7 +1313,7 @@ Canvas:
   m_OverridePixelPerfect: 0
   m_SortingBucketNormalizedSize: 0
   m_VertexColorAlwaysGammaSpace: 0
-  m_AdditionalShaderChannelsFlag: 0
+  m_AdditionalShaderChannelsFlag: 25
   m_UpdateRectTransformForStandalone: 0
   m_SortingLayerID: 0
   m_SortingOrder: 100
@@ -1407,7 +1400,7 @@ MonoBehaviour:
   m_spriteAsset: {fileID: 0}
   m_tintAllSprites: 0
   m_StyleSheet: {fileID: 0}
-  m_TextStyleHashCode: 0
+  m_TextStyleHashCode: -1183493901
   m_overrideHtmlColors: 0
   m_faceColor:
     serializedVersion: 2

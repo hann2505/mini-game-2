@@ -170,17 +170,34 @@ namespace KinematicsGame.Editor
             }
             gc.TargetSpawner = spawner;
 
-            // Assign bird sprites to TargetSpawner profiles
+            // Assign bird sprites to TargetSpawner profiles (excluding bird3)
             Sprite[] birdSprites = new Sprite[]
             {
                 LoadSprite("Assets/Sprites/Characters/Enemies/Birds/bird1.png"),
                 LoadSprite("Assets/Sprites/Characters/Enemies/Birds/bird2.png"),
-                LoadSprite("Assets/Sprites/Characters/Enemies/Birds/bird3.png"),
                 LoadSprite("Assets/Sprites/Characters/Enemies/Birds/bird4.png"),
             };
             TargetProfile[] profiles = TargetProfile.CreateDefaultPresets(birdSprites);
             spawner.TargetProfiles = profiles;
             spawner.PlayerInstance = gc.PlayerInstance;
+
+            var serializedSpawner = new SerializedObject(spawner);
+            var profilesProp = serializedSpawner.FindProperty("targetProfiles");
+            profilesProp.ClearArray();
+            profilesProp.arraySize = profiles.Length;
+            for (int i = 0; i < profiles.Length; i++)
+            {
+                var elem = profilesProp.GetArrayElementAtIndex(i);
+                elem.FindPropertyRelative("profileName").stringValue = profiles[i].ProfileName;
+                elem.FindPropertyRelative("sprite").objectReferenceValue = profiles[i].Sprite;
+                elem.FindPropertyRelative("speedMultiplier").floatValue = profiles[i].SpeedMultiplier;
+                elem.FindPropertyRelative("waveFrequencyMultiplier").floatValue = profiles[i].WaveFrequencyMultiplier;
+                elem.FindPropertyRelative("waveAmplitudeMultiplier").floatValue = profiles[i].WaveAmplitudeMultiplier;
+                elem.FindPropertyRelative("pointValue").intValue = profiles[i].PointValue;
+                elem.FindPropertyRelative("spawnWeight").floatValue = profiles[i].SpawnWeight;
+            }
+            serializedSpawner.ApplyModifiedProperties();
+            EditorUtility.SetDirty(spawner);
 
             // ── ScoreManager ─────────────────────────────────────────────────────
             ScoreManager scoreMgr = Object.FindFirstObjectByType<ScoreManager>();

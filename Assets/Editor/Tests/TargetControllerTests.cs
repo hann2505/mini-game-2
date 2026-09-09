@@ -326,16 +326,16 @@ namespace KinematicsGame.Tests
         public void TargetSpawner_UpdateDifficulty_ScalesQuotaAndSpawnInterval()
         {
             spawner.UpdateDifficulty(0);
-            Assert.That(spawner.CurrentQuota, Is.EqualTo(2));
-            Assert.That(spawner.CurrentSpawnInterval, Is.EqualTo(2.0f).Within(0.01f));
+            Assert.That(spawner.CurrentQuota, Is.EqualTo(1));
+            Assert.That(spawner.CurrentSpawnInterval, Is.EqualTo(2.5f).Within(0.01f));
 
-            spawner.UpdateDifficulty(500);
-            Assert.That(spawner.CurrentQuota, Is.EqualTo(12));
-            Assert.That(spawner.CurrentSpawnInterval, Is.EqualTo(1.325f).Within(0.01f));
+            spawner.UpdateDifficulty(400);
+            Assert.That(spawner.CurrentQuota, Is.EqualTo(3));
+            Assert.That(spawner.CurrentSpawnInterval, Is.EqualTo(2.1f).Within(0.01f));
 
             spawner.UpdateDifficulty(1500);
-            Assert.That(spawner.CurrentQuota, Is.EqualTo(15));
-            Assert.That(spawner.CurrentSpawnInterval, Is.EqualTo(0.65f).Within(0.01f));
+            Assert.That(spawner.CurrentQuota, Is.EqualTo(6));
+            Assert.That(spawner.CurrentSpawnInterval, Is.EqualTo(1.0f).Within(0.01f));
         }
 
         [Test]
@@ -370,7 +370,7 @@ namespace KinematicsGame.Tests
                 spawner.UpdateSpawner(0.5f);
             }
 
-            Assert.That(spawner.ActiveTargetCount, Is.EqualTo(2));
+            Assert.That(spawner.ActiveTargetCount, Is.EqualTo(1));
         }
 
         [Test]
@@ -608,16 +608,16 @@ namespace KinematicsGame.Tests
         [Test]
         public void EndToEnd_DifficultyScaling_ExpandsActiveTargetQuotaAsScoreRises()
         {
-            Assert.That(targetSpawner.CurrentQuota, Is.EqualTo(2));
-
-            targetSpawner.UpdateDifficulty(150);
-            Assert.That(targetSpawner.CurrentQuota, Is.EqualTo(4));
+            Assert.That(targetSpawner.CurrentQuota, Is.EqualTo(1));
 
             targetSpawner.UpdateDifficulty(200);
-            Assert.That(targetSpawner.CurrentQuota, Is.EqualTo(6));
+            Assert.That(targetSpawner.CurrentQuota, Is.EqualTo(2));
 
-            targetSpawner.UpdateDifficulty(1200);
-            Assert.That(targetSpawner.CurrentQuota, Is.EqualTo(15));
+            targetSpawner.UpdateDifficulty(600);
+            Assert.That(targetSpawner.CurrentQuota, Is.EqualTo(4));
+
+            targetSpawner.UpdateDifficulty(1500);
+            Assert.That(targetSpawner.CurrentQuota, Is.EqualTo(6));
         }
     }
 }

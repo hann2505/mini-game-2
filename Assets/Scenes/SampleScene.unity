@@ -1149,6 +1149,11 @@ MonoBehaviour:
   laneCooldownDuration: 1.2
   currentOrientation: 0
   autoSpawn: 1
+  initialQuota: 1
+  maxQuota: 6
+  scorePerQuotaIncrease: 200
+  initialSpawnInterval: 2.5
+  minSpawnInterval: 1
 --- !u!4 &1514199146
 Transform:
   m_ObjectHideFlags: 0

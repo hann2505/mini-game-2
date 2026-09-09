@@ -31,12 +31,19 @@ namespace KinematicsGame.Enemy
         [SerializeField] private GameOrientation currentOrientation = GameOrientation.Horizontal;
         [SerializeField] private bool autoSpawn = true;
 
+        [Header("Difficulty Ramp Configuration")]
+        [SerializeField] private int initialQuota = 1;
+        [SerializeField] private int maxQuota = 6;
+        [SerializeField] private int scorePerQuotaIncrease = 200;
+        [SerializeField] private float initialSpawnInterval = 2.5f;
+        [SerializeField] private float minSpawnInterval = 1.0f;
+
         private TargetController[] pool;
         private float[] laneCooldowns;
         private float spawnTimer = 0f;
         private int currentScore = 0;
-        private int currentQuota = 2;
-        private float currentSpawnInterval = 2.0f;
+        private int currentQuota = 1;
+        private float currentSpawnInterval = 2.5f;
         private bool isInitialized = false;
 
         public int PoolSize
@@ -79,6 +86,37 @@ namespace KinematicsGame.Enemy
         public float LaneCooldownDuration => laneCooldownDuration;
         public int CurrentQuota => currentQuota;
         public float CurrentSpawnInterval => currentSpawnInterval;
+
+        public int InitialQuota
+        {
+            get => initialQuota;
+            set => initialQuota = Mathf.Max(1, value);
+        }
+
+        public int MaxQuota
+        {
+            get => maxQuota;
+            set => maxQuota = Mathf.Clamp(value, 1, poolSize);
+        }
+
+        public int ScorePerQuotaIncrease
+        {
+            get => scorePerQuotaIncrease;
+            set => scorePerQuotaIncrease = Mathf.Max(1, value);
+        }
+
+        public float InitialSpawnInterval
+        {
+            get => initialSpawnInterval;
+            set => initialSpawnInterval = Mathf.Max(0.1f, value);
+        }
+
+        public float MinSpawnInterval
+        {
+            get => minSpawnInterval;
+            set => minSpawnInterval = Mathf.Max(0.1f, value);
+        }
+
         public TargetController[] Pool => pool;
         public bool IsInitialized => isInitialized;
 
@@ -235,12 +273,14 @@ namespace KinematicsGame.Enemy
 
         /// <summary>
         /// Dynamically scales concurrency quota and spawn frequency based on score.
+        /// Starts with a reduced target count (initialQuota, default 1) and scales up smoothly.
         /// </summary>
         public void UpdateDifficulty(int score)
         {
             currentScore = score;
-            currentQuota = Mathf.Clamp(2 + (score / 100) * 2, 2, poolSize);
-            currentSpawnInterval = Mathf.Max(0.65f, 2.0f - (score / 1000f) * 1.35f);
+            int additional = scorePerQuotaIncrease > 0 ? (score / scorePerQuotaIncrease) : 0;
+            currentQuota = Mathf.Clamp(initialQuota + additional, initialQuota, maxQuota);
+            currentSpawnInterval = Mathf.Max(minSpawnInterval, initialSpawnInterval - (score / 1500f) * (initialSpawnInterval - minSpawnInterval));
         }
 
         /// <summary>

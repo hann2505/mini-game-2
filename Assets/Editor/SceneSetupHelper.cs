@@ -183,9 +183,24 @@ namespace KinematicsGame.Editor
             };
             TargetProfile[] profiles = TargetProfile.CreateDefaultPresets(birdSprites);
             spawner.TargetProfiles = profiles;
-            spawner.PlayerInstance = gc.PlayerInstance;
+            spawner.InitialQuota = 1;
+            spawner.MaxQuota = 6;
+            spawner.ScorePerQuotaIncrease = 200;
+            spawner.InitialSpawnInterval = 2.5f;
+            spawner.MinSpawnInterval = 1.0f;
 
             var serializedSpawner = new SerializedObject(spawner);
+            var initQuotaProp = serializedSpawner.FindProperty("initialQuota");
+            if (initQuotaProp != null) initQuotaProp.intValue = 1;
+            var maxQuotaProp = serializedSpawner.FindProperty("maxQuota");
+            if (maxQuotaProp != null) maxQuotaProp.intValue = 6;
+            var scorePerProp = serializedSpawner.FindProperty("scorePerQuotaIncrease");
+            if (scorePerProp != null) scorePerProp.intValue = 200;
+            var initIntervalProp = serializedSpawner.FindProperty("initialSpawnInterval");
+            if (initIntervalProp != null) initIntervalProp.floatValue = 2.5f;
+            var minIntervalProp = serializedSpawner.FindProperty("minSpawnInterval");
+            if (minIntervalProp != null) minIntervalProp.floatValue = 1.0f;
+
             var profilesProp = serializedSpawner.FindProperty("targetProfiles");
             profilesProp.ClearArray();
             profilesProp.arraySize = profiles.Length;

@@ -220,5 +220,20 @@ namespace KinematicsGame.Tests
             Assert.AreEqual(1, scoreManager.ComboMultiplier);
             Assert.AreEqual(100, scoreManager.HighScore);
         }
+
+        [Test]
+        public void ExplosionVolume_DefaultsToReducedLevel_AndClampsWithinZeroToOne()
+        {
+            Assert.AreEqual(0.25f, scoreManager.ExplosionVolume, 0.01f);
+
+            scoreManager.ExplosionVolume = 0.5f;
+            Assert.AreEqual(0.5f, scoreManager.ExplosionVolume, 0.01f);
+
+            scoreManager.ExplosionVolume = 1.5f;
+            Assert.AreEqual(1.0f, scoreManager.ExplosionVolume, 0.01f);
+
+            scoreManager.ExplosionVolume = -0.5f;
+            Assert.AreEqual(0.0f, scoreManager.ExplosionVolume, 0.01f);
+        }
     }
 }

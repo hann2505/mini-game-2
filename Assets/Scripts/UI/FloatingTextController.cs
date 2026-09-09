@@ -18,6 +18,7 @@ namespace KinematicsGame.UI
 
         [SerializeField] private TextMeshPro tmpText;
         [SerializeField] private CanvasGroup canvasGroup;
+        [SerializeField] private float fontSize = 3.5f;
 
         private float elapsed = 0f;
         private float duration = DefaultDuration;
@@ -26,6 +27,16 @@ namespace KinematicsGame.UI
         private System.Action onComplete;
 
         public bool IsPlaying => isPlaying;
+
+        public float FontSize
+        {
+            get => fontSize;
+            set
+            {
+                fontSize = value;
+                if (tmpText != null) tmpText.fontSize = value;
+            }
+        }
 
         public TextMeshPro TmpText
         {
@@ -46,6 +57,12 @@ namespace KinematicsGame.UI
                 }
             }
 
+            if (tmpText != null)
+            {
+                tmpText.fontSize = fontSize;
+                tmpText.alignment = TextAlignmentOptions.Center;
+            }
+
             if (canvasGroup == null)
             {
                 canvasGroup = GetComponent<CanvasGroup>();
@@ -64,6 +81,8 @@ namespace KinematicsGame.UI
 
             if (tmpText != null)
             {
+                tmpText.fontSize = fontSize;
+                tmpText.alignment = TextAlignmentOptions.Center;
                 tmpText.text = text;
                 tmpText.color = color;
                 if (tmpText.color.a < 1f)

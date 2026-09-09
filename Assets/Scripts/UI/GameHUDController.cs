@@ -23,6 +23,11 @@ namespace KinematicsGame.UI
         [SerializeField] private TextMeshProUGUI comboLabel;
         [SerializeField] private GameObject comboBadgeRoot;
 
+        [Header("Typography & Sizing")]
+        [SerializeField] private float scoreFontSize = 72f;
+        [SerializeField] private float highScoreFontSize = 28f;
+        [SerializeField] private float comboFontSize = 54f;
+
         [Header("Score Pop Animation")]
         [SerializeField] private float scorePopDuration = ScorePopDuration;
         [SerializeField] private float scorePopScale = ScorePopScale;
@@ -47,9 +52,47 @@ namespace KinematicsGame.UI
         public TextMeshProUGUI HighScoreLabel => highScoreLabel;
         public TextMeshProUGUI ComboLabel => comboLabel;
 
+        public float ScoreFontSize
+        {
+            get => scoreFontSize;
+            set
+            {
+                scoreFontSize = value;
+                if (scoreLabel != null) scoreLabel.fontSize = value;
+            }
+        }
+
+        public float HighScoreFontSize
+        {
+            get => highScoreFontSize;
+            set
+            {
+                highScoreFontSize = value;
+                if (highScoreLabel != null) highScoreLabel.fontSize = value;
+            }
+        }
+
+        public float ComboFontSize
+        {
+            get => comboFontSize;
+            set
+            {
+                comboFontSize = value;
+                if (comboLabel != null) comboLabel.fontSize = value;
+            }
+        }
+
+        public void ApplyFontSizes()
+        {
+            if (scoreLabel != null) scoreLabel.fontSize = scoreFontSize;
+            if (highScoreLabel != null) highScoreLabel.fontSize = highScoreFontSize;
+            if (comboLabel != null) comboLabel.fontSize = comboFontSize;
+        }
+
         private void Awake()
         {
             if (scoreLabel != null) scoreLabelBaseScale = scoreLabel.transform.localScale;
+            ApplyFontSizes();
         }
 
         private void OnEnable()
@@ -210,6 +253,7 @@ namespace KinematicsGame.UI
             highScoreLabel = highScoreLbl;
             comboLabel = comboLbl;
             if (scoreLabel != null) scoreLabelBaseScale = scoreLabel.transform.localScale;
+            ApplyFontSizes();
         }
 
         public int DisplayedScore => displayedScore;

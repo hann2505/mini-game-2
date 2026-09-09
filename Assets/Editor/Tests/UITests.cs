@@ -29,6 +29,16 @@ namespace KinematicsGame.Tests
         }
 
         [Test]
+        public void FontSize_DefaultsToReducedSize_AndSetsTmpText()
+        {
+            Assert.AreEqual(3.5f, fct.FontSize);
+            Assert.AreEqual(3.5f, fct.TmpText.fontSize);
+
+            fct.FontSize = 2.5f;
+            Assert.AreEqual(2.5f, fct.TmpText.fontSize);
+        }
+
+        [Test]
         public void Play_ActivatesGameObject_AndSetsText()
         {
             fct.Play(Vector3.zero, "+100", Color.white, animDuration: 0.8f);
@@ -278,6 +288,15 @@ namespace KinematicsGame.Tests
 
             Assert.AreEqual(750, hud.DisplayedScore);
             Assert.IsTrue(scoreLabel.text.Contains("750"), $"Expected '750' in '{scoreLabel.text}'");
+        }
+
+        [Test]
+        public void FontSizes_AreIncreasedForScoreAndCombo()
+        {
+            Assert.AreEqual(72f, hud.ScoreFontSize);
+            Assert.AreEqual(54f, hud.ComboFontSize);
+            Assert.AreEqual(72f, scoreLabel.fontSize);
+            Assert.AreEqual(54f, comboLabel.fontSize);
         }
     }
 }

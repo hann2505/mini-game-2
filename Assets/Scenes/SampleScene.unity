@@ -159,8 +159,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: 'Best: 0'
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 0}
-  m_sharedMaterial: {fileID: 0}
+  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -184,8 +184,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 24
-  m_fontSizeBase: 24
+  m_fontSize: 28
+  m_fontSizeBase: 28
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 0
@@ -206,13 +206,13 @@ MonoBehaviour:
   m_linkedTextComponent: {fileID: 0}
   parentLinkedComponent: {fileID: 0}
   m_enableKerning: 0
-  m_ActiveFontFeatures: 00000000
+  m_ActiveFontFeatures: 
   m_enableExtraPadding: 0
   checkPaddingRequired: 0
   m_isRichText: 1
   m_EmojiFallbackSupport: 1
   m_parseCtrlCharacters: 1
-  m_isOrthographic: 0
+  m_isOrthographic: 1
   m_isCullingEnabled: 0
   m_horizontalMapping: 0
   m_verticalMapping: 0
@@ -252,8 +252,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -20, y: -90}
-  m_SizeDelta: {x: 300, y: 40}
+  m_AnchoredPosition: {x: -20, y: -110}
+  m_SizeDelta: {x: 400, y: 40}
   m_Pivot: {x: 1, y: 1}
 --- !u!1 &267365171
 GameObject:
@@ -386,6 +386,7 @@ MonoBehaviour:
   hitClip: {fileID: 8300000, guid: 9830c6d857b6c497199d04d2f4e6052e, type: 3}
   comboClip: {fileID: 8300000, guid: 0a9911fb452d7432b9f8b55355afb502, type: 3}
   highScoreClip: {fileID: 8300000, guid: 5737e5ca76ff749ea9f9759c764fa12f, type: 3}
+  explosionVolume: 0.25
   comboDuration: 2
   audioThrottleWindow: 0.05
 --- !u!4 &267365174
@@ -689,8 +690,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 32
-  m_fontSizeBase: 32
+  m_fontSize: 54
+  m_fontSizeBase: 54
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 0
@@ -757,8 +758,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0}
   m_AnchorMax: {x: 0.5, y: 0}
-  m_AnchoredPosition: {x: 0, y: 40}
-  m_SizeDelta: {x: 400, y: 60}
+  m_AnchoredPosition: {x: 0, y: 50}
+  m_SizeDelta: {x: 500, y: 80}
   m_Pivot: {x: 0.5, y: 0}
 --- !u!1 &1397624945
 GameObject:
@@ -1252,6 +1253,9 @@ MonoBehaviour:
   highScoreLabel: {fileID: 171702319}
   comboLabel: {fileID: 794719336}
   comboBadgeRoot: {fileID: 0}
+  scoreFontSize: 72
+  highScoreFontSize: 28
+  comboFontSize: 54
   scorePopDuration: 0.25
   scorePopScale: 1.35
   comboBadgeColor1: {r: 1, g: 1, b: 1, a: 1}
@@ -1408,8 +1412,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 48
-  m_fontSizeBase: 48
+  m_fontSize: 72
+  m_fontSizeBase: 72
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 0
@@ -1477,7 +1481,7 @@ RectTransform:
   m_AnchorMin: {x: 1, y: 1}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: -20, y: -20}
-  m_SizeDelta: {x: 300, y: 60}
+  m_SizeDelta: {x: 400, y: 90}
   m_Pivot: {x: 1, y: 1}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:

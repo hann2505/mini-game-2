@@ -24,6 +24,7 @@ namespace KinematicsGame.Combat
         [SerializeField] private AudioClip hitClip;
         [SerializeField] private AudioClip comboClip;
         [SerializeField] private AudioClip highScoreClip;
+        [SerializeField, Range(0f, 1f)] private float explosionVolume = 0.25f;
 
         [Header("Combo Configuration")]
         [SerializeField] private float comboDuration = 2.0f;
@@ -72,6 +73,12 @@ namespace KinematicsGame.Combat
         {
             get => highScoreClip;
             set => highScoreClip = value;
+        }
+
+        public float ExplosionVolume
+        {
+            get => explosionVolume;
+            set => explosionVolume = Mathf.Clamp01(value);
         }
 
         public static void ClearEventSubscribers()
@@ -261,7 +268,7 @@ namespace KinematicsGame.Combat
             {
                 if (audioSource != null && hitClip != null)
                 {
-                    audioSource.PlayOneShot(hitClip);
+                    audioSource.PlayOneShot(hitClip, explosionVolume);
                 }
             }
         }

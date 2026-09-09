@@ -192,10 +192,13 @@ namespace KinematicsGame.Editor
                 scoreAudio.playOnAwake = false;
             }
             gc.ScoreManager = scoreMgr;
+            scoreMgr.ExplosionVolume = 0.25f;
             var serializedSm = new SerializedObject(scoreMgr);
             serializedSm.FindProperty("hitClip").objectReferenceValue = AssetDatabase.LoadAssetAtPath<AudioClip>("Assets/Audio/SFX/explosion.wav");
             serializedSm.FindProperty("comboClip").objectReferenceValue = AssetDatabase.LoadAssetAtPath<AudioClip>("Assets/Audio/SFX/eat.ogg");
             serializedSm.FindProperty("highScoreClip").objectReferenceValue = AssetDatabase.LoadAssetAtPath<AudioClip>("Assets/Audio/SFX/congratulation.wav");
+            var expVolProp = serializedSm.FindProperty("explosionVolume");
+            if (expVolProp != null) expVolProp.floatValue = 0.25f;
             serializedSm.ApplyModifiedProperties();
 
             // ── FloatingTextPool ──────────────────────────────────────────────────
@@ -218,41 +221,41 @@ namespace KinematicsGame.Editor
                 canvasGo.AddComponent<GraphicRaycaster>();
                 hudCtrl = canvasGo.AddComponent<GameHUDController>();
 
-                // Score label
+                // Score label (increased size)
                 GameObject scoreLblGo = new GameObject("ScoreLabel");
                 scoreLblGo.transform.SetParent(canvasGo.transform, false);
                 TextMeshProUGUI scoreLabel = scoreLblGo.AddComponent<TextMeshProUGUI>();
                 scoreLabel.text = "0";
-                scoreLabel.fontSize = 48;
+                scoreLabel.fontSize = 72;
                 scoreLabel.alignment = TextAlignmentOptions.TopRight;
                 RectTransform scoreRect = scoreLblGo.GetComponent<RectTransform>();
                 scoreRect.anchorMin = new Vector2(1f, 1f);
                 scoreRect.anchorMax = new Vector2(1f, 1f);
                 scoreRect.pivot = new Vector2(1f, 1f);
                 scoreRect.anchoredPosition = new Vector2(-20f, -20f);
-                scoreRect.sizeDelta = new Vector2(300f, 60f);
+                scoreRect.sizeDelta = new Vector2(400f, 90f);
 
                 // High score label
                 GameObject hslGo = new GameObject("HighScoreLabel");
                 hslGo.transform.SetParent(canvasGo.transform, false);
                 TextMeshProUGUI highScoreLabel = hslGo.AddComponent<TextMeshProUGUI>();
                 highScoreLabel.text = "Best: 0";
-                highScoreLabel.fontSize = 24;
+                highScoreLabel.fontSize = 28;
                 highScoreLabel.color = new Color(1f, 0.9f, 0.2f);
                 highScoreLabel.alignment = TextAlignmentOptions.TopRight;
                 RectTransform hsRect = hslGo.GetComponent<RectTransform>();
                 hsRect.anchorMin = new Vector2(1f, 1f);
                 hsRect.anchorMax = new Vector2(1f, 1f);
                 hsRect.pivot = new Vector2(1f, 1f);
-                hsRect.anchoredPosition = new Vector2(-20f, -90f);
-                hsRect.sizeDelta = new Vector2(300f, 40f);
+                hsRect.anchoredPosition = new Vector2(-20f, -110f);
+                hsRect.sizeDelta = new Vector2(400f, 40f);
 
-                // Combo label
+                // Combo label (increased size)
                 GameObject comboGo = new GameObject("ComboLabel");
                 comboGo.transform.SetParent(canvasGo.transform, false);
                 TextMeshProUGUI comboLabel = comboGo.AddComponent<TextMeshProUGUI>();
                 comboLabel.text = "x2 COMBO";
-                comboLabel.fontSize = 32;
+                comboLabel.fontSize = 54;
                 comboLabel.color = new Color(1f, 0.9f, 0.2f);
                 comboLabel.alignment = TextAlignmentOptions.Bottom;
                 comboGo.SetActive(false);
@@ -260,10 +263,42 @@ namespace KinematicsGame.Editor
                 comboRect.anchorMin = new Vector2(0.5f, 0f);
                 comboRect.anchorMax = new Vector2(0.5f, 0f);
                 comboRect.pivot = new Vector2(0.5f, 0f);
-                comboRect.anchoredPosition = new Vector2(0f, 40f);
-                comboRect.sizeDelta = new Vector2(400f, 60f);
+                comboRect.anchoredPosition = new Vector2(0f, 50f);
+                comboRect.sizeDelta = new Vector2(500f, 80f);
 
                 hudCtrl.SetLabels(scoreLabel, highScoreLabel, comboLabel);
+            }
+
+            if (hudCtrl != null)
+            {
+                hudCtrl.ScoreFontSize = 72f;
+                hudCtrl.HighScoreFontSize = 28f;
+                hudCtrl.ComboFontSize = 54f;
+                hudCtrl.ApplyFontSizes();
+
+                if (hudCtrl.ScoreLabel != null)
+                {
+                    RectTransform sr = hudCtrl.ScoreLabel.GetComponent<RectTransform>();
+                    if (sr != null) sr.sizeDelta = new Vector2(400f, 90f);
+                }
+                if (hudCtrl.HighScoreLabel != null)
+                {
+                    RectTransform hsr = hudCtrl.HighScoreLabel.GetComponent<RectTransform>();
+                    if (hsr != null)
+                    {
+                        hsr.anchoredPosition = new Vector2(-20f, -110f);
+                        hsr.sizeDelta = new Vector2(400f, 40f);
+                    }
+                }
+                if (hudCtrl.ComboLabel != null)
+                {
+                    RectTransform cr = hudCtrl.ComboLabel.GetComponent<RectTransform>();
+                    if (cr != null)
+                    {
+                        cr.anchoredPosition = new Vector2(0f, 50f);
+                        cr.sizeDelta = new Vector2(500f, 80f);
+                    }
+                }
             }
 
             EditorSceneManager.MarkSceneDirty(EditorSceneManager.GetActiveScene());

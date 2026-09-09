@@ -159,7 +159,11 @@ namespace KinematicsGame.Editor
             serializedGc.FindProperty("backgroundMusic").objectReferenceValue = AssetDatabase.LoadAssetAtPath<AudioClip>("Assets/Audio/Music/music.mp3");
             serializedGc.FindProperty("fireSfx").objectReferenceValue = AssetDatabase.LoadAssetAtPath<AudioClip>("Assets/Audio/SFX/click.ogg");
             serializedGc.FindProperty("explosionSfx").objectReferenceValue = AssetDatabase.LoadAssetAtPath<AudioClip>("Assets/Audio/SFX/explosion.wav");
+            serializedGc.FindProperty("musicVolume").floatValue = 0.25f;
             serializedGc.ApplyModifiedProperties();
+
+            AudioSource gcAudio = gc.GetComponent<AudioSource>();
+            if (gcAudio != null) gcAudio.volume = 0.25f;
 
             // ── TargetSpawner ────────────────────────────────────────────────────
             TargetSpawner spawner = Object.FindFirstObjectByType<TargetSpawner>();
@@ -210,12 +214,18 @@ namespace KinematicsGame.Editor
             }
             gc.ScoreManager = scoreMgr;
             scoreMgr.ExplosionVolume = 0.25f;
+            scoreMgr.SfxVolume = 0.25f;
+            AudioSource smAudio = scoreMgr.GetComponent<AudioSource>();
+            if (smAudio != null) smAudio.volume = 0.25f;
+
             var serializedSm = new SerializedObject(scoreMgr);
             serializedSm.FindProperty("hitClip").objectReferenceValue = AssetDatabase.LoadAssetAtPath<AudioClip>("Assets/Audio/SFX/explosion.wav");
             serializedSm.FindProperty("comboClip").objectReferenceValue = AssetDatabase.LoadAssetAtPath<AudioClip>("Assets/Audio/SFX/eat.ogg");
             serializedSm.FindProperty("highScoreClip").objectReferenceValue = AssetDatabase.LoadAssetAtPath<AudioClip>("Assets/Audio/SFX/congratulation.wav");
             var expVolProp = serializedSm.FindProperty("explosionVolume");
             if (expVolProp != null) expVolProp.floatValue = 0.25f;
+            var sfxVolProp = serializedSm.FindProperty("sfxVolume");
+            if (sfxVolProp != null) sfxVolProp.floatValue = 0.25f;
             serializedSm.ApplyModifiedProperties();
 
             // ── FloatingTextPool ──────────────────────────────────────────────────

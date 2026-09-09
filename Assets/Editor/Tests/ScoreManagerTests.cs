@@ -235,5 +235,20 @@ namespace KinematicsGame.Tests
             scoreManager.ExplosionVolume = -0.5f;
             Assert.AreEqual(0.0f, scoreManager.ExplosionVolume, 0.01f);
         }
+
+        [Test]
+        public void SfxVolume_DefaultsToReducedLevel_AndClampsWithinZeroToOne()
+        {
+            Assert.AreEqual(0.25f, scoreManager.SfxVolume, 0.01f);
+
+            scoreManager.SfxVolume = 0.5f;
+            Assert.AreEqual(0.5f, scoreManager.SfxVolume, 0.01f);
+
+            scoreManager.SfxVolume = 1.5f;
+            Assert.AreEqual(1.0f, scoreManager.SfxVolume, 0.01f);
+
+            scoreManager.SfxVolume = -0.5f;
+            Assert.AreEqual(0.0f, scoreManager.SfxVolume, 0.01f);
+        }
     }
 }

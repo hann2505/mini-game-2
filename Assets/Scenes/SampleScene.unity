@@ -286,7 +286,7 @@ AudioSource:
   m_audioClip: {fileID: 0}
   m_Resource: {fileID: 0}
   m_PlayOnAwake: 0
-  m_Volume: 1
+  m_Volume: 0.25
   m_Pitch: 1
   Loop: 0
   Mute: 0
@@ -387,6 +387,7 @@ MonoBehaviour:
   comboClip: {fileID: 8300000, guid: 0a9911fb452d7432b9f8b55355afb502, type: 3}
   highScoreClip: {fileID: 8300000, guid: 5737e5ca76ff749ea9f9759c764fa12f, type: 3}
   explosionVolume: 0.25
+  sfxVolume: 0.25
   comboDuration: 2
   audioThrottleWindow: 0.05
 --- !u!4 &267365174
@@ -842,7 +843,7 @@ AudioSource:
   m_audioClip: {fileID: 0}
   m_Resource: {fileID: 0}
   m_PlayOnAwake: 0
-  m_Volume: 1
+  m_Volume: 0.25
   m_Pitch: 1
   Loop: 0
   Mute: 0
@@ -958,7 +959,7 @@ MonoBehaviour:
   backgroundMusic: {fileID: 8300000, guid: 63a0e47eae83944ab847f48b5c0f63c8, type: 3}
   fireSfx: {fileID: 8300000, guid: 764f95ab148974084960a7aff12b1417, type: 3}
   explosionSfx: {fileID: 8300000, guid: 9830c6d857b6c497199d04d2f4e6052e, type: 3}
-  musicVolume: 0.5
+  musicVolume: 0.25
   playerSprite: {fileID: 413986153270297580, guid: e5ec8f70ce74a4891b8eb71975de32c9, type: 3}
   targetSprite: {fileID: 5849526724001025608, guid: ba6934d72c9244eb7a9fb97a8150e3d4, type: 3}
   projectileSprite: {fileID: 2009410003007727163, guid: 08e6af027a1bd460ebe18010ae0e4bde, type: 3}

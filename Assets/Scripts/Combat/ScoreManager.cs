@@ -25,6 +25,7 @@ namespace KinematicsGame.Combat
         [SerializeField] private AudioClip comboClip;
         [SerializeField] private AudioClip highScoreClip;
         [SerializeField, Range(0f, 1f)] private float explosionVolume = 0.25f;
+        [SerializeField, Range(0f, 1f)] private float sfxVolume = 0.25f;
 
         [Header("Combo Configuration")]
         [SerializeField] private float comboDuration = 2.0f;
@@ -79,6 +80,16 @@ namespace KinematicsGame.Combat
         {
             get => explosionVolume;
             set => explosionVolume = Mathf.Clamp01(value);
+        }
+
+        public float SfxVolume
+        {
+            get => sfxVolume;
+            set
+            {
+                sfxVolume = Mathf.Clamp01(value);
+                if (audioSource != null) audioSource.volume = sfxVolume;
+            }
         }
 
         public static void ClearEventSubscribers()
@@ -166,6 +177,11 @@ namespace KinematicsGame.Combat
                     audioSource.playOnAwake = false;
                 }
             }
+
+            if (audioSource != null)
+            {
+                audioSource.volume = sfxVolume;
+            }
         }
 
         private void Update()
@@ -226,7 +242,7 @@ namespace KinematicsGame.Combat
                 if (!hasPlayedHighScoreSoundInSession && highScoreClip != null && audioSource != null)
                 {
                     hasPlayedHighScoreSoundInSession = true;
-                    audioSource.PlayOneShot(highScoreClip);
+                    audioSource.PlayOneShot(highScoreClip, sfxVolume);
                 }
             }
 
@@ -236,7 +252,7 @@ namespace KinematicsGame.Combat
             // Combo sound
             if (comboMultiplier > 1 && comboClip != null && audioSource != null)
             {
-                audioSource.PlayOneShot(comboClip);
+                audioSource.PlayOneShot(comboClip, sfxVolume);
             }
 
             // Advance combo streak

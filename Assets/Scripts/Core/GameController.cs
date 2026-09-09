@@ -56,7 +56,7 @@ namespace KinematicsGame.Core
         [SerializeField] private AudioClip fireSfx;
         [SerializeField] private AudioClip explosionSfx;
 
-        [SerializeField] private float musicVolume = 0.5f;
+        [SerializeField] private float musicVolume = 0.25f;
 
         [Header("Sprite Asset References (Optional Fallbacks)")]
         [SerializeField] private Sprite playerSprite;
@@ -139,6 +139,16 @@ namespace KinematicsGame.Core
         {
             get => targetUniformSize;
             set => targetUniformSize = value;
+        }
+
+        public float MusicVolume
+        {
+            get => musicVolume;
+            set
+            {
+                musicVolume = Mathf.Clamp01(value);
+                if (musicSource != null) musicSource.volume = musicVolume;
+            }
         }
 
         private void Awake()

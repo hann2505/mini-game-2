@@ -483,8 +483,8 @@ namespace KinematicsGame.Enemy
         {
             if (audioSource != null && hitClip != null)
             {
-                audioSource.volume = 0.2f;
-                audioSource.PlayOneShot(hitClip);
+                audioSource.volume = 0.25f;
+                audioSource.PlayOneShot(hitClip, 0.25f);
             }
         }
     }

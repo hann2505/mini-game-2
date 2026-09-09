@@ -155,5 +155,20 @@ namespace KinematicsGame.Tests
             playerController.ProjectilePrefab = null;
             Assert.DoesNotThrow(() => playerController.FireProjectile());
         }
+
+        [Test]
+        public void PlayerController_FireVolume_DefaultsToReducedLevel_AndClampsWithinZeroToOne()
+        {
+            Assert.That(playerController.FireVolume, Is.EqualTo(0.25f).Within(0.01f));
+
+            playerController.FireVolume = 0.5f;
+            Assert.That(playerController.FireVolume, Is.EqualTo(0.5f).Within(0.01f));
+
+            playerController.FireVolume = 1.5f;
+            Assert.That(playerController.FireVolume, Is.EqualTo(1.0f).Within(0.01f));
+
+            playerController.FireVolume = -0.5f;
+            Assert.That(playerController.FireVolume, Is.EqualTo(0.0f).Within(0.01f));
+        }
     }
 }

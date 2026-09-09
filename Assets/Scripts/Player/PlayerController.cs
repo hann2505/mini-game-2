@@ -26,6 +26,7 @@ namespace KinematicsGame.Player
         [Header("Audio Settings")]
         [SerializeField] private AudioClip fireClip;
         [SerializeField] private AudioSource audioSource;
+        [SerializeField, Range(0f, 1f)] private float fireVolume = 0.25f;
 
         [Header("Components")]
         [SerializeField] private SpriteRenderer spriteRenderer;
@@ -89,6 +90,12 @@ namespace KinematicsGame.Player
         {
             get => audioSource;
             set => audioSource = value;
+        }
+
+        public float FireVolume
+        {
+            get => fireVolume;
+            set => fireVolume = Mathf.Clamp01(value);
         }
 
         public Vector2 MoveInput => moveInput;
@@ -283,7 +290,7 @@ namespace KinematicsGame.Player
         {
             if (audioSource != null && fireClip != null)
             {
-                audioSource.PlayOneShot(fireClip);
+                audioSource.PlayOneShot(fireClip, fireVolume);
             }
         }
     }

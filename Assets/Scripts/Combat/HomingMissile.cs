@@ -23,8 +23,17 @@ namespace KinematicsGame.Combat
         [SerializeField] private float splashRadius = 1.5f;
         [SerializeField] private AudioClip explosionClip;
 
+        [Header("Animation Settings")]
+        [SerializeField] private Animator animator;
+        [SerializeField] private GameObject explosionPrefab;
+        [SerializeField] private Sprite[] flyingFrames;
+        [SerializeField] private Sprite[] explosionFrames;
+        [SerializeField] private float animationFps = 15f;
+
         private TargetController currentTarget;
         private bool hasDetonated = false;
+        private float animTimer = 0f;
+        private int currentFlyingFrame = 0;
 
         public float MaxSpeed => maxSpeed;
         public float Acceleration => acceleration;
@@ -33,10 +42,23 @@ namespace KinematicsGame.Combat
         public TargetController CurrentTarget => currentTarget;
         public bool HasDetonated => hasDetonated;
 
+        public Animator AnimatorComponent { get => animator; set => animator = value; }
+        public GameObject ExplosionPrefab { get => explosionPrefab; set => explosionPrefab = value; }
+        public Sprite[] FlyingFrames { get => flyingFrames; set => flyingFrames = value; }
+        public Sprite[] ExplosionFrames { get => explosionFrames; set => explosionFrames = value; }
+        public float AnimationFps { get => animationFps; set => animationFps = Mathf.Max(1f, value); }
+
+        public override void AlignRotationToDirection()
+        {
+            float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg - 90f;
+            transform.rotation = Quaternion.Euler(0f, 0f, angle);
+        }
+
         public override void Initialize(Vector2 flightDirection, float flightSpeed)
         {
             base.Initialize(flightDirection, flightSpeed > 0f ? flightSpeed : initialSpeed);
             speed = flightSpeed > 0f ? flightSpeed : initialSpeed;
+            AlignRotationToDirection();
         }
 
         public override void UpdateKinematics(float deltaTime = -1f)
@@ -72,6 +94,24 @@ namespace KinematicsGame.Combat
             if (rb != null)
             {
                 rb.position = (Vector2)transform.position;
+            }
+
+            UpdateFlyingAnimation(dt);
+        }
+
+        public void UpdateFlyingAnimation(float dt)
+        {
+            if (flyingFrames == null || flyingFrames.Length == 0) return;
+            if (spriteRenderer == null) spriteRenderer = GetComponent<SpriteRenderer>();
+            if (spriteRenderer == null) return;
+
+            animTimer += dt;
+            float interval = 1f / (animationFps > 0f ? animationFps : 15f);
+            if (animTimer >= interval)
+            {
+                animTimer -= interval;
+                currentFlyingFrame = (currentFlyingFrame + 1) % flyingFrames.Length;
+                spriteRenderer.sprite = flyingFrames[currentFlyingFrame];
             }
         }
 
@@ -145,6 +185,8 @@ namespace KinematicsGame.Combat
                 AudioManager.Instance.PlaySfx(explosionClip);
             }
 
+            SpawnExplosionEffect();
+
 #if UNITY_EDITOR
             if (!Application.isPlaying)
             {
@@ -157,6 +199,27 @@ namespace KinematicsGame.Combat
 #else
             Destroy(gameObject);
 #endif
+        }
+
+        private void SpawnExplosionEffect()
+        {
+            if (explosionPrefab != null)
+            {
+                Instantiate(explosionPrefab, transform.position, Quaternion.identity);
+            }
+            else if (explosionFrames != null && explosionFrames.Length > 0)
+            {
+                GameObject expGo = new GameObject("Missile_Explosion");
+                expGo.transform.position = transform.position;
+                expGo.transform.localScale = Vector3.one * 1.5f;
+                SpriteRenderer expSr = expGo.AddComponent<SpriteRenderer>();
+                expSr.sortingOrder = 15;
+                AnimatedSpriteEffect effect = expGo.AddComponent<AnimatedSpriteEffect>();
+                effect.Frames = explosionFrames;
+                effect.FramesPerSecond = animationFps > 0f ? animationFps : 15f;
+                effect.Loop = false;
+                effect.AutoDestroy = true;
+            }
         }
     }
 }

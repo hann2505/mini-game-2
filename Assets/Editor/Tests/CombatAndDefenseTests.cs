@@ -303,5 +303,62 @@ namespace KinematicsGame.Tests
             Assert.AreEqual(WeaponType.Blaster, combatSystem.CurrentWeapon);
             Assert.IsFalse(combatSystem.IsTemporaryWeaponActive);
         }
+
+        [Test]
+        public void AnimatedSpriteEffect_TicksFrames_CyclesAndUpdatesSprite()
+        {
+            GameObject go = new GameObject("TestAnimEffect");
+            disposables.Add(go);
+            SpriteRenderer sr = go.AddComponent<SpriteRenderer>();
+            AnimatedSpriteEffect effect = go.AddComponent<AnimatedSpriteEffect>();
+
+            Texture2D tex = new Texture2D(16, 16);
+            disposables.Add(tex);
+            Sprite s1 = Sprite.Create(tex, new Rect(0, 0, 16, 16), Vector2.zero);
+            Sprite s2 = Sprite.Create(tex, new Rect(0, 0, 16, 16), Vector2.zero);
+            disposables.Add(s1);
+            disposables.Add(s2);
+
+            effect.Frames = new[] { s1, s2 };
+            effect.FramesPerSecond = 10f;
+            effect.Loop = true;
+
+            effect.Tick(0.05f); // 0.05s < 0.1s -> frame 0
+            Assert.AreEqual(s1, sr.sprite);
+
+            effect.Tick(0.06f); // total 0.11s >= 0.1s -> frame 1
+            Assert.AreEqual(s2, sr.sprite);
+        }
+
+        [Test]
+        public void HomingMissile_Animation_AdvancesFramesAndDetonatesWithExplosion()
+        {
+            GameObject mGo = new GameObject("TestMissileWithAnim");
+            disposables.Add(mGo);
+            SpriteRenderer sr = mGo.AddComponent<SpriteRenderer>();
+            HomingMissile missile = mGo.AddComponent<HomingMissile>();
+
+            Texture2D tex = new Texture2D(16, 16);
+            disposables.Add(tex);
+            Sprite f1 = Sprite.Create(tex, new Rect(0, 0, 16, 16), Vector2.zero);
+            Sprite f2 = Sprite.Create(tex, new Rect(0, 0, 16, 16), Vector2.zero);
+            Sprite exp = Sprite.Create(tex, new Rect(0, 0, 16, 16), Vector2.zero);
+            disposables.Add(f1);
+            disposables.Add(f2);
+            disposables.Add(exp);
+
+            missile.FlyingFrames = new[] { f1, f2 };
+            missile.ExplosionFrames = new[] { exp };
+            missile.AnimationFps = 10f;
+            missile.Initialize(Vector2.right, 6f);
+
+            // Tick kinematics should advance flying animation
+            missile.UpdateKinematics(0.12f);
+            Assert.AreEqual(f2, sr.sprite);
+
+            // Detonate should trigger explosion
+            missile.Detonate();
+            Assert.IsTrue(missile.HasDetonated);
+        }
     }
 }

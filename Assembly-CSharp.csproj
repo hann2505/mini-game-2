@@ -1,4 +1,4 @@
-﻿<Project>
+<Project>
   <!-- Generated file, do not modify, your changes will be overwritten (use AssetPostprocessor.OnGeneratedCSProject) -->
   <PropertyGroup>
     <BaseIntermediateOutputPath>Temp/obj/$(MSBuildProjectName)</BaseIntermediateOutputPath>
@@ -60,6 +60,7 @@
     <Compile Include="Assets/Scripts/Core/GameController.cs" />
     <Compile Include="Assets/Scripts/Enemy/TargetSpawner.cs" />
     <Compile Include="Assets/Scripts/Combat/InteractiveEntity.cs" />
+    <Compile Include="Assets/Scripts/Combat/AnimatedSpriteEffect.cs" />
     <Compile Include="Assets/Scripts/Combat/ClusterBomb.cs" />
     <Compile Include="Assets/Scripts/Enemy/TargetProfile.cs" />
     <Compile Include="Assets/Scripts/Player/PlayerController.cs" />

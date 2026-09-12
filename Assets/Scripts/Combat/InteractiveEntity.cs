@@ -1,5 +1,6 @@
 using UnityEngine;
 using KinematicsGame.Core;
+using KinematicsGame.Player;
 
 namespace KinematicsGame.Combat
 {
@@ -16,6 +17,7 @@ namespace KinematicsGame.Combat
     /// and triggers distinct combat/buff effects upon contact with Object A.
     /// </summary>
     [RequireComponent(typeof(CircleCollider2D))]
+    [RequireComponent(typeof(Rigidbody2D))]
     [DisallowMultipleComponent]
     public class InteractiveEntity : MonoBehaviour
     {
@@ -90,8 +92,24 @@ namespace KinematicsGame.Combat
             isHorizontal = orientation == GameOrientation.Horizontal;
         }
 
+        [SerializeField] private Rigidbody2D rb;
+
         public void EnsureComponents()
         {
+            if (rb == null)
+            {
+                rb = GetComponent<Rigidbody2D>();
+                if (rb == null)
+                {
+                    rb = gameObject.AddComponent<Rigidbody2D>();
+                }
+            }
+            if (rb != null)
+            {
+                rb.bodyType = RigidbodyType2D.Kinematic;
+                rb.useFullKinematicContacts = true;
+            }
+
             if (col == null)
             {
                 col = GetComponent<CircleCollider2D>();
@@ -100,11 +118,35 @@ namespace KinematicsGame.Combat
                     col = gameObject.AddComponent<CircleCollider2D>();
                 }
             }
-            col.isTrigger = true;
+            if (col != null)
+            {
+                col.isTrigger = true;
+                if (col.radius < 0.5f)
+                {
+                    col.radius = 0.5f;
+                }
+            }
 
             if (spriteRenderer == null)
             {
                 spriteRenderer = GetComponent<SpriteRenderer>();
+            }
+        }
+
+        private void OnTriggerEnter2D(Collider2D other)
+        {
+            if (IsConsumed || other == null) return;
+
+            PlayerController player = other.GetComponent<PlayerController>();
+            if (player == null)
+            {
+                player = other.GetComponentInParent<PlayerController>();
+            }
+
+            if (player != null)
+            {
+                IsConsumed = true;
+                CollisionEffectDispatcher.ResolveCollision(this, player);
             }
         }
 

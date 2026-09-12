@@ -11,6 +11,8 @@ namespace KinematicsGame.Player
     /// - 4-way responsive movement clamped strictly within camera viewport bounds.
     /// - Mouse click / touch tap projectile firing with configurable speed and cooldown.
     /// </summary>
+    [RequireComponent(typeof(CircleCollider2D))]
+    [RequireComponent(typeof(Rigidbody2D))]
     [DisallowMultipleComponent]
     public class PlayerController : MonoBehaviour
     {
@@ -155,6 +157,27 @@ namespace KinematicsGame.Player
             if (defenseSystem == null)
             {
                 defenseSystem = GetComponent<PlayerDefenseSystem>();
+            }
+
+            Rigidbody2D rb = GetComponent<Rigidbody2D>();
+            if (rb == null)
+            {
+                rb = gameObject.AddComponent<Rigidbody2D>();
+            }
+            if (rb != null)
+            {
+                rb.bodyType = RigidbodyType2D.Kinematic;
+                rb.useFullKinematicContacts = true;
+            }
+
+            CircleCollider2D col = GetComponent<CircleCollider2D>();
+            if (col == null)
+            {
+                col = gameObject.AddComponent<CircleCollider2D>();
+            }
+            if (col != null)
+            {
+                col.isTrigger = true;
             }
         }
 

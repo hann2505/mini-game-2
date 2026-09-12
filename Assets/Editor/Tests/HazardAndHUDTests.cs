@@ -288,5 +288,46 @@ namespace KinematicsGame.Tests
             Assert.That(cooldownLabel.text, Does.Contain("S: 11.0s"));
             Assert.That(cooldownLabel.text, Does.Contain("EMP: 14.0s"));
         }
+
+        [Test]
+        public void InteractiveEntity_PlayerOnTriggerEnter2D_DispatchesEffectsAndDespawns()
+        {
+            GameObject mineGo = new GameObject("TestMine");
+            disposables.Add(mineGo);
+            var mineCol = mineGo.AddComponent<CircleCollider2D>();
+            var ie = mineGo.AddComponent<InteractiveEntity>();
+            ie.Type = EntityType.HazardMine;
+            ie.EnsureComponents();
+
+            var method = typeof(PlayerController).GetMethod("OnTriggerEnter2D",
+                System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+            method.Invoke(player, new object[] { mineCol });
+
+            Assert.IsTrue(ie == null || ie.IsConsumed);
+            Assert.IsTrue(CollisionEffectDispatcher.TriggeredEffectIds.Contains(1));
+            Assert.IsTrue(CollisionEffectDispatcher.TriggeredEffectIds.Contains(2));
+        }
+
+        [Test]
+        public void InteractiveEntity_EntityOnTriggerEnter2D_DispatchesEffectsAndDespawns()
+        {
+            GameObject crateGo = new GameObject("TestCrate");
+            disposables.Add(crateGo);
+            var crateCol = crateGo.AddComponent<CircleCollider2D>();
+            var ie = crateGo.AddComponent<InteractiveEntity>();
+            ie.Type = EntityType.SupplyCrate;
+            ie.EnsureComponents();
+
+            Collider2D playerCol = playerGo.GetComponent<Collider2D>();
+            Assert.IsNotNull(playerCol, "Player must have Collider2D.");
+
+            var method = typeof(InteractiveEntity).GetMethod("OnTriggerEnter2D",
+                System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+            method.Invoke(ie, new object[] { playerCol });
+
+            Assert.IsTrue(ie == null || ie.IsConsumed);
+            Assert.IsTrue(CollisionEffectDispatcher.TriggeredEffectIds.Contains(5));
+            Assert.IsTrue(CollisionEffectDispatcher.TriggeredEffectIds.Contains(6));
+        }
     }
 }

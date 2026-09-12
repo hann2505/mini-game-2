@@ -127,12 +127,16 @@ namespace KinematicsGame.Editor
 
             // 4. Hazard Mine Prefab (Object X)
             string minePath = "Assets/Prefabs/Hazard_Mine.prefab";
-            if (AssetDatabase.LoadAssetAtPath<GameObject>(minePath) == null)
+            GameObject existingMine = AssetDatabase.LoadAssetAtPath<GameObject>(minePath);
+            if (existingMine == null || existingMine.GetComponent<Rigidbody2D>() == null)
             {
                 GameObject mineGo = new GameObject("Hazard_Mine");
                 SpriteRenderer sr = mineGo.AddComponent<SpriteRenderer>();
                 sr.sprite = mineSprite != null ? mineSprite : bulletSprite;
                 sr.sortingOrder = 8;
+                Rigidbody2D rb = mineGo.AddComponent<Rigidbody2D>();
+                rb.bodyType = RigidbodyType2D.Kinematic;
+                rb.useFullKinematicContacts = true;
                 CircleCollider2D col = mineGo.AddComponent<CircleCollider2D>();
                 col.isTrigger = true;
                 InteractiveEntity ie = mineGo.AddComponent<InteractiveEntity>();
@@ -145,12 +149,16 @@ namespace KinematicsGame.Editor
 
             // 5. Tech Supply Crate Prefab (Object Y)
             string cratePath = "Assets/Prefabs/Supply_Crate.prefab";
-            if (AssetDatabase.LoadAssetAtPath<GameObject>(cratePath) == null)
+            GameObject existingCrate = AssetDatabase.LoadAssetAtPath<GameObject>(cratePath);
+            if (existingCrate == null || existingCrate.GetComponent<Rigidbody2D>() == null)
             {
                 GameObject crateGo = new GameObject("Supply_Crate");
                 SpriteRenderer sr = crateGo.AddComponent<SpriteRenderer>();
                 sr.sprite = crateSprite != null ? crateSprite : bulletSprite;
                 sr.sortingOrder = 8;
+                Rigidbody2D rb = crateGo.AddComponent<Rigidbody2D>();
+                rb.bodyType = RigidbodyType2D.Kinematic;
+                rb.useFullKinematicContacts = true;
                 CircleCollider2D col = crateGo.AddComponent<CircleCollider2D>();
                 col.isTrigger = true;
                 InteractiveEntity ie = crateGo.AddComponent<InteractiveEntity>();
@@ -163,14 +171,19 @@ namespace KinematicsGame.Editor
 
             // 6. Gem Core Prefab (Object Z)
             string gemPath = "Assets/Prefabs/Gem_Core.prefab";
-            if (AssetDatabase.LoadAssetAtPath<GameObject>(gemPath) == null)
+            GameObject existingGem = AssetDatabase.LoadAssetAtPath<GameObject>(gemPath);
+            if (existingGem == null || existingGem.GetComponent<Rigidbody2D>() == null)
             {
                 GameObject gemGo = new GameObject("Gem_Core");
                 SpriteRenderer sr = gemGo.AddComponent<SpriteRenderer>();
                 sr.sprite = gemSprite != null ? gemSprite : bulletSprite;
                 sr.sortingOrder = 8;
+                Rigidbody2D rb = gemGo.AddComponent<Rigidbody2D>();
+                rb.bodyType = RigidbodyType2D.Kinematic;
+                rb.useFullKinematicContacts = true;
                 CircleCollider2D col = gemGo.AddComponent<CircleCollider2D>();
                 col.isTrigger = true;
+                if (col.radius < 0.6f) col.radius = 0.6f;
                 InteractiveEntity ie = gemGo.AddComponent<InteractiveEntity>();
                 ie.Type = EntityType.GemCore;
                 ie.InteractionSfx = eatClip;
@@ -196,12 +209,15 @@ namespace KinematicsGame.Editor
             // 8. Player Prefab
             string playerPath = "Assets/Prefabs/Player.prefab";
             GameObject existingPlayerPrefab = AssetDatabase.LoadAssetAtPath<GameObject>(playerPath);
-            if (existingPlayerPrefab == null || existingPlayerPrefab.GetComponent<PlayerStats>() == null || existingPlayerPrefab.GetComponent<PlayerCombatSystem>() == null)
+            if (existingPlayerPrefab == null || existingPlayerPrefab.GetComponent<PlayerStats>() == null || existingPlayerPrefab.GetComponent<PlayerCombatSystem>() == null || existingPlayerPrefab.GetComponent<Rigidbody2D>() == null)
             {
                 GameObject playerGo = new GameObject("Player");
                 SpriteRenderer sr = playerGo.AddComponent<SpriteRenderer>();
                 sr.sprite = shipSprite;
                 sr.sortingOrder = 5;
+                Rigidbody2D rb = playerGo.AddComponent<Rigidbody2D>();
+                rb.bodyType = RigidbodyType2D.Kinematic;
+                rb.useFullKinematicContacts = true;
                 CircleCollider2D col = playerGo.AddComponent<CircleCollider2D>();
                 col.isTrigger = true;
                 AudioSource audio = playerGo.AddComponent<AudioSource>();

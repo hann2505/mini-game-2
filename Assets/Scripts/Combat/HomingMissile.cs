@@ -30,6 +30,9 @@ namespace KinematicsGame.Combat
         [SerializeField] private Sprite[] explosionFrames;
         [SerializeField] private float animationFps = 15f;
 
+        [Header("Sizing")]
+        [SerializeField] private float targetUniformSize = 1.1f;
+
         private TargetController currentTarget;
         private bool hasDetonated = false;
         private float animTimer = 0f;
@@ -47,6 +50,43 @@ namespace KinematicsGame.Combat
         public Sprite[] FlyingFrames { get => flyingFrames; set => flyingFrames = value; }
         public Sprite[] ExplosionFrames { get => explosionFrames; set => explosionFrames = value; }
         public float AnimationFps { get => animationFps; set => animationFps = Mathf.Max(1f, value); }
+        public float TargetUniformSize
+        {
+            get => targetUniformSize;
+            set
+            {
+                targetUniformSize = value;
+                ApplyTargetSize();
+            }
+        }
+
+        public void ApplyTargetSize(float customSize = -1f)
+        {
+            float targetSize = customSize > 0f ? customSize : targetUniformSize;
+            if (spriteRenderer == null) spriteRenderer = GetComponent<SpriteRenderer>();
+            if (spriteRenderer != null && spriteRenderer.sprite != null)
+            {
+                Vector2 unscaledSize = spriteRenderer.sprite.rect.size / spriteRenderer.sprite.pixelsPerUnit;
+                float maxDim = Mathf.Max(unscaledSize.x, unscaledSize.y);
+                if (maxDim > 0.0001f)
+                {
+                    float uniformScale = targetSize / maxDim;
+                    transform.localScale = new Vector3(uniformScale, uniformScale, 1f);
+                }
+            }
+        }
+
+        protected override void Awake()
+        {
+            base.Awake();
+            ApplyTargetSize();
+#if UNITY_EDITOR
+            if (explosionPrefab == null)
+            {
+                explosionPrefab = UnityEditor.AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Prefabs/Missile_Explosion.prefab");
+            }
+#endif
+        }
 
         public override void AlignRotationToDirection()
         {
@@ -59,6 +99,7 @@ namespace KinematicsGame.Combat
             base.Initialize(flightDirection, flightSpeed > 0f ? flightSpeed : initialSpeed);
             speed = flightSpeed > 0f ? flightSpeed : initialSpeed;
             AlignRotationToDirection();
+            ApplyTargetSize();
         }
 
         public override void UpdateKinematics(float deltaTime = -1f)
@@ -203,15 +244,22 @@ namespace KinematicsGame.Combat
 
         private void SpawnExplosionEffect()
         {
+#if UNITY_EDITOR
+            if (explosionPrefab == null)
+            {
+                explosionPrefab = UnityEditor.AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Prefabs/Missile_Explosion.prefab");
+            }
+#endif
+            GameObject expGo = null;
             if (explosionPrefab != null)
             {
-                Instantiate(explosionPrefab, transform.position, Quaternion.identity);
+                expGo = Instantiate(explosionPrefab, transform.position, Quaternion.identity);
             }
             else if (explosionFrames != null && explosionFrames.Length > 0)
             {
-                GameObject expGo = new GameObject("Missile_Explosion");
+                expGo = new GameObject("Missile_Explosion");
                 expGo.transform.position = transform.position;
-                expGo.transform.localScale = Vector3.one * 1.5f;
+                expGo.transform.localScale = Vector3.one * 0.3f;
                 SpriteRenderer expSr = expGo.AddComponent<SpriteRenderer>();
                 expSr.sortingOrder = 15;
                 AnimatedSpriteEffect effect = expGo.AddComponent<AnimatedSpriteEffect>();
@@ -219,6 +267,12 @@ namespace KinematicsGame.Combat
                 effect.FramesPerSecond = animationFps > 0f ? animationFps : 15f;
                 effect.Loop = false;
                 effect.AutoDestroy = true;
+            }
+
+            if (expGo != null)
+            {
+                expGo.transform.position = transform.position;
+                expGo.SetActive(true);
             }
         }
     }

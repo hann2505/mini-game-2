@@ -215,6 +215,7 @@ namespace KinematicsGame.Editor
             if (existing != null) return existing;
 
             GameObject expGo = new GameObject("Missile_Explosion");
+            expGo.transform.localScale = new Vector3(0.3f, 0.3f, 1f);
             SpriteRenderer sr = expGo.AddComponent<SpriteRenderer>();
             sr.sortingOrder = 15;
             if (explosionSprites != null && explosionSprites.Length > 0)
@@ -247,6 +248,7 @@ namespace KinematicsGame.Editor
             GameObject instance = (GameObject)PrefabUtility.InstantiatePrefab(missilePrefab);
             try
             {
+                instance.transform.localScale = new Vector3(0.22f, 0.22f, 1f);
                 Animator anim = instance.GetComponent<Animator>();
                 if (anim == null)
                 {
@@ -262,6 +264,7 @@ namespace KinematicsGame.Editor
                     hm.ExplosionFrames = explosionSprites;
                     hm.ExplosionPrefab = explosionPrefab;
                     hm.AnimationFps = 15f;
+                    hm.TargetUniformSize = 1.1f;
                 }
 
                 PrefabUtility.SaveAsPrefabAsset(instance, MissilePrefabPath);

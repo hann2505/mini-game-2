@@ -98,12 +98,16 @@ namespace KinematicsGame.Editor
             if (AssetDatabase.LoadAssetAtPath<GameObject>(missilePath) == null)
             {
                 GameObject mGo = new GameObject("Missile");
+                mGo.transform.localScale = new Vector3(0.22f, 0.22f, 1f);
                 SpriteRenderer sr = mGo.AddComponent<SpriteRenderer>();
                 sr.sprite = missileSprite != null ? missileSprite : bulletSprite;
                 sr.sortingOrder = 10;
                 CircleCollider2D col = mGo.AddComponent<CircleCollider2D>();
                 col.isTrigger = true;
+                col.radius = 2.51f;
                 HomingMissile hm = mGo.AddComponent<HomingMissile>();
+                hm.TargetUniformSize = 1.1f;
+                hm.ExplosionPrefab = AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Prefabs/Missile_Explosion.prefab");
 
                 PrefabUtility.SaveAsPrefabAsset(mGo, missilePath);
                 Object.DestroyImmediate(mGo);

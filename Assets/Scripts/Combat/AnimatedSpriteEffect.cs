@@ -44,13 +44,23 @@ namespace KinematicsGame.Combat
             set => autoDestroy = value;
         }
 
+        public SpriteRenderer SpriteRendererComponent
+        {
+            get
+            {
+                if (sr == null) sr = GetComponent<SpriteRenderer>();
+                return sr;
+            }
+        }
+
         private void Awake()
         {
-            sr = GetComponent<SpriteRenderer>();
+            if (sr == null) sr = GetComponent<SpriteRenderer>();
         }
 
         private void Start()
         {
+            if (sr == null) sr = GetComponent<SpriteRenderer>();
             if (frames != null && frames.Length > 0 && sr != null)
             {
                 sr.sprite = frames[0];
@@ -95,6 +105,7 @@ namespace KinematicsGame.Combat
         /// </summary>
         public void Tick(float deltaTime)
         {
+            if (sr == null) sr = GetComponent<SpriteRenderer>();
             if (frames == null || frames.Length == 0 || sr == null) return;
 
             timer += deltaTime;

@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 8855944648785770744}
   - component: {fileID: 5443962465567362392}
   - component: {fileID: 3246920441293287377}
+  - component: {fileID: 5097870626843008611}
   m_Layer: 0
   m_Name: Missile
   m_TagString: Untagged
@@ -30,7 +31,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 0.21912351, y: 0.21912351, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -180,3 +181,50 @@ MonoBehaviour:
   maxDetectionAngle: 90
   splashRadius: 1.5
   explosionClip: {fileID: 0}
+  animator: {fileID: 5097870626843008611}
+  explosionPrefab: {fileID: 326274236945151956, guid: d153d6f969c4b4eb6aa683824695f3bf, type: 3}
+  flyingFrames:
+  - {fileID: -1792016965839773234, guid: a73bc1310bd76450cb0a701911114467, type: 3}
+  - {fileID: 5598545378480009761, guid: e33edd394a77543568aadea0676c231a, type: 3}
+  - {fileID: 7593563538253769960, guid: 6e93cf81704574f11bfcd2f5a4cebff9, type: 3}
+  - {fileID: -6362321586418567480, guid: a33fa383834ca4bc6bdfd18567c2aa54, type: 3}
+  - {fileID: 1959958916509541410, guid: 81355b7c201e74808a949f94ed6bf09d, type: 3}
+  - {fileID: 1387374053502736060, guid: 38d7d0e747e6b44e2a4459e6d3b86d7a, type: 3}
+  - {fileID: 6346702669032544839, guid: 31a912de2bb7f469d8ed8dfddf0842c8, type: 3}
+  - {fileID: -3896389216934141138, guid: b55d26b1ad624469e8736f935dd5aa77, type: 3}
+  - {fileID: -801154406918980225, guid: 3a55116152d1a482ca8566b43d0ad5a2, type: 3}
+  - {fileID: -8131286701867753532, guid: bc1e97ada487c40eaa4e2ee347e6f598, type: 3}
+  explosionFrames:
+  - {fileID: -1002997423210015149, guid: aaf68cda2bf764d78bddda706c6e44e0, type: 3}
+  - {fileID: 8401737214321626776, guid: a6b61b03cb2874b8b94cc96c99bde010, type: 3}
+  - {fileID: 8574202434846100858, guid: 20ad344242cd3496ca4c010094e0ccf3, type: 3}
+  - {fileID: 2258679651275079659, guid: d86a0cee8138d4eb9896e0ad4e1e20c2, type: 3}
+  - {fileID: -5738269746975861107, guid: 00bacffc9e34a487caad66876b23f4a7, type: 3}
+  - {fileID: -4581713955170978184, guid: 243d9065a3d6a4c8385e64995d3c178e, type: 3}
+  - {fileID: -7784726083322791460, guid: ada9e6c46cf1646728dbd5c1d017a775, type: 3}
+  - {fileID: -6925682929266320543, guid: b221bf3fca7094849892cbb2f8afe1c3, type: 3}
+  - {fileID: 6020113539860012671, guid: 2ab8e1465340d42dd9211410dd15ab89, type: 3}
+  animationFps: 15
+  targetUniformSize: 1.1
+--- !u!95 &5097870626843008611
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6441782720009449579}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: ae044ded7e05e400eb9af8a5e399e3ba, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0

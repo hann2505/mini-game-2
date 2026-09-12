@@ -492,18 +492,31 @@ namespace KinematicsGame.Enemy
 
             if (projectileObj != null)
             {
-#if UNITY_EDITOR
-                if (!Application.isPlaying)
+                if (projectileObj.TryGetComponent<Combat.HomingMissile>(out var missile))
                 {
-                    DestroyImmediate(projectileObj);
+                    missile.Detonate();
+                    projectileObj = null;
+                }
+                else if (projectileObj.TryGetComponent<Combat.ClusterBomb>(out var bomb))
+                {
+                    bomb.Detonate();
+                    projectileObj = null;
                 }
                 else
                 {
-                    Destroy(projectileObj);
-                }
+#if UNITY_EDITOR
+                    if (!Application.isPlaying)
+                    {
+                        DestroyImmediate(projectileObj);
+                    }
+                    else
+                    {
+                        Destroy(projectileObj);
+                    }
 #else
-                Destroy(projectileObj);
+                    Destroy(projectileObj);
 #endif
+                }
             }
 
             OnTargetHit?.Invoke(this, currentProfile, impactPos);

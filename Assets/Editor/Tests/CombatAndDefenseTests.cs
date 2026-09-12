@@ -360,5 +360,77 @@ namespace KinematicsGame.Tests
             missile.Detonate();
             Assert.IsTrue(missile.HasDetonated);
         }
+
+        [Test]
+        public void HomingMissile_Size_IsSmallerThanObjectA()
+        {
+            // Object A standard uniform size is 1.5f
+            float objectASize = 1.5f;
+
+            GameObject mGo = new GameObject("SizedMissile");
+            disposables.Add(mGo);
+            SpriteRenderer sr = mGo.AddComponent<SpriteRenderer>();
+
+            // Simulate missile sprite (141 x 502 pixels, 100 PPU => 1.41 x 5.02 world units)
+            Texture2D tex = new Texture2D(141, 502);
+            disposables.Add(tex);
+            Sprite missileSprite = Sprite.Create(tex, new Rect(0, 0, 141, 502), new Vector2(0.5f, 0.5f), 100f);
+            disposables.Add(missileSprite);
+            sr.sprite = missileSprite;
+
+            HomingMissile missile = mGo.AddComponent<HomingMissile>();
+            missile.TargetUniformSize = 1.1f;
+            missile.ApplyTargetSize();
+
+            // Missile size (1.1f) must be strictly smaller than Object A (1.5f)
+            Assert.Less(missile.TargetUniformSize, objectASize);
+            Assert.AreEqual(1.1f, missile.TargetUniformSize, 0.01f);
+
+            // Effective world height = 5.02 * localScale.y
+            float worldHeight = (sr.sprite.rect.height / sr.sprite.pixelsPerUnit) * mGo.transform.localScale.y;
+            Assert.AreEqual(1.1f, worldHeight, 0.01f);
+            Assert.Less(worldHeight, objectASize);
+        }
+
+        [Test]
+        public void HomingMissile_CollisionWithTarget_SpawnsExplosionAnimation()
+        {
+            // Create TargetController (Object B)
+            GameObject targetGo = new GameObject("TargetEnemy_B");
+            disposables.Add(targetGo);
+            targetGo.transform.position = new Vector3(3f, 0f, 0f);
+            BoxCollider2D targetCol = targetGo.AddComponent<BoxCollider2D>();
+            targetCol.isTrigger = true;
+            TargetController target = targetGo.AddComponent<TargetController>();
+
+            // Create HomingMissile
+            GameObject missileGo = new GameObject("MissileInstance");
+            missileGo.transform.position = new Vector3(3f, 0f, 0f);
+            BoxCollider2D missileCol = missileGo.AddComponent<BoxCollider2D>();
+            missileCol.isTrigger = true;
+            HomingMissile missile = missileGo.AddComponent<HomingMissile>();
+
+            Texture2D tex = new Texture2D(32, 32);
+            disposables.Add(tex);
+            Sprite expSprite = Sprite.Create(tex, new Rect(0, 0, 32, 32), Vector2.zero);
+            disposables.Add(expSprite);
+            missile.ExplosionFrames = new[] { expSprite };
+
+            // When Target (Object B) receives projectile hit from missile
+            target.HandleHitByProjectile(missileGo);
+
+            // Explosion effect should be spawned
+            GameObject spawnedExplosion = GameObject.Find("Missile_Explosion");
+            if (spawnedExplosion != null)
+            {
+                disposables.Add(spawnedExplosion);
+            }
+            Assert.IsNotNull(spawnedExplosion, "Missile_Explosion GameObject should be spawned upon collision with Object B");
+
+            AnimatedSpriteEffect effect = spawnedExplosion.GetComponent<AnimatedSpriteEffect>();
+            Assert.IsNotNull(effect, "Spawned explosion should have AnimatedSpriteEffect component");
+            Assert.AreEqual(1, effect.Frames.Length);
+            Assert.AreEqual(expSprite, effect.Frames[0]);
+        }
     }
 }

@@ -59,6 +59,19 @@ namespace KinematicsGame.Combat
             set => interactionSfx = value;
         }
 
+        [Header("Visual Sizing")]
+        [SerializeField] private float targetSize = 0f;
+
+        public float TargetSize
+        {
+            get => targetSize;
+            set
+            {
+                targetSize = value;
+                ApplyTargetSize();
+            }
+        }
+
         public GameObject MiniBonusPrefab
         {
             get => miniBonusPrefab;
@@ -130,6 +143,46 @@ namespace KinematicsGame.Combat
             if (spriteRenderer == null)
             {
                 spriteRenderer = GetComponent<SpriteRenderer>();
+            }
+
+            ApplyTargetSize();
+        }
+
+        public void ApplyTargetSize()
+        {
+            if (spriteRenderer == null)
+            {
+                spriteRenderer = GetComponent<SpriteRenderer>();
+            }
+
+            if (targetSize <= 0f)
+            {
+                switch (entityType)
+                {
+                    case EntityType.HazardMine:
+                        targetSize = 1.0f;
+                        break;
+                    case EntityType.SupplyCrate:
+                        targetSize = 1.0f;
+                        break;
+                    case EntityType.GemCore:
+                        targetSize = 1.5f; // Matches Character A uniform size (1.5)
+                        break;
+                    case EntityType.MiniBonus:
+                        targetSize = 0.5f;
+                        break;
+                }
+            }
+
+            if (spriteRenderer != null && spriteRenderer.sprite != null && targetSize > 0f)
+            {
+                Vector2 unscaledSize = spriteRenderer.sprite.rect.size / spriteRenderer.sprite.pixelsPerUnit;
+                float maxDim = Mathf.Max(unscaledSize.x, unscaledSize.y);
+                if (maxDim > 0.0001f)
+                {
+                    float s = targetSize / maxDim;
+                    transform.localScale = new Vector3(s, s, 1f);
+                }
             }
         }
 

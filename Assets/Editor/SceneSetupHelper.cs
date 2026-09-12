@@ -141,6 +141,8 @@ namespace KinematicsGame.Editor
                 col.isTrigger = true;
                 InteractiveEntity ie = mineGo.AddComponent<InteractiveEntity>();
                 ie.Type = EntityType.HazardMine;
+                ie.TargetSize = 1.0f;
+                ie.ApplyTargetSize();
                 ie.InteractionSfx = explosionClip;
 
                 PrefabUtility.SaveAsPrefabAsset(mineGo, minePath);
@@ -163,6 +165,8 @@ namespace KinematicsGame.Editor
                 col.isTrigger = true;
                 InteractiveEntity ie = crateGo.AddComponent<InteractiveEntity>();
                 ie.Type = EntityType.SupplyCrate;
+                ie.TargetSize = 1.0f;
+                ie.ApplyTargetSize();
                 ie.InteractionSfx = eatClip;
 
                 PrefabUtility.SaveAsPrefabAsset(crateGo, cratePath);
@@ -186,6 +190,8 @@ namespace KinematicsGame.Editor
                 if (col.radius < 0.6f) col.radius = 0.6f;
                 InteractiveEntity ie = gemGo.AddComponent<InteractiveEntity>();
                 ie.Type = EntityType.GemCore;
+                ie.TargetSize = 1.5f;
+                ie.ApplyTargetSize();
                 ie.InteractionSfx = eatClip;
 
                 PrefabUtility.SaveAsPrefabAsset(gemGo, gemPath);

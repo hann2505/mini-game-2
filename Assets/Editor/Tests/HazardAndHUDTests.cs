@@ -329,5 +329,30 @@ namespace KinematicsGame.Tests
             Assert.IsTrue(CollisionEffectDispatcher.TriggeredEffectIds.Contains(5));
             Assert.IsTrue(CollisionEffectDispatcher.TriggeredEffectIds.Contains(6));
         }
+
+        [Test]
+        public void InteractiveEntity_TargetSizes_MatchDesignSpecifications()
+        {
+            GameObject mineGo = new GameObject("Mine");
+            disposables.Add(mineGo);
+            var ieMine = mineGo.AddComponent<InteractiveEntity>();
+            ieMine.Type = EntityType.HazardMine;
+            ieMine.EnsureComponents();
+            Assert.AreEqual(1.0f, ieMine.TargetSize, "Object X (Hazard Mine) should have reduced target size 1.0.");
+
+            GameObject crateGo = new GameObject("Crate");
+            disposables.Add(crateGo);
+            var ieCrate = crateGo.AddComponent<InteractiveEntity>();
+            ieCrate.Type = EntityType.SupplyCrate;
+            ieCrate.EnsureComponents();
+            Assert.AreEqual(1.0f, ieCrate.TargetSize, "Object Y (Supply Crate) should have reduced target size 1.0.");
+
+            GameObject gemGo = new GameObject("Gem");
+            disposables.Add(gemGo);
+            var ieGem = gemGo.AddComponent<InteractiveEntity>();
+            ieGem.Type = EntityType.GemCore;
+            ieGem.EnsureComponents();
+            Assert.AreEqual(1.5f, ieGem.TargetSize, "Object Z (Gem Core) should match character A size (1.5).");
+        }
     }
 }

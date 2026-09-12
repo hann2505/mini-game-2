@@ -159,10 +159,19 @@ namespace KinematicsGame.Combat
                 {
                     miniGo = new GameObject($"MiniBonus_{i}");
                     miniGo.transform.position = origin + offsets[i];
+                    SpriteRenderer sr = miniGo.AddComponent<SpriteRenderer>();
+                    SpriteRenderer parentSr = entity.GetComponent<SpriteRenderer>();
+                    if (parentSr != null)
+                    {
+                        sr.sprite = parentSr.sprite;
+                        sr.sortingOrder = parentSr.sortingOrder;
+                    }
                     CircleCollider2D cc = miniGo.AddComponent<CircleCollider2D>();
                     cc.isTrigger = true;
                     InteractiveEntity ie = miniGo.AddComponent<InteractiveEntity>();
                     ie.Type = EntityType.MiniBonus;
+                    ie.TargetSize = 0.5f;
+                    ie.ApplyTargetSize();
                 }
             }
             TriggeredEffectIds.Add(9);

@@ -765,8 +765,8 @@ MonoBehaviour:
   - {fileID: 1300399371}
   warningSource: {fileID: 1946484882}
   sfxPoolSize: 4
-  defaultMusicVolume: 0.5
-  defaultSfxVolume: 1
+  defaultMusicVolume: 0.25
+  defaultSfxVolume: 0.25
 --- !u!4 &381981932
 Transform:
   m_ObjectHideFlags: 0

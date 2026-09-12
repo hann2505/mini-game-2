@@ -278,10 +278,15 @@ namespace KinematicsGame.Editor
                 am = amGo.AddComponent<AudioManager>();
                 am.InitializeChannels();
             }
-            if (am.MusicSource != null)
+            if (am != null)
             {
-                AudioClip bgm = AssetDatabase.LoadAssetAtPath<AudioClip>("Assets/Audio/Music/music.mp3");
-                if (bgm != null) am.PlayMusic(bgm, 0.25f, true);
+                am.SfxVolume = 0.25f;
+                am.MusicVolume = 0.25f;
+                if (am.MusicSource != null)
+                {
+                    AudioClip bgm = AssetDatabase.LoadAssetAtPath<AudioClip>("Assets/Audio/Music/music.mp3");
+                    if (bgm != null) am.PlayMusic(bgm, 0.25f, true);
+                }
             }
 
             // ── EventSystem ──────────────────────────────────────────────────────

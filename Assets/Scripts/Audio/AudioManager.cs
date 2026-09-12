@@ -26,8 +26,8 @@ namespace KinematicsGame.Audio
 
         [Header("Settings")]
         [SerializeField] private int sfxPoolSize = 4;
-        [SerializeField] private float defaultMusicVolume = 0.5f;
-        [SerializeField] private float defaultSfxVolume = 1f;
+        [SerializeField, Range(0f, 1f)] private float defaultMusicVolume = 0.25f;
+        [SerializeField, Range(0f, 1f)] private float defaultSfxVolume = 0.25f;
 
         private int currentSfxIndex = 0;
         private Coroutine warningRoutine;
@@ -35,6 +35,25 @@ namespace KinematicsGame.Audio
         public bool IsSfxMuted { get; private set; }
         public bool IsMusicMuted { get; private set; }
         public int WarningPulseCount { get; private set; }
+
+        public float SfxVolume
+        {
+            get => defaultSfxVolume;
+            set => defaultSfxVolume = Mathf.Clamp01(value);
+        }
+
+        public float MusicVolume
+        {
+            get => defaultMusicVolume;
+            set
+            {
+                defaultMusicVolume = Mathf.Clamp01(value);
+                if (musicSource != null)
+                {
+                    musicSource.volume = defaultMusicVolume;
+                }
+            }
+        }
 
         public AudioSource MusicSource => musicSource;
         public AudioSource[] SfxSourcePool => sfxSourcePool;
@@ -206,7 +225,8 @@ namespace KinematicsGame.Audio
 
             if (targetSource != null)
             {
-                float vol = volume >= 0f ? volume : defaultSfxVolume;
+                float clipVol = volume >= 0f ? volume : 1f;
+                float vol = Mathf.Clamp01(clipVol * defaultSfxVolume);
                 targetSource.PlayOneShot(clip, vol);
             }
         }
@@ -230,7 +250,7 @@ namespace KinematicsGame.Audio
             {
                 if (!IsSfxMuted && warningSource != null)
                 {
-                    warningSource.PlayOneShot(clip);
+                    warningSource.PlayOneShot(clip, defaultSfxVolume);
                 }
                 WarningPulseCount++;
                 yield return new WaitForSeconds(interval);

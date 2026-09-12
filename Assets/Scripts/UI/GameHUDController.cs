@@ -1,6 +1,7 @@
 using UnityEngine;
 using TMPro;
 using KinematicsGame.Combat;
+using KinematicsGame.Player;
 
 namespace KinematicsGame.UI
 {
@@ -38,6 +39,24 @@ namespace KinematicsGame.UI
         [SerializeField] private Color comboBadgeColor3 = new Color(1f, 0.55f, 0.1f);
         [SerializeField] private Color comboBadgeColor4Plus = new Color(1f, 0.2f, 0.2f);
 
+        [Header("Player Vitals Display")]
+        [SerializeField] private TextMeshProUGUI hpLabel;
+        [SerializeField] private UnityEngine.UI.Slider hpSlider;
+        [SerializeField] private TextMeshProUGUI armorLabel;
+        [SerializeField] private TextMeshProUGUI shieldLabel;
+
+        [Header("Currency Display")]
+        [SerializeField] private TextMeshProUGUI goldLabel;
+        [SerializeField] private TextMeshProUGUI diamondLabel;
+
+        [Header("Combat & Cooldowns Display")]
+        [SerializeField] private TextMeshProUGUI weaponLabel;
+        [SerializeField] private TextMeshProUGUI cooldownLabel;
+
+        private PlayerStats boundStats;
+        private PlayerCombatSystem boundCombat;
+        private PlayerDefenseSystem boundDefense;
+
         // Spring-pop animation state
         private float scorePopElapsed = 0f;
         private bool isScorePopping = false;
@@ -51,6 +70,15 @@ namespace KinematicsGame.UI
         public TextMeshProUGUI ScoreLabel => scoreLabel;
         public TextMeshProUGUI HighScoreLabel => highScoreLabel;
         public TextMeshProUGUI ComboLabel => comboLabel;
+
+        public TextMeshProUGUI HpLabel => hpLabel;
+        public UnityEngine.UI.Slider HpSlider => hpSlider;
+        public TextMeshProUGUI ArmorLabel => armorLabel;
+        public TextMeshProUGUI ShieldLabel => shieldLabel;
+        public TextMeshProUGUI GoldLabel => goldLabel;
+        public TextMeshProUGUI DiamondLabel => diamondLabel;
+        public TextMeshProUGUI WeaponLabel => weaponLabel;
+        public TextMeshProUGUI CooldownLabel => cooldownLabel;
 
         public float ScoreFontSize
         {
@@ -138,6 +166,15 @@ namespace KinematicsGame.UI
                 UpdateScoreDisplay(0, animate: false);
                 UpdateHighScoreDisplay(0);
                 UpdateComboDisplay(1, 0f);
+            }
+
+            if (boundStats == null)
+            {
+                PlayerController player = Object.FindFirstObjectByType<PlayerController>();
+                if (player != null)
+                {
+                    BindPlayer(player);
+                }
             }
         }
 
@@ -254,6 +291,149 @@ namespace KinematicsGame.UI
             comboLabel = comboLbl;
             if (scoreLabel != null) scoreLabelBaseScale = scoreLabel.transform.localScale;
             ApplyFontSizes();
+        }
+
+        public void SetStatsLabels(
+            TextMeshProUGUI hpLbl,
+            TextMeshProUGUI armorLbl,
+            TextMeshProUGUI shieldLbl,
+            TextMeshProUGUI goldLbl,
+            TextMeshProUGUI diamondLbl,
+            TextMeshProUGUI weaponLbl,
+            UnityEngine.UI.Slider slider = null,
+            TextMeshProUGUI cooldownLbl = null)
+        {
+            hpLabel = hpLbl;
+            armorLabel = armorLbl;
+            shieldLabel = shieldLbl;
+            goldLabel = goldLbl;
+            diamondLabel = diamondLbl;
+            weaponLabel = weaponLbl;
+            hpSlider = slider;
+            cooldownLabel = cooldownLbl;
+        }
+
+        public void BindPlayer(PlayerController player)
+        {
+            if (player == null) return;
+            BindStats(player.Stats, player.CombatSystem, player.DefenseSystem);
+        }
+
+        public void BindStats(PlayerStats stats, PlayerCombatSystem combat = null, PlayerDefenseSystem defense = null)
+        {
+            UnbindStats();
+
+            boundStats = stats;
+            boundCombat = combat;
+            boundDefense = defense;
+
+            if (boundStats != null)
+            {
+                boundStats.OnHealthChanged += HandleHealthChanged;
+                boundStats.OnArmorChanged += HandleArmorChanged;
+                boundStats.OnCurrencyChanged += HandleCurrencyChanged;
+
+                HandleHealthChanged(boundStats.CurrentHealth, boundStats.MaxHealth);
+                HandleArmorChanged(boundStats.CurrentArmor, boundStats.MaxArmor);
+                HandleCurrencyChanged(boundStats.Gold, boundStats.Diamonds);
+            }
+
+            if (boundCombat != null)
+            {
+                boundCombat.OnWeaponChanged += HandleWeaponChanged;
+                HandleWeaponChanged(boundCombat.CurrentWeapon);
+            }
+
+            if (boundDefense != null)
+            {
+                boundDefense.OnShieldStateChanged += HandleShieldStateChanged;
+                boundDefense.OnDefenseCooldownsChanged += HandleDefenseCooldownsChanged;
+                HandleShieldStateChanged(boundDefense.IsShieldActive, boundDefense.RemainingShieldHits);
+                HandleDefenseCooldownsChanged(boundDefense.ShieldCooldownRemaining, boundDefense.EmpCooldownRemaining);
+            }
+        }
+
+        public void UnbindStats()
+        {
+            if (boundStats != null)
+            {
+                boundStats.OnHealthChanged -= HandleHealthChanged;
+                boundStats.OnArmorChanged -= HandleArmorChanged;
+                boundStats.OnCurrencyChanged -= HandleCurrencyChanged;
+                boundStats = null;
+            }
+
+            if (boundCombat != null)
+            {
+                boundCombat.OnWeaponChanged -= HandleWeaponChanged;
+                boundCombat = null;
+            }
+
+            if (boundDefense != null)
+            {
+                boundDefense.OnShieldStateChanged -= HandleShieldStateChanged;
+                boundDefense.OnDefenseCooldownsChanged -= HandleDefenseCooldownsChanged;
+                boundDefense = null;
+            }
+        }
+
+        public void HandleHealthChanged(int current, int max)
+        {
+            if (hpLabel != null)
+            {
+                hpLabel.text = $"HP: {current}/{max}";
+            }
+            if (hpSlider != null)
+            {
+                hpSlider.maxValue = max;
+                hpSlider.value = current;
+            }
+        }
+
+        public void HandleArmorChanged(int current, int max)
+        {
+            if (armorLabel != null)
+            {
+                armorLabel.text = $"ARMOR: {current}/{max}";
+            }
+        }
+
+        public void HandleShieldStateChanged(bool active, int hits)
+        {
+            if (shieldLabel != null)
+            {
+                shieldLabel.text = active ? $"SHIELD: ACTIVE ({hits})" : "SHIELD: READY";
+            }
+        }
+
+        public void HandleCurrencyChanged(int gold, int diamonds)
+        {
+            if (goldLabel != null)
+            {
+                goldLabel.text = $"🪙 {gold}";
+            }
+            if (diamondLabel != null)
+            {
+                diamondLabel.text = $"💎 {diamonds}";
+            }
+        }
+
+        public void HandleWeaponChanged(WeaponType weapon)
+        {
+            if (weaponLabel != null)
+            {
+                weaponLabel.text = $"WEAPON: {weapon}";
+            }
+        }
+
+        public void HandleDefenseCooldownsChanged(float shieldCd, float empCd)
+        {
+            if (cooldownLabel != null)
+            {
+                string sText = shieldCd > 0f ? $"S: {shieldCd:F1}s" : "S: READY";
+                string eText = empCd > 0f ? $"EMP: {empCd:F1}s" : "EMP: READY";
+                cooldownLabel.text = $"{sText} | {eText}";
+            }
         }
 
         public int DisplayedScore => displayedScore;

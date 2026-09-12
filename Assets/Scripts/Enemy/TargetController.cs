@@ -2,6 +2,7 @@ using System;
 using UnityEngine;
 using KinematicsGame.Core;
 using KinematicsGame.Combat;
+using KinematicsGame.Audio;
 
 namespace KinematicsGame.Enemy
 {
@@ -36,6 +37,34 @@ namespace KinematicsGame.Enemy
         [SerializeField] private SpriteRenderer spriteRenderer;
         [SerializeField] private Rigidbody2D rb;
         [SerializeField] private Collider2D col;
+
+        [Header("Status Effects")]
+        [SerializeField] private bool isStunned = false;
+        [SerializeField] private float stunTimer = 0f;
+
+        public bool IsStunned => isStunned;
+        public float StunTimer => stunTimer;
+
+        public void ApplyStun(float duration)
+        {
+            if (duration <= 0f) return;
+            isStunned = true;
+            stunTimer = Mathf.Max(stunTimer, duration);
+            if (spriteRenderer != null)
+            {
+                spriteRenderer.color = new Color(0.4f, 0.8f, 1f, 1f); // Cyan tint
+            }
+        }
+
+        public void ClearStun()
+        {
+            isStunned = false;
+            stunTimer = 0f;
+            if (spriteRenderer != null)
+            {
+                spriteRenderer.color = Color.white;
+            }
+        }
 
         public static event Action<TargetController, TargetProfile, Vector3> OnTargetHit;
 
@@ -235,6 +264,17 @@ namespace KinematicsGame.Enemy
             EnsureComponents();
 
             float dt = deltaTime >= 0f ? deltaTime : (Time.deltaTime > 0f ? Time.deltaTime : 0.0166667f);
+
+            if (isStunned)
+            {
+                stunTimer -= dt;
+                if (stunTimer <= 0f)
+                {
+                    ClearStun();
+                }
+                return;
+            }
+
             elapsedTime += dt;
 
             // Calculate anchored wave oscillation using effective multipliers
@@ -436,7 +476,7 @@ namespace KinematicsGame.Enemy
             }
 
             // Type-safe lookup independent of external TagManager settings
-            if (other.TryGetComponent<Projectile>(out _) || other.gameObject.name.Contains("Projectile"))
+            if (other.TryGetComponent<BaseProjectile>(out _) || other.TryGetComponent<Projectile>(out _) || other.gameObject.name.Contains("Projectile"))
             {
                 HandleHitByProjectile(other.gameObject);
             }
@@ -481,7 +521,11 @@ namespace KinematicsGame.Enemy
 
         private void PlayExplosionSound()
         {
-            if (audioSource != null && hitClip != null)
+            if (AudioManager.Instance != null && hitClip != null)
+            {
+                AudioManager.Instance.PlaySfx(hitClip, 0.25f);
+            }
+            else if (audioSource != null && hitClip != null)
             {
                 audioSource.volume = 0.25f;
                 audioSource.PlayOneShot(hitClip, 0.25f);

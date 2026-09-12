@@ -12,6 +12,9 @@ GameObject:
   - component: {fileID: 2295329157299394875}
   - component: {fileID: 8596158096833049667}
   - component: {fileID: 7523573933802529302}
+  - component: {fileID: 8854508408800127291}
+  - component: {fileID: 9025024446769657137}
+  - component: {fileID: 1783182430206239909}
   - component: {fileID: 4562351888294688667}
   m_Layer: 0
   m_Name: Player
@@ -79,7 +82,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 5
-  m_Sprite: {fileID: 2000897910201995071, guid: 49ffa4a7966704014a764867fe218d51, type: 3}
+  m_Sprite: {fileID: 413986153270297580, guid: e5ec8f70ce74a4891b8eb71975de32c9, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -139,7 +142,7 @@ AudioSource:
   m_audioClip: {fileID: 0}
   m_Resource: {fileID: 0}
   m_PlayOnAwake: 0
-  m_Volume: 0.25
+  m_Volume: 1
   m_Pitch: 1
   Loop: 0
   Mute: 0
@@ -223,6 +226,72 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!114 &8854508408800127291
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5115854509880047781}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 91026af2d3de74a8db5d0388c90b19fa, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  maxHealth: 100
+  currentHealth: 100
+  maxArmor: 50
+  currentArmor: 50
+  gold: 0
+  diamonds: 0
+  speedMultiplier: 1
+  speedModifierDuration: 0
+--- !u!114 &9025024446769657137
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5115854509880047781}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2d33f8280404b4a7f9558b23b08fba74, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  currentWeapon: 0
+  blasterPrefab: {fileID: 354530769829550129, guid: 6f6cb5a7f9333475a9d67f76c2ea7234, type: 3}
+  missilePrefab: {fileID: 6441782720009449579, guid: 3e683bda611ba44bcbe759e61c5d0d87, type: 3}
+  bombPrefab: {fileID: 1163172824563695060, guid: ce06082a286a84e1390fe14fdc60c259, type: 3}
+  blasterCooldown: 0.12
+  missileCooldown: 1
+  bombCooldown: 2.5
+  blasterSpeed: 14
+  missileSpeed: 6
+  bombSpeed: 1
+  blasterFireClip: {fileID: 8300000, guid: 764f95ab148974084960a7aff12b1417, type: 3}
+  missileFireClip: {fileID: 8300000, guid: 2e77415d6f266402e9a1d515b9a45a35, type: 3}
+  bombDeployClip: {fileID: 8300000, guid: 764f95ab148974084960a7aff12b1417, type: 3}
+--- !u!114 &1783182430206239909
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5115854509880047781}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8a731d35091324275a6719b9277a4a6a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  shieldDuration: 8
+  maxShieldHits: 3
+  shieldCooldown: 12
+  shieldVisual: {fileID: 0}
+  shieldActivateClip: {fileID: 8300000, guid: 0a9911fb452d7432b9f8b55355afb502, type: 3}
+  shieldHitClip: {fileID: 8300000, guid: 764f95ab148974084960a7aff12b1417, type: 3}
+  empDuration: 3
+  empCooldown: 15
+  empClip: {fileID: 8300000, guid: 9830c6d857b6c497199d04d2f4e6052e, type: 3}
 --- !u!114 &4562351888294688667
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -243,5 +312,9 @@ MonoBehaviour:
   projectileSpeed: 12
   fireClip: {fileID: 0}
   audioSource: {fileID: 0}
+  fireVolume: 0.25
   spriteRenderer: {fileID: 0}
   playerInput: {fileID: 0}
+  playerStats: {fileID: 8854508408800127291}
+  combatSystem: {fileID: 9025024446769657137}
+  defenseSystem: {fileID: 1783182430206239909}

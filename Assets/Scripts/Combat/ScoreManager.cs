@@ -1,6 +1,7 @@
 using System;
 using UnityEngine;
 using KinematicsGame.Enemy;
+using KinematicsGame.Audio;
 
 namespace KinematicsGame.Combat
 {
@@ -239,10 +240,17 @@ namespace KinematicsGame.Combat
                 PlayerPrefs.SetInt(HighScoreKey, highScore);
                 OnHighScoreChanged?.Invoke(highScore);
 
-                if (!hasPlayedHighScoreSoundInSession && highScoreClip != null && audioSource != null)
+                if (!hasPlayedHighScoreSoundInSession && highScoreClip != null)
                 {
                     hasPlayedHighScoreSoundInSession = true;
-                    audioSource.PlayOneShot(highScoreClip, sfxVolume);
+                    if (AudioManager.Instance != null)
+                    {
+                        AudioManager.Instance.PlaySfx(highScoreClip, sfxVolume);
+                    }
+                    else if (audioSource != null)
+                    {
+                        audioSource.PlayOneShot(highScoreClip, sfxVolume);
+                    }
                 }
             }
 
@@ -250,9 +258,16 @@ namespace KinematicsGame.Combat
             PlayExplosionSfx(currentTime);
 
             // Combo sound
-            if (comboMultiplier > 1 && comboClip != null && audioSource != null)
+            if (comboMultiplier > 1 && comboClip != null)
             {
-                audioSource.PlayOneShot(comboClip, sfxVolume);
+                if (AudioManager.Instance != null)
+                {
+                    AudioManager.Instance.PlaySfx(comboClip, sfxVolume);
+                }
+                else if (audioSource != null)
+                {
+                    audioSource.PlayOneShot(comboClip, sfxVolume);
+                }
             }
 
             // Advance combo streak
@@ -282,7 +297,11 @@ namespace KinematicsGame.Combat
         {
             if (CanPlayExplosion(currentTime))
             {
-                if (audioSource != null && hitClip != null)
+                if (AudioManager.Instance != null && hitClip != null)
+                {
+                    AudioManager.Instance.PlaySfx(hitClip, explosionVolume);
+                }
+                else if (audioSource != null && hitClip != null)
                 {
                     audioSource.PlayOneShot(hitClip, explosionVolume);
                 }

@@ -2,17 +2,20 @@ using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.EventSystems;
 using TMPro;
 using KinematicsGame.Core;
 using KinematicsGame.Player;
 using KinematicsGame.Enemy;
 using KinematicsGame.Combat;
+using KinematicsGame.Audio;
 using KinematicsGame.UI;
 
 namespace KinematicsGame.Editor
 {
     /// <summary>
-    /// Editor utility to construct prefabs and configure SampleScene.unity on demand.
+    /// Editor utility to construct combat prefabs, configure audio, HUD toggles,
+    /// restricted zone, and assemble SampleScene.unity on demand.
     /// Access via menu item: Kinematics Game -> Setup Scene & Prefabs
     /// </summary>
     public static class SceneSetupHelper
@@ -20,8 +23,20 @@ namespace KinematicsGame.Editor
         [MenuItem("Kinematics Game/Setup Scene & Prefabs", false, 1)]
         public static void SetupAll()
         {
+            string scenePath = "Assets/Scenes/SampleScene.unity";
+            if (EditorSceneManager.GetActiveScene().path != scenePath)
+            {
+                if (System.IO.File.Exists(scenePath))
+                {
+                    EditorSceneManager.OpenScene(scenePath, OpenSceneMode.Single);
+                }
+            }
+
             EnsurePrefabsExist();
             SetupSceneHierarchy();
+
+            EditorSceneManager.SaveScene(EditorSceneManager.GetActiveScene());
+            AssetDatabase.SaveAssets();
         }
 
         public static Sprite LoadSprite(string path)
@@ -48,10 +63,21 @@ namespace KinematicsGame.Editor
             }
 
             Sprite bulletSprite = LoadSprite("Assets/Sprites/Weapons/Bullets/bullet1.png");
+            Sprite missileSprite = LoadSprite("Assets/Sprites/Weapons/Missiles/Missile_1/Flying/Missile_1_Flying_000.png");
+            Sprite bombSprite = LoadSprite("Assets/Sprites/Weapons/Bombs/Bomb_1/Idle/Bomb_1_Idle_000.png");
+            Sprite mineSprite = LoadSprite("Assets/Sprites/Items/Bonuses/Enemy_Destroy_Bonus.png");
+            Sprite crateSprite = LoadSprite("Assets/Sprites/Items/Bonuses/Armor_Bonus.png");
+            Sprite gemSprite = LoadSprite("Assets/Sprites/Items/Collectibles/diamond.png");
+            Sprite shieldSprite = LoadSprite("Assets/Sprites/Items/Bonuses/Barrier_Bonus.png");
             Sprite shipSprite = LoadSprite("Assets/Sprites/Characters/Players/Ships/spaceship1.png");
             Sprite birdSprite = LoadSprite("Assets/Sprites/Characters/Enemies/Birds/bird1.png");
 
-            // 1. Projectile Prefab
+            AudioClip explosionClip = AssetDatabase.LoadAssetAtPath<AudioClip>("Assets/Audio/SFX/explosion.wav");
+            AudioClip clickClip = AssetDatabase.LoadAssetAtPath<AudioClip>("Assets/Audio/SFX/click.ogg");
+            AudioClip bombClip = AssetDatabase.LoadAssetAtPath<AudioClip>("Assets/Audio/SFX/bomb.mp3");
+            AudioClip eatClip = AssetDatabase.LoadAssetAtPath<AudioClip>("Assets/Audio/SFX/eat.ogg");
+
+            // 1. Blaster Projectile Prefab
             string projPath = "Assets/Prefabs/Projectile.prefab";
             if (AssetDatabase.LoadAssetAtPath<GameObject>(projPath) == null)
             {
@@ -67,9 +93,110 @@ namespace KinematicsGame.Editor
                 Object.DestroyImmediate(pGo);
             }
 
-            // 2. Player Prefab
+            // 2. Missile Prefab
+            string missilePath = "Assets/Prefabs/Missile.prefab";
+            if (AssetDatabase.LoadAssetAtPath<GameObject>(missilePath) == null)
+            {
+                GameObject mGo = new GameObject("Missile");
+                SpriteRenderer sr = mGo.AddComponent<SpriteRenderer>();
+                sr.sprite = missileSprite != null ? missileSprite : bulletSprite;
+                sr.sortingOrder = 10;
+                CircleCollider2D col = mGo.AddComponent<CircleCollider2D>();
+                col.isTrigger = true;
+                HomingMissile hm = mGo.AddComponent<HomingMissile>();
+
+                PrefabUtility.SaveAsPrefabAsset(mGo, missilePath);
+                Object.DestroyImmediate(mGo);
+            }
+
+            // 3. Bomb Prefab
+            string bombPath = "Assets/Prefabs/Bomb.prefab";
+            if (AssetDatabase.LoadAssetAtPath<GameObject>(bombPath) == null)
+            {
+                GameObject bGo = new GameObject("Bomb");
+                SpriteRenderer sr = bGo.AddComponent<SpriteRenderer>();
+                sr.sprite = bombSprite != null ? bombSprite : bulletSprite;
+                sr.sortingOrder = 10;
+                CircleCollider2D col = bGo.AddComponent<CircleCollider2D>();
+                col.isTrigger = true;
+                ClusterBomb cb = bGo.AddComponent<ClusterBomb>();
+
+                PrefabUtility.SaveAsPrefabAsset(bGo, bombPath);
+                Object.DestroyImmediate(bGo);
+            }
+
+            // 4. Hazard Mine Prefab (Object X)
+            string minePath = "Assets/Prefabs/Hazard_Mine.prefab";
+            if (AssetDatabase.LoadAssetAtPath<GameObject>(minePath) == null)
+            {
+                GameObject mineGo = new GameObject("Hazard_Mine");
+                SpriteRenderer sr = mineGo.AddComponent<SpriteRenderer>();
+                sr.sprite = mineSprite != null ? mineSprite : bulletSprite;
+                sr.sortingOrder = 8;
+                CircleCollider2D col = mineGo.AddComponent<CircleCollider2D>();
+                col.isTrigger = true;
+                InteractiveEntity ie = mineGo.AddComponent<InteractiveEntity>();
+                ie.Type = EntityType.HazardMine;
+                ie.InteractionSfx = explosionClip;
+
+                PrefabUtility.SaveAsPrefabAsset(mineGo, minePath);
+                Object.DestroyImmediate(mineGo);
+            }
+
+            // 5. Tech Supply Crate Prefab (Object Y)
+            string cratePath = "Assets/Prefabs/Supply_Crate.prefab";
+            if (AssetDatabase.LoadAssetAtPath<GameObject>(cratePath) == null)
+            {
+                GameObject crateGo = new GameObject("Supply_Crate");
+                SpriteRenderer sr = crateGo.AddComponent<SpriteRenderer>();
+                sr.sprite = crateSprite != null ? crateSprite : bulletSprite;
+                sr.sortingOrder = 8;
+                CircleCollider2D col = crateGo.AddComponent<CircleCollider2D>();
+                col.isTrigger = true;
+                InteractiveEntity ie = crateGo.AddComponent<InteractiveEntity>();
+                ie.Type = EntityType.SupplyCrate;
+                ie.InteractionSfx = eatClip;
+
+                PrefabUtility.SaveAsPrefabAsset(crateGo, cratePath);
+                Object.DestroyImmediate(crateGo);
+            }
+
+            // 6. Gem Core Prefab (Object Z)
+            string gemPath = "Assets/Prefabs/Gem_Core.prefab";
+            if (AssetDatabase.LoadAssetAtPath<GameObject>(gemPath) == null)
+            {
+                GameObject gemGo = new GameObject("Gem_Core");
+                SpriteRenderer sr = gemGo.AddComponent<SpriteRenderer>();
+                sr.sprite = gemSprite != null ? gemSprite : bulletSprite;
+                sr.sortingOrder = 8;
+                CircleCollider2D col = gemGo.AddComponent<CircleCollider2D>();
+                col.isTrigger = true;
+                InteractiveEntity ie = gemGo.AddComponent<InteractiveEntity>();
+                ie.Type = EntityType.GemCore;
+                ie.InteractionSfx = eatClip;
+
+                PrefabUtility.SaveAsPrefabAsset(gemGo, gemPath);
+                Object.DestroyImmediate(gemGo);
+            }
+
+            // 7. Shield Overlay Prefab
+            string shieldPath = "Assets/Prefabs/ShieldOverlay.prefab";
+            if (AssetDatabase.LoadAssetAtPath<GameObject>(shieldPath) == null)
+            {
+                GameObject shieldGo = new GameObject("ShieldOverlay");
+                SpriteRenderer sr = shieldGo.AddComponent<SpriteRenderer>();
+                sr.sprite = shieldSprite;
+                sr.color = new Color(0.4f, 0.8f, 1f, 0.6f);
+                sr.sortingOrder = 12;
+
+                PrefabUtility.SaveAsPrefabAsset(shieldGo, shieldPath);
+                Object.DestroyImmediate(shieldGo);
+            }
+
+            // 8. Player Prefab
             string playerPath = "Assets/Prefabs/Player.prefab";
-            if (AssetDatabase.LoadAssetAtPath<GameObject>(playerPath) == null)
+            GameObject existingPlayerPrefab = AssetDatabase.LoadAssetAtPath<GameObject>(playerPath);
+            if (existingPlayerPrefab == null || existingPlayerPrefab.GetComponent<PlayerStats>() == null || existingPlayerPrefab.GetComponent<PlayerCombatSystem>() == null)
             {
                 GameObject playerGo = new GameObject("Player");
                 SpriteRenderer sr = playerGo.AddComponent<SpriteRenderer>();
@@ -79,14 +206,32 @@ namespace KinematicsGame.Editor
                 col.isTrigger = true;
                 AudioSource audio = playerGo.AddComponent<AudioSource>();
                 audio.playOnAwake = false;
+
+                PlayerStats ps = playerGo.AddComponent<PlayerStats>();
+                PlayerCombatSystem pcs = playerGo.AddComponent<PlayerCombatSystem>();
+                pcs.BlasterPrefab = AssetDatabase.LoadAssetAtPath<GameObject>(projPath);
+                pcs.MissilePrefab = AssetDatabase.LoadAssetAtPath<GameObject>(missilePath);
+                pcs.BombPrefab = AssetDatabase.LoadAssetAtPath<GameObject>(bombPath);
+                pcs.BlasterFireClip = clickClip;
+                pcs.MissileFireClip = bombClip;
+                pcs.BombDeployClip = clickClip;
+
+                PlayerDefenseSystem pds = playerGo.AddComponent<PlayerDefenseSystem>();
+                pds.ShieldActivateClip = eatClip;
+                pds.ShieldHitClip = clickClip;
+                pds.EmpClip = explosionClip;
+
                 PlayerController pc = playerGo.AddComponent<PlayerController>();
                 pc.ProjectilePrefab = AssetDatabase.LoadAssetAtPath<GameObject>(projPath);
+                pc.Stats = ps;
+                pc.CombatSystem = pcs;
+                pc.DefenseSystem = pds;
 
                 PrefabUtility.SaveAsPrefabAsset(playerGo, playerPath);
                 Object.DestroyImmediate(playerGo);
             }
 
-            // 3. Target Prefab
+            // 9. Target Prefab
             string targetPath = "Assets/Prefabs/Target.prefab";
             if (AssetDatabase.LoadAssetAtPath<GameObject>(targetPath) == null)
             {
@@ -109,7 +254,29 @@ namespace KinematicsGame.Editor
 
         public static void SetupSceneHierarchy()
         {
-            // Find or create GameController
+            // ── AudioManager ─────────────────────────────────────────────────────
+            AudioManager am = Object.FindFirstObjectByType<AudioManager>();
+            if (am == null)
+            {
+                GameObject amGo = new GameObject("AudioManager");
+                am = amGo.AddComponent<AudioManager>();
+                am.InitializeChannels();
+            }
+            if (am.MusicSource != null)
+            {
+                AudioClip bgm = AssetDatabase.LoadAssetAtPath<AudioClip>("Assets/Audio/Music/music.mp3");
+                if (bgm != null) am.PlayMusic(bgm, 0.25f, true);
+            }
+
+            // ── EventSystem ──────────────────────────────────────────────────────
+            if (Object.FindFirstObjectByType<EventSystem>() == null)
+            {
+                GameObject esGo = new GameObject("EventSystem");
+                esGo.AddComponent<EventSystem>();
+                esGo.AddComponent<StandaloneInputModule>();
+            }
+
+            // ── GameController ───────────────────────────────────────────────────
             GameController gc = Object.FindFirstObjectByType<GameController>();
             if (gc == null)
             {
@@ -119,7 +286,7 @@ namespace KinematicsGame.Editor
                 audio.playOnAwake = false;
             }
 
-            // Find or create ViewportManager
+            // ── ViewportManager ──────────────────────────────────────────────────
             ViewportManager vm = Object.FindFirstObjectByType<ViewportManager>();
             if (vm == null)
             {
@@ -127,7 +294,7 @@ namespace KinematicsGame.Editor
                 vm = vmGo.AddComponent<ViewportManager>();
             }
 
-            // Find or create Background
+            // ── Background ───────────────────────────────────────────────────────
             GameObject bgGo = GameObject.Find("Background");
             if (bgGo == null)
             {
@@ -143,7 +310,7 @@ namespace KinematicsGame.Editor
             if (scroller == null) scroller = bgGo.AddComponent<BackgroundScroller>();
             gc.BackgroundScroller = scroller;
 
-            // Load and assign Prefabs, Sprites and Audio
+            // ── Prefabs, Sprites and Audio configuration on GameController ────────
             var serializedGc = new SerializedObject(gc);
             serializedGc.FindProperty("playerPrefab").objectReferenceValue = AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Prefabs/Player.prefab");
             serializedGc.FindProperty("targetPrefab").objectReferenceValue = AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Prefabs/Target.prefab");
@@ -162,9 +329,6 @@ namespace KinematicsGame.Editor
             serializedGc.FindProperty("musicVolume").floatValue = 0.25f;
             serializedGc.ApplyModifiedProperties();
 
-            AudioSource gcAudio = gc.GetComponent<AudioSource>();
-            if (gcAudio != null) gcAudio.volume = 0.25f;
-
             // ── TargetSpawner ────────────────────────────────────────────────────
             TargetSpawner spawner = Object.FindFirstObjectByType<TargetSpawner>();
             if (spawner == null)
@@ -174,7 +338,6 @@ namespace KinematicsGame.Editor
             }
             gc.TargetSpawner = spawner;
 
-            // Assign bird sprites to TargetSpawner profiles (excluding bird3)
             Sprite[] birdSprites = new Sprite[]
             {
                 LoadSprite("Assets/Sprites/Characters/Enemies/Birds/bird1.png"),
@@ -189,34 +352,27 @@ namespace KinematicsGame.Editor
             spawner.InitialSpawnInterval = 2.5f;
             spawner.MinSpawnInterval = 1.0f;
 
-            var serializedSpawner = new SerializedObject(spawner);
-            var initQuotaProp = serializedSpawner.FindProperty("initialQuota");
-            if (initQuotaProp != null) initQuotaProp.intValue = 1;
-            var maxQuotaProp = serializedSpawner.FindProperty("maxQuota");
-            if (maxQuotaProp != null) maxQuotaProp.intValue = 6;
-            var scorePerProp = serializedSpawner.FindProperty("scorePerQuotaIncrease");
-            if (scorePerProp != null) scorePerProp.intValue = 200;
-            var initIntervalProp = serializedSpawner.FindProperty("initialSpawnInterval");
-            if (initIntervalProp != null) initIntervalProp.floatValue = 2.5f;
-            var minIntervalProp = serializedSpawner.FindProperty("minSpawnInterval");
-            if (minIntervalProp != null) minIntervalProp.floatValue = 1.0f;
-
-            var profilesProp = serializedSpawner.FindProperty("targetProfiles");
-            profilesProp.ClearArray();
-            profilesProp.arraySize = profiles.Length;
-            for (int i = 0; i < profiles.Length; i++)
+            // ── HazardSpawner ────────────────────────────────────────────────────
+            HazardSpawner hazardSpawner = Object.FindFirstObjectByType<HazardSpawner>();
+            if (hazardSpawner == null)
             {
-                var elem = profilesProp.GetArrayElementAtIndex(i);
-                elem.FindPropertyRelative("profileName").stringValue = profiles[i].ProfileName;
-                elem.FindPropertyRelative("sprite").objectReferenceValue = profiles[i].Sprite;
-                elem.FindPropertyRelative("speedMultiplier").floatValue = profiles[i].SpeedMultiplier;
-                elem.FindPropertyRelative("waveFrequencyMultiplier").floatValue = profiles[i].WaveFrequencyMultiplier;
-                elem.FindPropertyRelative("waveAmplitudeMultiplier").floatValue = profiles[i].WaveAmplitudeMultiplier;
-                elem.FindPropertyRelative("pointValue").intValue = profiles[i].PointValue;
-                elem.FindPropertyRelative("spawnWeight").floatValue = profiles[i].SpawnWeight;
+                GameObject hsGo = new GameObject("HazardSpawner");
+                hazardSpawner = hsGo.AddComponent<HazardSpawner>();
             }
-            serializedSpawner.ApplyModifiedProperties();
-            EditorUtility.SetDirty(spawner);
+            hazardSpawner.HazardMinePrefab = AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Prefabs/Hazard_Mine.prefab");
+            hazardSpawner.SupplyCratePrefab = AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Prefabs/Supply_Crate.prefab");
+            hazardSpawner.GemCorePrefab = AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Prefabs/Gem_Core.prefab");
+            hazardSpawner.SpawnInterval = 8.0f;
+
+            // ── RestrictedZoneTrigger ────────────────────────────────────────────
+            RestrictedZoneTrigger zoneTrigger = Object.FindFirstObjectByType<RestrictedZoneTrigger>();
+            if (zoneTrigger == null)
+            {
+                GameObject rzGo = new GameObject("RestrictedZone");
+                zoneTrigger = rzGo.AddComponent<RestrictedZoneTrigger>();
+                zoneTrigger.WarningClip = AssetDatabase.LoadAssetAtPath<AudioClip>("Assets/Audio/SFX/bomb.mp3");
+            }
+            zoneTrigger.AlignToViewport(gc.Orientation);
 
             // ── ScoreManager ─────────────────────────────────────────────────────
             ScoreManager scoreMgr = Object.FindFirstObjectByType<ScoreManager>();
@@ -230,18 +386,6 @@ namespace KinematicsGame.Editor
             gc.ScoreManager = scoreMgr;
             scoreMgr.ExplosionVolume = 0.25f;
             scoreMgr.SfxVolume = 0.25f;
-            AudioSource smAudio = scoreMgr.GetComponent<AudioSource>();
-            if (smAudio != null) smAudio.volume = 0.25f;
-
-            var serializedSm = new SerializedObject(scoreMgr);
-            serializedSm.FindProperty("hitClip").objectReferenceValue = AssetDatabase.LoadAssetAtPath<AudioClip>("Assets/Audio/SFX/explosion.wav");
-            serializedSm.FindProperty("comboClip").objectReferenceValue = AssetDatabase.LoadAssetAtPath<AudioClip>("Assets/Audio/SFX/eat.ogg");
-            serializedSm.FindProperty("highScoreClip").objectReferenceValue = AssetDatabase.LoadAssetAtPath<AudioClip>("Assets/Audio/SFX/congratulation.wav");
-            var expVolProp = serializedSm.FindProperty("explosionVolume");
-            if (expVolProp != null) expVolProp.floatValue = 0.25f;
-            var sfxVolProp = serializedSm.FindProperty("sfxVolume");
-            if (sfxVolProp != null) sfxVolProp.floatValue = 0.25f;
-            serializedSm.ApplyModifiedProperties();
 
             // ── FloatingTextPool ──────────────────────────────────────────────────
             FloatingTextPool fctPool = Object.FindFirstObjectByType<FloatingTextPool>();
@@ -252,100 +396,126 @@ namespace KinematicsGame.Editor
             }
 
             // ── HUD Canvas ────────────────────────────────────────────────────────
-            GameHUDController hudCtrl = Object.FindFirstObjectByType<GameHUDController>();
-            if (hudCtrl == null)
+            GameObject canvasGo = GameObject.Find("HUD_Canvas");
+            if (canvasGo == null)
             {
-                GameObject canvasGo = new GameObject("HUD_Canvas");
+                canvasGo = new GameObject("HUD_Canvas");
                 Canvas canvas = canvasGo.AddComponent<Canvas>();
                 canvas.renderMode = RenderMode.ScreenSpaceOverlay;
                 canvas.sortingOrder = 100;
                 canvasGo.AddComponent<CanvasScaler>();
                 canvasGo.AddComponent<GraphicRaycaster>();
-                hudCtrl = canvasGo.AddComponent<GameHUDController>();
-
-                // Score label (increased size)
-                GameObject scoreLblGo = new GameObject("ScoreLabel");
-                scoreLblGo.transform.SetParent(canvasGo.transform, false);
-                TextMeshProUGUI scoreLabel = scoreLblGo.AddComponent<TextMeshProUGUI>();
-                scoreLabel.text = "0";
-                scoreLabel.fontSize = 72;
-                scoreLabel.alignment = TextAlignmentOptions.TopRight;
-                RectTransform scoreRect = scoreLblGo.GetComponent<RectTransform>();
-                scoreRect.anchorMin = new Vector2(1f, 1f);
-                scoreRect.anchorMax = new Vector2(1f, 1f);
-                scoreRect.pivot = new Vector2(1f, 1f);
-                scoreRect.anchoredPosition = new Vector2(-20f, -20f);
-                scoreRect.sizeDelta = new Vector2(400f, 90f);
-
-                // High score label
-                GameObject hslGo = new GameObject("HighScoreLabel");
-                hslGo.transform.SetParent(canvasGo.transform, false);
-                TextMeshProUGUI highScoreLabel = hslGo.AddComponent<TextMeshProUGUI>();
-                highScoreLabel.text = "Best: 0";
-                highScoreLabel.fontSize = 28;
-                highScoreLabel.color = new Color(1f, 0.9f, 0.2f);
-                highScoreLabel.alignment = TextAlignmentOptions.TopRight;
-                RectTransform hsRect = hslGo.GetComponent<RectTransform>();
-                hsRect.anchorMin = new Vector2(1f, 1f);
-                hsRect.anchorMax = new Vector2(1f, 1f);
-                hsRect.pivot = new Vector2(1f, 1f);
-                hsRect.anchoredPosition = new Vector2(-20f, -110f);
-                hsRect.sizeDelta = new Vector2(400f, 40f);
-
-                // Combo label (increased size)
-                GameObject comboGo = new GameObject("ComboLabel");
-                comboGo.transform.SetParent(canvasGo.transform, false);
-                TextMeshProUGUI comboLabel = comboGo.AddComponent<TextMeshProUGUI>();
-                comboLabel.text = "x2 COMBO";
-                comboLabel.fontSize = 54;
-                comboLabel.color = new Color(1f, 0.9f, 0.2f);
-                comboLabel.alignment = TextAlignmentOptions.Bottom;
-                comboGo.SetActive(false);
-                RectTransform comboRect = comboGo.GetComponent<RectTransform>();
-                comboRect.anchorMin = new Vector2(0.5f, 0f);
-                comboRect.anchorMax = new Vector2(0.5f, 0f);
-                comboRect.pivot = new Vector2(0.5f, 0f);
-                comboRect.anchoredPosition = new Vector2(0f, 50f);
-                comboRect.sizeDelta = new Vector2(500f, 80f);
-
-                hudCtrl.SetLabels(scoreLabel, highScoreLabel, comboLabel);
             }
 
-            if (hudCtrl != null)
+            GameHUDController hudCtrl = canvasGo.GetComponent<GameHUDController>();
+            if (hudCtrl == null) hudCtrl = canvasGo.AddComponent<GameHUDController>();
+
+            // Audio Toggle Buttons (64x64, top-left)
+            Sprite soundOffSprite = LoadSprite("Assets/Sprites/UI/Buttons/sound_off.png");
+            Sprite soundOnSprite = LoadSprite("Assets/Sprites/UI/Buttons/sound_on.png");
+            Sprite musicOffSprite = LoadSprite("Assets/Sprites/UI/Buttons/music_TurnOff.png");
+            Sprite musicOnSprite = LoadSprite("Assets/Sprites/UI/Buttons/music_TurnOn.png");
+
+            GameObject soundBtnGo = GameObject.Find("SoundToggleButton");
+            if (soundBtnGo == null)
             {
-                hudCtrl.ScoreFontSize = 72f;
-                hudCtrl.HighScoreFontSize = 28f;
-                hudCtrl.ComboFontSize = 54f;
-                hudCtrl.ApplyFontSizes();
+                soundBtnGo = new GameObject("SoundToggleButton");
+                soundBtnGo.transform.SetParent(canvasGo.transform, false);
+                RectTransform rt = soundBtnGo.AddComponent<RectTransform>();
+                rt.anchorMin = new Vector2(0f, 1f);
+                rt.anchorMax = new Vector2(0f, 1f);
+                rt.pivot = new Vector2(0f, 1f);
+                rt.anchoredPosition = new Vector2(20f, -20f);
+                rt.sizeDelta = new Vector2(64f, 64f);
 
-                if (hudCtrl.ScoreLabel != null)
-                {
-                    RectTransform sr = hudCtrl.ScoreLabel.GetComponent<RectTransform>();
-                    if (sr != null) sr.sizeDelta = new Vector2(400f, 90f);
-                }
-                if (hudCtrl.HighScoreLabel != null)
-                {
-                    RectTransform hsr = hudCtrl.HighScoreLabel.GetComponent<RectTransform>();
-                    if (hsr != null)
-                    {
-                        hsr.anchoredPosition = new Vector2(-20f, -110f);
-                        hsr.sizeDelta = new Vector2(400f, 40f);
-                    }
-                }
-                if (hudCtrl.ComboLabel != null)
-                {
-                    RectTransform cr = hudCtrl.ComboLabel.GetComponent<RectTransform>();
-                    if (cr != null)
-                    {
-                        cr.anchoredPosition = new Vector2(0f, 50f);
-                        cr.sizeDelta = new Vector2(500f, 80f);
-                    }
-                }
+                Image img = soundBtnGo.AddComponent<Image>();
+                img.sprite = soundOffSprite;
+                soundBtnGo.AddComponent<Button>();
+
+                AudioToggleButton toggle = soundBtnGo.AddComponent<AudioToggleButton>();
+                toggle.ToggleType = AudioToggleType.Sound;
+                toggle.ActiveSprite = soundOffSprite;
+                toggle.InactiveSprite = soundOnSprite;
+                toggle.FixedDimensions = new Vector2(64f, 64f);
             }
+
+            GameObject musicBtnGo = GameObject.Find("MusicToggleButton");
+            if (musicBtnGo == null)
+            {
+                musicBtnGo = new GameObject("MusicToggleButton");
+                musicBtnGo.transform.SetParent(canvasGo.transform, false);
+                RectTransform rt = musicBtnGo.AddComponent<RectTransform>();
+                rt.anchorMin = new Vector2(0f, 1f);
+                rt.anchorMax = new Vector2(0f, 1f);
+                rt.pivot = new Vector2(0f, 1f);
+                rt.anchoredPosition = new Vector2(95f, -20f);
+                rt.sizeDelta = new Vector2(64f, 64f);
+
+                Image img = musicBtnGo.AddComponent<Image>();
+                img.sprite = musicOffSprite;
+                musicBtnGo.AddComponent<Button>();
+
+                AudioToggleButton toggle = musicBtnGo.AddComponent<AudioToggleButton>();
+                toggle.ToggleType = AudioToggleType.Music;
+                toggle.ActiveSprite = musicOffSprite;
+                toggle.InactiveSprite = musicOnSprite;
+                toggle.FixedDimensions = new Vector2(64f, 64f);
+            }
+
+            // Player vitals & currency labels
+            TextMeshProUGUI hpLbl = CreateOrFindLabel(canvasGo, "HpLabel", "HP: 100/100", 22, new Vector2(170f, -22f), new Vector2(180f, 30f));
+            TextMeshProUGUI armorLbl = CreateOrFindLabel(canvasGo, "ArmorLabel", "ARMOR: 50/50", 20, new Vector2(170f, -50f), new Vector2(180f, 30f));
+            TextMeshProUGUI goldLbl = CreateOrFindLabel(canvasGo, "GoldLabel", "🪙 0", 22, new Vector2(360f, -22f), new Vector2(120f, 30f));
+            TextMeshProUGUI diamondLbl = CreateOrFindLabel(canvasGo, "DiamondLabel", "💎 0", 22, new Vector2(360f, -50f), new Vector2(120f, 30f));
+            TextMeshProUGUI weaponLbl = CreateOrFindLabel(canvasGo, "WeaponLabel", "WEAPON: Blaster", 20, new Vector2(490f, -22f), new Vector2(200f, 30f));
+            TextMeshProUGUI cdLbl = CreateOrFindLabel(canvasGo, "CooldownLabel", "SHIELD: READY | EMP: READY", 16, new Vector2(490f, -50f), new Vector2(250f, 30f));
+            TextMeshProUGUI shieldLbl = CreateOrFindLabel(canvasGo, "ShieldLabel", "SHIELD: READY", 16, new Vector2(170f, -74f), new Vector2(180f, 25f));
+
+            // Score & Combo labels
+            TextMeshProUGUI scoreLabel = CreateOrFindLabel(canvasGo, "ScoreLabel", "0", 72, new Vector2(-20f, -20f), new Vector2(400f, 90f), TextAlignmentOptions.TopRight, new Vector2(1f, 1f));
+            TextMeshProUGUI highScoreLabel = CreateOrFindLabel(canvasGo, "HighScoreLabel", "Best: 0", 28, new Vector2(-20f, -110f), new Vector2(400f, 40f), TextAlignmentOptions.TopRight, new Vector2(1f, 1f));
+            TextMeshProUGUI comboLabel = CreateOrFindLabel(canvasGo, "ComboLabel", "x2 COMBO", 54, new Vector2(0f, 50f), new Vector2(500f, 80f), TextAlignmentOptions.Bottom, new Vector2(0.5f, 0f));
+            comboLabel.gameObject.SetActive(false);
+
+            hudCtrl.SetLabels(scoreLabel, highScoreLabel, comboLabel);
+            hudCtrl.SetStatsLabels(hpLbl, armorLbl, shieldLbl, goldLbl, diamondLbl, weaponLbl, null, cdLbl);
 
             EditorSceneManager.MarkSceneDirty(EditorSceneManager.GetActiveScene());
             EditorSceneManager.SaveOpenScenes();
             Debug.Log("[Kinematics Game] Scene and prefabs successfully configured and saved!");
+        }
+
+        private static TextMeshProUGUI CreateOrFindLabel(
+            GameObject parent,
+            string name,
+            string defaultText,
+            float fontSize,
+            Vector2 anchoredPos,
+            Vector2 sizeDelta,
+            TextAlignmentOptions alignment = TextAlignmentOptions.Left,
+            Vector2? anchor = null)
+        {
+            Transform existing = parent.transform.Find(name);
+            GameObject go = existing != null ? existing.gameObject : new GameObject(name);
+            go.transform.SetParent(parent.transform, false);
+
+            RectTransform rt = go.GetComponent<RectTransform>();
+            if (rt == null) rt = go.AddComponent<RectTransform>();
+
+            Vector2 anchorVal = anchor ?? new Vector2(0f, 1f);
+            rt.anchorMin = anchorVal;
+            rt.anchorMax = anchorVal;
+            rt.pivot = anchorVal;
+            rt.anchoredPosition = anchoredPos;
+            rt.sizeDelta = sizeDelta;
+
+            TextMeshProUGUI tmp = go.GetComponent<TextMeshProUGUI>();
+            if (tmp == null) tmp = go.AddComponent<TextMeshProUGUI>();
+            tmp.text = defaultText;
+            tmp.fontSize = fontSize;
+            tmp.alignment = alignment;
+
+            return tmp;
         }
     }
 }

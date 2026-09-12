@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using KinematicsGame.Core;
 using KinematicsGame.Combat;
+using KinematicsGame.Audio;
 
 namespace KinematicsGame.Player
 {
@@ -31,6 +32,9 @@ namespace KinematicsGame.Player
         [Header("Components")]
         [SerializeField] private SpriteRenderer spriteRenderer;
         [SerializeField] private PlayerInput playerInput;
+        [SerializeField] private PlayerStats playerStats;
+        [SerializeField] private PlayerCombatSystem combatSystem;
+        [SerializeField] private PlayerDefenseSystem defenseSystem;
 
         public float MoveSpeed
         {
@@ -80,6 +84,24 @@ namespace KinematicsGame.Player
             set => playerInput = value;
         }
 
+        public PlayerStats Stats
+        {
+            get => playerStats;
+            set => playerStats = value;
+        }
+
+        public PlayerCombatSystem CombatSystem
+        {
+            get => combatSystem;
+            set => combatSystem = value;
+        }
+
+        public PlayerDefenseSystem DefenseSystem
+        {
+            get => defenseSystem;
+            set => defenseSystem = value;
+        }
+
         public AudioClip FireClip
         {
             get => fireClip;
@@ -119,6 +141,21 @@ namespace KinematicsGame.Player
             {
                 playerInput = GetComponent<PlayerInput>();
             }
+
+            if (playerStats == null)
+            {
+                playerStats = GetComponent<PlayerStats>();
+            }
+
+            if (combatSystem == null)
+            {
+                combatSystem = GetComponent<PlayerCombatSystem>();
+            }
+
+            if (defenseSystem == null)
+            {
+                defenseSystem = GetComponent<PlayerDefenseSystem>();
+            }
         }
 
         private void Update()
@@ -129,15 +166,29 @@ namespace KinematicsGame.Player
 
         /// <summary>
         /// Translates the player by move input and clamps position strictly inside screen bounds.
+        /// Scales speed by PlayerStats.EffectiveSpeedMultiplier if present.
         /// </summary>
         public void HandleMovement()
         {
             if (moveInput.sqrMagnitude > 0.001f)
             {
-                Vector3 movement = new Vector3(moveInput.x, moveInput.y, 0f) * (moveSpeed * Time.deltaTime);
+                float multiplier = playerStats != null ? playerStats.EffectiveSpeedMultiplier : 1f;
+                Vector3 movement = new Vector3(moveInput.x, moveInput.y, 0f) * (moveSpeed * multiplier * Time.deltaTime);
                 transform.position += movement;
             }
 
+            ClampToScreenBounds();
+        }
+
+        /// <summary>
+        /// Simulates movement with an explicit delta time and input for testing and prediction.
+        /// </summary>
+        public void SimulateMovement(Vector2 input, float deltaTime)
+        {
+            Vector2 clampedInput = Vector2.ClampMagnitude(input, 1f);
+            float multiplier = playerStats != null ? playerStats.EffectiveSpeedMultiplier : 1f;
+            Vector3 movement = new Vector3(clampedInput.x, clampedInput.y, 0f) * (moveSpeed * multiplier * deltaTime);
+            transform.position += movement;
             ClampToScreenBounds();
         }
 
@@ -207,6 +258,30 @@ namespace KinematicsGame.Player
 
                 moveInput = Vector2.ClampMagnitude(new Vector2(x, y), 1f);
 
+                // Weapon selection shortcuts
+                if (Keyboard.current.digit1Key.wasPressedThisFrame)
+                {
+                    combatSystem?.SelectWeapon(WeaponType.Blaster);
+                }
+                else if (Keyboard.current.digit2Key.wasPressedThisFrame)
+                {
+                    combatSystem?.SelectWeapon(WeaponType.Missile);
+                }
+                else if (Keyboard.current.digit3Key.wasPressedThisFrame)
+                {
+                    combatSystem?.SelectWeapon(WeaponType.Bomb);
+                }
+
+                // Defense skill shortcuts
+                if (Keyboard.current.qKey.wasPressedThisFrame)
+                {
+                    defenseSystem?.ActivateShield();
+                }
+                if (Keyboard.current.eKey.wasPressedThisFrame)
+                {
+                    defenseSystem?.TriggerEmpStun();
+                }
+
                 if (Keyboard.current.spaceKey.wasPressedThisFrame || Keyboard.current.enterKey.wasPressedThisFrame)
                 {
                     FireProjectile();
@@ -262,6 +337,12 @@ namespace KinematicsGame.Player
         /// </summary>
         public void FireProjectile()
         {
+            if (combatSystem != null)
+            {
+                combatSystem.FireCurrent(projectileDirection, firePoint, transform.position);
+                return;
+            }
+
             if (Time.time - lastFireTime < fireCooldown)
             {
                 return;
@@ -288,9 +369,30 @@ namespace KinematicsGame.Player
 
         private void PlayFireSound()
         {
-            if (audioSource != null && fireClip != null)
+            if (AudioManager.Instance != null && fireClip != null)
+            {
+                AudioManager.Instance.PlaySfx(fireClip, fireVolume);
+            }
+            else if (audioSource != null && fireClip != null)
             {
                 audioSource.PlayOneShot(fireClip, fireVolume);
+            }
+        }
+
+        private void OnTriggerEnter2D(Collider2D other)
+        {
+            if (other == null) return;
+
+            InteractiveEntity entity = other.GetComponent<InteractiveEntity>();
+            if (entity == null)
+            {
+                entity = other.GetComponentInParent<InteractiveEntity>();
+            }
+
+            if (entity != null && !entity.IsConsumed)
+            {
+                entity.IsConsumed = true;
+                CollisionEffectDispatcher.ResolveCollision(entity, this);
             }
         }
     }

@@ -1,0 +1,864 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="130" result="Passed" total="130" passed="130" failed="0" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-09-12 16:26:19Z" end-time="2026-09-12 16:26:21Z" duration="1.6918664">
+  <test-suite type="TestSuite" id="1000" name="mini-game-2" fullname="mini-game-2" runstate="Runnable" testcasecount="130" result="Passed" start-time="2026-09-12 16:26:19Z" end-time="2026-09-12 16:26:21Z" duration="1.691866" total="130" passed="130" failed="0" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="EditMode" />
+    </properties>
+    <test-suite type="Assembly" id="1150" name="Assembly-CSharp-Editor.dll" fullname="/Users/nc/Develop/Game/mini-game-2/Library/ScriptAssemblies/Assembly-CSharp-Editor.dll" runstate="Runnable" testcasecount="130" result="Passed" start-time="2026-09-12 16:26:19Z" end-time="2026-09-12 16:26:21Z" duration="1.677766" total="130" passed="130" failed="0" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="58410" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="EditMode" />
+        <property name="EditorOnly" value="True" />
+      </properties>
+      <test-suite type="TestSuite" id="1151" name="KinematicsGame" fullname="KinematicsGame" runstate="Runnable" testcasecount="130" result="Passed" start-time="2026-09-12 16:26:19Z" end-time="2026-09-12 16:26:21Z" duration="1.673060" total="130" passed="130" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <test-suite type="TestSuite" id="1152" name="Tests" fullname="KinematicsGame.Tests" runstate="Runnable" testcasecount="130" result="Passed" start-time="2026-09-12 16:26:19Z" end-time="2026-09-12 16:26:21Z" duration="1.667527" total="130" passed="130" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <test-suite type="TestFixture" id="1001" name="AudioSystemTests" fullname="KinematicsGame.Tests.AudioSystemTests" classname="KinematicsGame.Tests.AudioSystemTests" runstate="Runnable" testcasecount="10" result="Passed" start-time="2026-09-12 16:26:19Z" end-time="2026-09-12 16:26:19Z" duration="0.117277" total="10" passed="10" failed="0" inconclusive="0" skipped="0" asserts="0">
+            <properties />
+            <test-case id="1002" name="AudioManager_InitializesChannelsAndMuteStatesFromPlayerPrefs" fullname="KinematicsGame.Tests.AudioSystemTests.AudioManager_InitializesChannelsAndMuteStatesFromPlayerPrefs" methodname="AudioManager_InitializesChannelsAndMuteStatesFromPlayerPrefs" classname="KinematicsGame.Tests.AudioSystemTests" runstate="Runnable" seed="503791357" result="Passed" start-time="2026-09-12 16:26:19Z" end-time="2026-09-12 16:26:19Z" duration="0.034591" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1005" name="AudioManager_PlaySfx_AllocatesFromVoicePoolWithoutStarvation" fullname="KinematicsGame.Tests.AudioSystemTests.AudioManager_PlaySfx_AllocatesFromVoicePoolWithoutStarvation" methodname="AudioManager_PlaySfx_AllocatesFromVoicePoolWithoutStarvation" classname="KinematicsGame.Tests.AudioSystemTests" runstate="Runnable" seed="1255825779" result="Passed" start-time="2026-09-12 16:26:19Z" end-time="2026-09-12 16:26:19Z" duration="0.004577" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+              <reason>
+                <message><![CDATA[PlaySfx handled polyphonic voice allocation without exceptions]]></message>
+              </reason>
+            </test-case>
+            <test-case id="1006" name="AudioManager_PlayWarningAlarm_SimulatesPulseSequence" fullname="KinematicsGame.Tests.AudioSystemTests.AudioManager_PlayWarningAlarm_SimulatesPulseSequence" methodname="AudioManager_PlayWarningAlarm_SimulatesPulseSequence" classname="KinematicsGame.Tests.AudioSystemTests" runstate="Runnable" seed="1752828502" result="Passed" start-time="2026-09-12 16:26:19Z" end-time="2026-09-12 16:26:19Z" duration="0.000624" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1004" name="AudioManager_ToggleMusic_PersistsStateAndFiresEvent" fullname="KinematicsGame.Tests.AudioSystemTests.AudioManager_ToggleMusic_PersistsStateAndFiresEvent" methodname="AudioManager_ToggleMusic_PersistsStateAndFiresEvent" classname="KinematicsGame.Tests.AudioSystemTests" runstate="Runnable" seed="1592042328" result="Passed" start-time="2026-09-12 16:26:19Z" end-time="2026-09-12 16:26:19Z" duration="0.002992" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1003" name="AudioManager_ToggleSfx_PersistsStateAndFiresEvent" fullname="KinematicsGame.Tests.AudioSystemTests.AudioManager_ToggleSfx_PersistsStateAndFiresEvent" methodname="AudioManager_ToggleSfx_PersistsStateAndFiresEvent" classname="KinematicsGame.Tests.AudioSystemTests" runstate="Runnable" seed="360526202" result="Passed" start-time="2026-09-12 16:26:19Z" end-time="2026-09-12 16:26:19Z" duration="0.002983" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1007" name="AudioToggleButton_Click_TogglesAudioManagerStateAndSwapsSpriteInPlace" fullname="KinematicsGame.Tests.AudioSystemTests.AudioToggleButton_Click_TogglesAudioManagerStateAndSwapsSpriteInPlace" methodname="AudioToggleButton_Click_TogglesAudioManagerStateAndSwapsSpriteInPlace" classname="KinematicsGame.Tests.AudioSystemTests" runstate="Runnable" seed="2113018938" result="Passed" start-time="2026-09-12 16:26:19Z" end-time="2026-09-12 16:26:19Z" duration="0.028014" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1008" name="AudioToggleButton_FixedDimensions_Maintains64x64WithoutLayoutDrift" fullname="KinematicsGame.Tests.AudioSystemTests.AudioToggleButton_FixedDimensions_Maintains64x64WithoutLayoutDrift" methodname="AudioToggleButton_FixedDimensions_Maintains64x64WithoutLayoutDrift" classname="KinematicsGame.Tests.AudioSystemTests" runstate="Runnable" seed="756755830" result="Passed" start-time="2026-09-12 16:26:19Z" end-time="2026-09-12 16:26:19Z" duration="0.003861" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1011" name="RestrictedZoneTrigger_AlignToViewport_PositionsCorrectlyForHorizontalAndVertical" fullname="KinematicsGame.Tests.AudioSystemTests.RestrictedZoneTrigger_AlignToViewport_PositionsCorrectlyForHorizontalAndVertical" methodname="RestrictedZoneTrigger_AlignToViewport_PositionsCorrectlyForHorizontalAndVertical" classname="KinematicsGame.Tests.AudioSystemTests" runstate="Runnable" seed="1143491304" result="Passed" start-time="2026-09-12 16:26:19Z" end-time="2026-09-12 16:26:19Z" duration="0.011288" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1010" name="RestrictedZoneTrigger_Debounce_IgnoresSubsequentEnemiesWithinDebounceWindow" fullname="KinematicsGame.Tests.AudioSystemTests.RestrictedZoneTrigger_Debounce_IgnoresSubsequentEnemiesWithinDebounceWindow" methodname="RestrictedZoneTrigger_Debounce_IgnoresSubsequentEnemiesWithinDebounceWindow" classname="KinematicsGame.Tests.AudioSystemTests" runstate="Runnable" seed="965716374" result="Passed" start-time="2026-09-12 16:26:19Z" end-time="2026-09-12 16:26:19Z" duration="0.001056" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1009" name="RestrictedZoneTrigger_OnTriggerEnter2D_TriggersWarningWhenEnemyEnters" fullname="KinematicsGame.Tests.AudioSystemTests.RestrictedZoneTrigger_OnTriggerEnter2D_TriggersWarningWhenEnemyEnters" methodname="RestrictedZoneTrigger_OnTriggerEnter2D_TriggersWarningWhenEnemyEnters" classname="KinematicsGame.Tests.AudioSystemTests" runstate="Runnable" seed="1888920210" result="Passed" start-time="2026-09-12 16:26:19Z" end-time="2026-09-12 16:26:19Z" duration="0.000876" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+          </test-suite>
+          <test-suite type="TestFixture" id="1012" name="BackgroundScrollerTests" fullname="KinematicsGame.Tests.BackgroundScrollerTests" classname="KinematicsGame.Tests.BackgroundScrollerTests" runstate="Runnable" testcasecount="7" result="Passed" start-time="2026-09-12 16:26:19Z" end-time="2026-09-12 16:26:19Z" duration="0.086207" total="7" passed="7" failed="0" inconclusive="0" skipped="0" asserts="0">
+            <properties />
+            <test-case id="1016" name="BackgroundScroller_RefreshScale_PreservesScrollPositionAndContiguity" fullname="KinematicsGame.Tests.BackgroundScrollerTests.BackgroundScroller_RefreshScale_PreservesScrollPositionAndContiguity" methodname="BackgroundScroller_RefreshScale_PreservesScrollPositionAndContiguity" classname="KinematicsGame.Tests.BackgroundScrollerTests" runstate="Runnable" seed="268387378" result="Passed" start-time="2026-09-12 16:26:19Z" end-time="2026-09-12 16:26:19Z" duration="0.020535" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1019" name="BackgroundScroller_ScaleBackground_DisablesParentRendererAndIsolatesScale" fullname="KinematicsGame.Tests.BackgroundScrollerTests.BackgroundScroller_ScaleBackground_DisablesParentRendererAndIsolatesScale" methodname="BackgroundScroller_ScaleBackground_DisablesParentRendererAndIsolatesScale" classname="KinematicsGame.Tests.BackgroundScrollerTests" runstate="Runnable" seed="318577165" result="Passed" start-time="2026-09-12 16:26:19Z" end-time="2026-09-12 16:26:19Z" duration="0.040926" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1015" name="BackgroundScroller_SetOrientation_SwitchesScrollAxisAndRealignsSegments" fullname="KinematicsGame.Tests.BackgroundScrollerTests.BackgroundScroller_SetOrientation_SwitchesScrollAxisAndRealignsSegments" methodname="BackgroundScroller_SetOrientation_SwitchesScrollAxisAndRealignsSegments" classname="KinematicsGame.Tests.BackgroundScrollerTests" runstate="Runnable" seed="1422162960" result="Passed" start-time="2026-09-12 16:26:19Z" end-time="2026-09-12 16:26:19Z" duration="0.003313" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1013" name="BackgroundScroller_Tick_AdvancesSegmentsByExactKinematicDistance" fullname="KinematicsGame.Tests.BackgroundScrollerTests.BackgroundScroller_Tick_AdvancesSegmentsByExactKinematicDistance" methodname="BackgroundScroller_Tick_AdvancesSegmentsByExactKinematicDistance" classname="KinematicsGame.Tests.BackgroundScrollerTests" runstate="Runnable" seed="451640298" result="Passed" start-time="2026-09-12 16:26:19Z" end-time="2026-09-12 16:26:19Z" duration="0.001445" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1017" name="BackgroundScroller_Tick_LeapfrogsWhenExitingViewportMaxY_Vertical" fullname="KinematicsGame.Tests.BackgroundScrollerTests.BackgroundScroller_Tick_LeapfrogsWhenExitingViewportMaxY_Vertical" methodname="BackgroundScroller_Tick_LeapfrogsWhenExitingViewportMaxY_Vertical" classname="KinematicsGame.Tests.BackgroundScrollerTests" runstate="Runnable" seed="412141410" result="Passed" start-time="2026-09-12 16:26:19Z" end-time="2026-09-12 16:26:19Z" duration="0.001150" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1014" name="BackgroundScroller_Tick_LeapfrogsWhenExitingViewportMinX" fullname="KinematicsGame.Tests.BackgroundScrollerTests.BackgroundScroller_Tick_LeapfrogsWhenExitingViewportMinX" methodname="BackgroundScroller_Tick_LeapfrogsWhenExitingViewportMinX" classname="KinematicsGame.Tests.BackgroundScrollerTests" runstate="Runnable" seed="1230401265" result="Passed" start-time="2026-09-12 16:26:19Z" end-time="2026-09-12 16:26:19Z" duration="0.001073" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1018" name="BackgroundScroller_ZeroDeltaTime_DoesNotMoveSegments" fullname="KinematicsGame.Tests.BackgroundScrollerTests.BackgroundScroller_ZeroDeltaTime_DoesNotMoveSegments" methodname="BackgroundScroller_ZeroDeltaTime_DoesNotMoveSegments" classname="KinematicsGame.Tests.BackgroundScrollerTests" runstate="Runnable" seed="1868729754" result="Passed" start-time="2026-09-12 16:26:19Z" end-time="2026-09-12 16:26:19Z" duration="0.001263" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+          </test-suite>
+          <test-suite type="TestFixture" id="1020" name="CombatAndDefenseTests" fullname="KinematicsGame.Tests.CombatAndDefenseTests" classname="KinematicsGame.Tests.CombatAndDefenseTests" runstate="Runnable" testcasecount="9" result="Passed" start-time="2026-09-12 16:26:19Z" end-time="2026-09-12 16:26:19Z" duration="0.043858" total="9" passed="9" failed="0" inconclusive="0" skipped="0" asserts="0">
+            <properties />
+            <test-case id="1021" name="BaseProjectile_Polymorphism_DerivedTypesInheritKinematicsAndBounds" fullname="KinematicsGame.Tests.CombatAndDefenseTests.BaseProjectile_Polymorphism_DerivedTypesInheritKinematicsAndBounds" methodname="BaseProjectile_Polymorphism_DerivedTypesInheritKinematicsAndBounds" classname="KinematicsGame.Tests.CombatAndDefenseTests" runstate="Runnable" seed="1304298173" result="Passed" start-time="2026-09-12 16:26:19Z" end-time="2026-09-12 16:26:19Z" duration="0.004519" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1026" name="ClusterBomb_ArmingAndFuse_ArmsAfterDelayAndDetonatesOnFuse" fullname="KinematicsGame.Tests.CombatAndDefenseTests.ClusterBomb_ArmingAndFuse_ArmsAfterDelayAndDetonatesOnFuse" methodname="ClusterBomb_ArmingAndFuse_ArmsAfterDelayAndDetonatesOnFuse" classname="KinematicsGame.Tests.CombatAndDefenseTests" runstate="Runnable" seed="1874843773" result="Passed" start-time="2026-09-12 16:26:19Z" end-time="2026-09-12 16:26:19Z" duration="0.004077" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1024" name="HomingMissile_TargetAcquisition_FindsClosestTargetWithinCone" fullname="KinematicsGame.Tests.CombatAndDefenseTests.HomingMissile_TargetAcquisition_FindsClosestTargetWithinCone" methodname="HomingMissile_TargetAcquisition_FindsClosestTargetWithinCone" classname="KinematicsGame.Tests.CombatAndDefenseTests" runstate="Runnable" seed="1901204118" result="Passed" start-time="2026-09-12 16:26:19Z" end-time="2026-09-12 16:26:19Z" duration="0.003338" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1025" name="HomingMissile_UpdateKinematics_SteersTowardsTargetAndAccelerates" fullname="KinematicsGame.Tests.CombatAndDefenseTests.HomingMissile_UpdateKinematics_SteersTowardsTargetAndAccelerates" methodname="HomingMissile_UpdateKinematics_SteersTowardsTargetAndAccelerates" classname="KinematicsGame.Tests.CombatAndDefenseTests" runstate="Runnable" seed="1845399575" result="Passed" start-time="2026-09-12 16:26:19Z" end-time="2026-09-12 16:26:19Z" duration="0.003529" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1023" name="PlayerCombatSystem_WeaponCooldowns_IndividualPerWeaponMode" fullname="KinematicsGame.Tests.CombatAndDefenseTests.PlayerCombatSystem_WeaponCooldowns_IndividualPerWeaponMode" methodname="PlayerCombatSystem_WeaponCooldowns_IndividualPerWeaponMode" classname="KinematicsGame.Tests.CombatAndDefenseTests" runstate="Runnable" seed="1395667638" result="Passed" start-time="2026-09-12 16:26:19Z" end-time="2026-09-12 16:26:19Z" duration="0.009440" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1022" name="PlayerCombatSystem_WeaponSelection_SwitchesModesAndFiresEvents" fullname="KinematicsGame.Tests.CombatAndDefenseTests.PlayerCombatSystem_WeaponSelection_SwitchesModesAndFiresEvents" methodname="PlayerCombatSystem_WeaponSelection_SwitchesModesAndFiresEvents" classname="KinematicsGame.Tests.CombatAndDefenseTests" runstate="Runnable" seed="326429185" result="Passed" start-time="2026-09-12 16:26:19Z" end-time="2026-09-12 16:26:19Z" duration="0.000965" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1027" name="PlayerDefenseSystem_ActivateShield_AbsorbsHitsAndExpires" fullname="KinematicsGame.Tests.CombatAndDefenseTests.PlayerDefenseSystem_ActivateShield_AbsorbsHitsAndExpires" methodname="PlayerDefenseSystem_ActivateShield_AbsorbsHitsAndExpires" classname="KinematicsGame.Tests.CombatAndDefenseTests" runstate="Runnable" seed="687114061" result="Passed" start-time="2026-09-12 16:26:19Z" end-time="2026-09-12 16:26:19Z" duration="0.001093" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1029" name="PlayerDefenseSystem_Cooldowns_PreventImmediateReactivation" fullname="KinematicsGame.Tests.CombatAndDefenseTests.PlayerDefenseSystem_Cooldowns_PreventImmediateReactivation" methodname="PlayerDefenseSystem_Cooldowns_PreventImmediateReactivation" classname="KinematicsGame.Tests.CombatAndDefenseTests" runstate="Runnable" seed="1718892773" result="Passed" start-time="2026-09-12 16:26:19Z" end-time="2026-09-12 16:26:19Z" duration="0.001401" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1028" name="PlayerDefenseSystem_TriggerEmpStun_HaltsEnemyKinematicsAndTintsCyan" fullname="KinematicsGame.Tests.CombatAndDefenseTests.PlayerDefenseSystem_TriggerEmpStun_HaltsEnemyKinematicsAndTintsCyan" methodname="PlayerDefenseSystem_TriggerEmpStun_HaltsEnemyKinematicsAndTintsCyan" classname="KinematicsGame.Tests.CombatAndDefenseTests" runstate="Runnable" seed="379775810" result="Passed" start-time="2026-09-12 16:26:19Z" end-time="2026-09-12 16:26:19Z" duration="0.002047" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+          </test-suite>
+          <test-suite type="TestFixture" id="1106" name="EndToEndScoringIntegrationTests" fullname="KinematicsGame.Tests.EndToEndScoringIntegrationTests" classname="KinematicsGame.Tests.EndToEndScoringIntegrationTests" runstate="Runnable" testcasecount="4" result="Passed" start-time="2026-09-12 16:26:19Z" end-time="2026-09-12 16:26:20Z" duration="0.298448" total="4" passed="4" failed="0" inconclusive="0" skipped="0" asserts="0">
+            <properties />
+            <test-case id="1109" name="EndToEnd_ComboExpiration_DecaysHUDAndMultiplier" fullname="KinematicsGame.Tests.EndToEndScoringIntegrationTests.EndToEnd_ComboExpiration_DecaysHUDAndMultiplier" methodname="EndToEnd_ComboExpiration_DecaysHUDAndMultiplier" classname="KinematicsGame.Tests.EndToEndScoringIntegrationTests" runstate="Runnable" seed="1582112353" result="Passed" start-time="2026-09-12 16:26:19Z" end-time="2026-09-12 16:26:20Z" duration="0.150702" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1110" name="EndToEnd_DifficultyScaling_ExpandsActiveTargetQuotaAsScoreRises" fullname="KinematicsGame.Tests.EndToEndScoringIntegrationTests.EndToEnd_DifficultyScaling_ExpandsActiveTargetQuotaAsScoreRises" methodname="EndToEnd_DifficultyScaling_ExpandsActiveTargetQuotaAsScoreRises" classname="KinematicsGame.Tests.EndToEndScoringIntegrationTests" runstate="Runnable" seed="189685606" result="Passed" start-time="2026-09-12 16:26:20Z" end-time="2026-09-12 16:26:20Z" duration="0.067531" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1108" name="EndToEnd_OrientationSwitchMidGame_RealignsAllActiveTargets" fullname="KinematicsGame.Tests.EndToEndScoringIntegrationTests.EndToEnd_OrientationSwitchMidGame_RealignsAllActiveTargets" methodname="EndToEnd_OrientationSwitchMidGame_RealignsAllActiveTargets" classname="KinematicsGame.Tests.EndToEndScoringIntegrationTests" runstate="Runnable" seed="2136595648" result="Passed" start-time="2026-09-12 16:26:20Z" end-time="2026-09-12 16:26:20Z" duration="0.039315" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1107" name="EndToEnd_ProjectileHitPooledTarget_AdvancesScoreComboAndFCT" fullname="KinematicsGame.Tests.EndToEndScoringIntegrationTests.EndToEnd_ProjectileHitPooledTarget_AdvancesScoreComboAndFCT" methodname="EndToEnd_ProjectileHitPooledTarget_AdvancesScoreComboAndFCT" classname="KinematicsGame.Tests.EndToEndScoringIntegrationTests" runstate="Runnable" seed="143745104" result="Passed" start-time="2026-09-12 16:26:20Z" end-time="2026-09-12 16:26:20Z" duration="0.025279" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+          </test-suite>
+          <test-suite type="TestFixture" id="1115" name="FloatingTextControllerTests" fullname="KinematicsGame.Tests.FloatingTextControllerTests" classname="KinematicsGame.Tests.FloatingTextControllerTests" runstate="Runnable" testcasecount="7" result="Passed" start-time="2026-09-12 16:26:20Z" end-time="2026-09-12 16:26:20Z" duration="0.047172" total="7" passed="7" failed="0" inconclusive="0" skipped="0" asserts="0">
+            <properties />
+            <test-case id="1116" name="FontSize_DefaultsToReducedSize_AndSetsTmpText" fullname="KinematicsGame.Tests.FloatingTextControllerTests.FontSize_DefaultsToReducedSize_AndSetsTmpText" methodname="FontSize_DefaultsToReducedSize_AndSetsTmpText" classname="KinematicsGame.Tests.FloatingTextControllerTests" runstate="Runnable" seed="2080137310" result="Passed" start-time="2026-09-12 16:26:20Z" end-time="2026-09-12 16:26:20Z" duration="0.001091" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1121" name="OnComplete_CallbackFires_WhenAnimationEnds" fullname="KinematicsGame.Tests.FloatingTextControllerTests.OnComplete_CallbackFires_WhenAnimationEnds" methodname="OnComplete_CallbackFires_WhenAnimationEnds" classname="KinematicsGame.Tests.FloatingTextControllerTests" runstate="Runnable" seed="1285061031" result="Passed" start-time="2026-09-12 16:26:20Z" end-time="2026-09-12 16:26:20Z" duration="0.017821" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1117" name="Play_ActivatesGameObject_AndSetsText" fullname="KinematicsGame.Tests.FloatingTextControllerTests.Play_ActivatesGameObject_AndSetsText" methodname="Play_ActivatesGameObject_AndSetsText" classname="KinematicsGame.Tests.FloatingTextControllerTests" runstate="Runnable" seed="1883661938" result="Passed" start-time="2026-09-12 16:26:20Z" end-time="2026-09-12 16:26:20Z" duration="0.001391" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1122" name="Stop_DeactivatesImmediately" fullname="KinematicsGame.Tests.FloatingTextControllerTests.Stop_DeactivatesImmediately" methodname="Stop_DeactivatesImmediately" classname="KinematicsGame.Tests.FloatingTextControllerTests" runstate="Runnable" seed="467025752" result="Passed" start-time="2026-09-12 16:26:20Z" end-time="2026-09-12 16:26:20Z" duration="0.001016" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1118" name="TickAnimation_AscendsPositionEachFrame" fullname="KinematicsGame.Tests.FloatingTextControllerTests.TickAnimation_AscendsPositionEachFrame" methodname="TickAnimation_AscendsPositionEachFrame" classname="KinematicsGame.Tests.FloatingTextControllerTests" runstate="Runnable" seed="38770821" result="Passed" start-time="2026-09-12 16:26:20Z" end-time="2026-09-12 16:26:20Z" duration="0.002898" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1119" name="TickAnimation_CompletesAfterFullDuration_AndDeactivates" fullname="KinematicsGame.Tests.FloatingTextControllerTests.TickAnimation_CompletesAfterFullDuration_AndDeactivates" methodname="TickAnimation_CompletesAfterFullDuration_AndDeactivates" classname="KinematicsGame.Tests.FloatingTextControllerTests" runstate="Runnable" seed="2001372368" result="Passed" start-time="2026-09-12 16:26:20Z" end-time="2026-09-12 16:26:20Z" duration="0.004530" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1120" name="TickAnimation_FadesAlphaInSecondHalf" fullname="KinematicsGame.Tests.FloatingTextControllerTests.TickAnimation_FadesAlphaInSecondHalf" methodname="TickAnimation_FadesAlphaInSecondHalf" classname="KinematicsGame.Tests.FloatingTextControllerTests" runstate="Runnable" seed="2113451575" result="Passed" start-time="2026-09-12 16:26:20Z" end-time="2026-09-12 16:26:20Z" duration="0.001310" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+          </test-suite>
+          <test-suite type="TestFixture" id="1123" name="FloatingTextPoolTests" fullname="KinematicsGame.Tests.FloatingTextPoolTests" classname="KinematicsGame.Tests.FloatingTextPoolTests" runstate="Runnable" testcasecount="4" result="Passed" start-time="2026-09-12 16:26:20Z" end-time="2026-09-12 16:26:20Z" duration="0.098703" total="4" passed="4" failed="0" inconclusive="0" skipped="0" asserts="0">
+            <properties />
+            <test-case id="1124" name="Initialize_PrewarmsExactly20InactiveInstances" fullname="KinematicsGame.Tests.FloatingTextPoolTests.Initialize_PrewarmsExactly20InactiveInstances" methodname="Initialize_PrewarmsExactly20InactiveInstances" classname="KinematicsGame.Tests.FloatingTextPoolTests" runstate="Runnable" seed="27167490" result="Passed" start-time="2026-09-12 16:26:20Z" end-time="2026-09-12 16:26:20Z" duration="0.006879" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1125" name="Spawn_ActivatesOneInstanceAtGivenPosition" fullname="KinematicsGame.Tests.FloatingTextPoolTests.Spawn_ActivatesOneInstanceAtGivenPosition" methodname="Spawn_ActivatesOneInstanceAtGivenPosition" classname="KinematicsGame.Tests.FloatingTextPoolTests" runstate="Runnable" seed="1689751578" result="Passed" start-time="2026-09-12 16:26:20Z" end-time="2026-09-12 16:26:20Z" duration="0.064269" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1126" name="Spawn_Repeatedly_UsesDistinctInstances" fullname="KinematicsGame.Tests.FloatingTextPoolTests.Spawn_Repeatedly_UsesDistinctInstances" methodname="Spawn_Repeatedly_UsesDistinctInstances" classname="KinematicsGame.Tests.FloatingTextPoolTests" runstate="Runnable" seed="698235102" result="Passed" start-time="2026-09-12 16:26:20Z" end-time="2026-09-12 16:26:20Z" duration="0.010209" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1127" name="Spawn_WhenPoolExhausted_ReclainsOldestInstance" fullname="KinematicsGame.Tests.FloatingTextPoolTests.Spawn_WhenPoolExhausted_ReclainsOldestInstance" methodname="Spawn_WhenPoolExhausted_ReclainsOldestInstance" classname="KinematicsGame.Tests.FloatingTextPoolTests" runstate="Runnable" seed="1250328006" result="Passed" start-time="2026-09-12 16:26:20Z" end-time="2026-09-12 16:26:20Z" duration="0.011336" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+          </test-suite>
+          <test-suite type="TestFixture" id="1030" name="FullSystemIntegrationTests" fullname="KinematicsGame.Tests.FullSystemIntegrationTests" classname="KinematicsGame.Tests.FullSystemIntegrationTests" runstate="Runnable" testcasecount="7" result="Passed" start-time="2026-09-12 16:26:20Z" end-time="2026-09-12 16:26:20Z" duration="0.291428" total="7" passed="7" failed="0" inconclusive="0" skipped="0" asserts="0">
+            <properties />
+            <test-case id="1036" name="FullSystem_AudioToggles_PreserveExactDimensionsAndPlayerPrefs" fullname="KinematicsGame.Tests.FullSystemIntegrationTests.FullSystem_AudioToggles_PreserveExactDimensionsAndPlayerPrefs" methodname="FullSystem_AudioToggles_PreserveExactDimensionsAndPlayerPrefs" classname="KinematicsGame.Tests.FullSystemIntegrationTests" runstate="Runnable" seed="461128073" result="Passed" start-time="2026-09-12 16:26:20Z" end-time="2026-09-12 16:26:20Z" duration="0.009121" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1033" name="FullSystem_CombatLoop_FiresAllWeaponsAndActivatesDefenses" fullname="KinematicsGame.Tests.FullSystemIntegrationTests.FullSystem_CombatLoop_FiresAllWeaponsAndActivatesDefenses" methodname="FullSystem_CombatLoop_FiresAllWeaponsAndActivatesDefenses" classname="KinematicsGame.Tests.FullSystemIntegrationTests" runstate="Runnable" seed="1089689743" result="Passed" start-time="2026-09-12 16:26:20Z" end-time="2026-09-12 16:26:20Z" duration="0.010413" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1032" name="FullSystem_DualOrientation_AlignsRestrictedZoneAndSpawner" fullname="KinematicsGame.Tests.FullSystemIntegrationTests.FullSystem_DualOrientation_AlignsRestrictedZoneAndSpawner" methodname="FullSystem_DualOrientation_AlignsRestrictedZoneAndSpawner" classname="KinematicsGame.Tests.FullSystemIntegrationTests" runstate="Runnable" seed="1182710966" result="Passed" start-time="2026-09-12 16:26:20Z" end-time="2026-09-12 16:26:20Z" duration="0.001929" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1035" name="FullSystem_HUDController_ReflectsVitalsAndCooldownsInRealTime" fullname="KinematicsGame.Tests.FullSystemIntegrationTests.FullSystem_HUDController_ReflectsVitalsAndCooldownsInRealTime" methodname="FullSystem_HUDController_ReflectsVitalsAndCooldownsInRealTime" classname="KinematicsGame.Tests.FullSystemIntegrationTests" runstate="Runnable" seed="644746972" result="Passed" start-time="2026-09-12 16:26:20Z" end-time="2026-09-12 16:26:20Z" duration="0.048682" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1034" name="FullSystem_InteractiveHazards_TriggersAllNineCollisionEffects" fullname="KinematicsGame.Tests.FullSystemIntegrationTests.FullSystem_InteractiveHazards_TriggersAllNineCollisionEffects" methodname="FullSystem_InteractiveHazards_TriggersAllNineCollisionEffects" classname="KinematicsGame.Tests.FullSystemIntegrationTests" runstate="Runnable" seed="1409212953" result="Passed" start-time="2026-09-12 16:26:20Z" end-time="2026-09-12 16:26:20Z" duration="0.006466" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1037" name="SampleScene_HierarchyIntegrity_ContainsAllPhase5Components" fullname="KinematicsGame.Tests.FullSystemIntegrationTests.SampleScene_HierarchyIntegrity_ContainsAllPhase5Components" methodname="SampleScene_HierarchyIntegrity_ContainsAllPhase5Components" classname="KinematicsGame.Tests.FullSystemIntegrationTests" runstate="Runnable" seed="536804066" result="Passed" start-time="2026-09-12 16:26:20Z" end-time="2026-09-12 16:26:20Z" duration="0.085586" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1031" name="SceneSetupHelper_EnsurePrefabsExist_CreatesAllRequiredCombatPrefabs" fullname="KinematicsGame.Tests.FullSystemIntegrationTests.SceneSetupHelper_EnsurePrefabsExist_CreatesAllRequiredCombatPrefabs" methodname="SceneSetupHelper_EnsurePrefabsExist_CreatesAllRequiredCombatPrefabs" classname="KinematicsGame.Tests.FullSystemIntegrationTests" runstate="Runnable" seed="536991446" result="Passed" start-time="2026-09-12 16:26:20Z" end-time="2026-09-12 16:26:20Z" duration="0.112940" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+          </test-suite>
+          <test-suite type="TestFixture" id="1038" name="GameControllerTests" fullname="KinematicsGame.Tests.GameControllerTests" classname="KinematicsGame.Tests.GameControllerTests" runstate="Runnable" testcasecount="6" result="Passed" start-time="2026-09-12 16:26:20Z" end-time="2026-09-12 16:26:20Z" duration="0.075245" total="6" passed="6" failed="0" inconclusive="0" skipped="0" asserts="0">
+            <properties />
+            <test-case id="1040" name="GameController_ApplyOrientation_Horizontal_PositionsOpposingMidEdges" fullname="KinematicsGame.Tests.GameControllerTests.GameController_ApplyOrientation_Horizontal_PositionsOpposingMidEdges" methodname="GameController_ApplyOrientation_Horizontal_PositionsOpposingMidEdges" classname="KinematicsGame.Tests.GameControllerTests" runstate="Runnable" seed="2050960990" result="Passed" start-time="2026-09-12 16:26:20Z" end-time="2026-09-12 16:26:20Z" duration="0.004209" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1044" name="GameController_ApplyOrientation_RectangularSprite_UsesRotatedExtents" fullname="KinematicsGame.Tests.GameControllerTests.GameController_ApplyOrientation_RectangularSprite_UsesRotatedExtents" methodname="GameController_ApplyOrientation_RectangularSprite_UsesRotatedExtents" classname="KinematicsGame.Tests.GameControllerTests" runstate="Runnable" seed="1575199235" result="Passed" start-time="2026-09-12 16:26:20Z" end-time="2026-09-12 16:26:20Z" duration="0.003360" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1041" name="GameController_ApplyOrientation_Vertical_PositionsOpposingMidEdges" fullname="KinematicsGame.Tests.GameControllerTests.GameController_ApplyOrientation_Vertical_PositionsOpposingMidEdges" methodname="GameController_ApplyOrientation_Vertical_PositionsOpposingMidEdges" classname="KinematicsGame.Tests.GameControllerTests" runstate="Runnable" seed="47280296" result="Passed" start-time="2026-09-12 16:26:20Z" end-time="2026-09-12 16:26:20Z" duration="0.004435" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1039" name="GameController_NormalizeEntitySizes_EnforcesExactSizeParity" fullname="KinematicsGame.Tests.GameControllerTests.GameController_NormalizeEntitySizes_EnforcesExactSizeParity" methodname="GameController_NormalizeEntitySizes_EnforcesExactSizeParity" classname="KinematicsGame.Tests.GameControllerTests" runstate="Runnable" seed="938884797" result="Passed" start-time="2026-09-12 16:26:20Z" end-time="2026-09-12 16:26:20Z" duration="0.010046" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1043" name="GameController_OrientationProperty_FiresEvent" fullname="KinematicsGame.Tests.GameControllerTests.GameController_OrientationProperty_FiresEvent" methodname="GameController_OrientationProperty_FiresEvent" classname="KinematicsGame.Tests.GameControllerTests" runstate="Runnable" seed="865947430" result="Passed" start-time="2026-09-12 16:26:20Z" end-time="2026-09-12 16:26:20Z" duration="0.001205" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1042" name="GameController_ScaleBackground_EncompassesCameraView" fullname="KinematicsGame.Tests.GameControllerTests.GameController_ScaleBackground_EncompassesCameraView" methodname="GameController_ScaleBackground_EncompassesCameraView" classname="KinematicsGame.Tests.GameControllerTests" runstate="Runnable" seed="1465221672" result="Passed" start-time="2026-09-12 16:26:20Z" end-time="2026-09-12 16:26:20Z" duration="0.044175" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+          </test-suite>
+          <test-suite type="TestFixture" id="1128" name="GameHUDControllerTests" fullname="KinematicsGame.Tests.GameHUDControllerTests" classname="KinematicsGame.Tests.GameHUDControllerTests" runstate="Runnable" testcasecount="7" result="Passed" start-time="2026-09-12 16:26:20Z" end-time="2026-09-12 16:26:20Z" duration="0.030220" total="7" passed="7" failed="0" inconclusive="0" skipped="0" asserts="0">
+            <properties />
+            <test-case id="1135" name="FontSizes_AreIncreasedForScoreAndCombo" fullname="KinematicsGame.Tests.GameHUDControllerTests.FontSizes_AreIncreasedForScoreAndCombo" methodname="FontSizes_AreIncreasedForScoreAndCombo" classname="KinematicsGame.Tests.GameHUDControllerTests" runstate="Runnable" seed="1461838900" result="Passed" start-time="2026-09-12 16:26:20Z" end-time="2026-09-12 16:26:20Z" duration="0.003338" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1134" name="OnScoreChanged_Event_TriggersScoreDisplayUpdate" fullname="KinematicsGame.Tests.GameHUDControllerTests.OnScoreChanged_Event_TriggersScoreDisplayUpdate" methodname="OnScoreChanged_Event_TriggersScoreDisplayUpdate" classname="KinematicsGame.Tests.GameHUDControllerTests" runstate="Runnable" seed="1749178143" result="Passed" start-time="2026-09-12 16:26:20Z" end-time="2026-09-12 16:26:20Z" duration="0.002689" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1133" name="TickScorePopAnimation_OvershootsAndReturnsToBasis" fullname="KinematicsGame.Tests.GameHUDControllerTests.TickScorePopAnimation_OvershootsAndReturnsToBasis" methodname="TickScorePopAnimation_OvershootsAndReturnsToBasis" classname="KinematicsGame.Tests.GameHUDControllerTests" runstate="Runnable" seed="2098500225" result="Passed" start-time="2026-09-12 16:26:20Z" end-time="2026-09-12 16:26:20Z" duration="0.001296" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1131" name="UpdateComboDisplay_Combo1_HidesComboLabel" fullname="KinematicsGame.Tests.GameHUDControllerTests.UpdateComboDisplay_Combo1_HidesComboLabel" methodname="UpdateComboDisplay_Combo1_HidesComboLabel" classname="KinematicsGame.Tests.GameHUDControllerTests" runstate="Runnable" seed="1003702030" result="Passed" start-time="2026-09-12 16:26:20Z" end-time="2026-09-12 16:26:20Z" duration="0.001501" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1132" name="UpdateComboDisplay_Combo3_ShowsWithLabel" fullname="KinematicsGame.Tests.GameHUDControllerTests.UpdateComboDisplay_Combo3_ShowsWithLabel" methodname="UpdateComboDisplay_Combo3_ShowsWithLabel" classname="KinematicsGame.Tests.GameHUDControllerTests" runstate="Runnable" seed="579524729" result="Passed" start-time="2026-09-12 16:26:20Z" end-time="2026-09-12 16:26:20Z" duration="0.001301" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1130" name="UpdateHighScoreDisplay_SetsBestLabelText" fullname="KinematicsGame.Tests.GameHUDControllerTests.UpdateHighScoreDisplay_SetsBestLabelText" methodname="UpdateHighScoreDisplay_SetsBestLabelText" classname="KinematicsGame.Tests.GameHUDControllerTests" runstate="Runnable" seed="1756853712" result="Passed" start-time="2026-09-12 16:26:20Z" end-time="2026-09-12 16:26:20Z" duration="0.000752" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1129" name="UpdateScoreDisplay_SetsLabelText" fullname="KinematicsGame.Tests.GameHUDControllerTests.UpdateScoreDisplay_SetsLabelText" methodname="UpdateScoreDisplay_SetsLabelText" classname="KinematicsGame.Tests.GameHUDControllerTests" runstate="Runnable" seed="1660369379" result="Passed" start-time="2026-09-12 16:26:20Z" end-time="2026-09-12 16:26:20Z" duration="0.001118" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+          </test-suite>
+          <test-suite type="TestFixture" id="1045" name="HazardAndHUDTests" fullname="KinematicsGame.Tests.HazardAndHUDTests" classname="KinematicsGame.Tests.HazardAndHUDTests" runstate="Runnable" testcasecount="10" result="Passed" start-time="2026-09-12 16:26:20Z" end-time="2026-09-12 16:26:20Z" duration="0.047740" total="10" passed="10" failed="0" inconclusive="0" skipped="0" asserts="0">
+            <properties />
+            <test-case id="1050" name="CollisionEffectDispatcher_VerifiesAll9DistinctEffects" fullname="KinematicsGame.Tests.HazardAndHUDTests.CollisionEffectDispatcher_VerifiesAll9DistinctEffects" methodname="CollisionEffectDispatcher_VerifiesAll9DistinctEffects" classname="KinematicsGame.Tests.HazardAndHUDTests" runstate="Runnable" seed="2005603724" result="Passed" start-time="2026-09-12 16:26:20Z" end-time="2026-09-12 16:26:20Z" duration="0.005798" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1054" name="GameHUDController_CurrencyBinding_UpdatesGoldAndDiamondCounters" fullname="KinematicsGame.Tests.HazardAndHUDTests.GameHUDController_CurrencyBinding_UpdatesGoldAndDiamondCounters" methodname="GameHUDController_CurrencyBinding_UpdatesGoldAndDiamondCounters" classname="KinematicsGame.Tests.HazardAndHUDTests" runstate="Runnable" seed="985262598" result="Passed" start-time="2026-09-12 16:26:20Z" end-time="2026-09-12 16:26:20Z" duration="0.004289" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1052" name="GameHUDController_PlayerVitalsBinding_UpdatesHpAndArmorLabels" fullname="KinematicsGame.Tests.HazardAndHUDTests.GameHUDController_PlayerVitalsBinding_UpdatesHpAndArmorLabels" methodname="GameHUDController_PlayerVitalsBinding_UpdatesHpAndArmorLabels" classname="KinematicsGame.Tests.HazardAndHUDTests" runstate="Runnable" seed="1563679230" result="Passed" start-time="2026-09-12 16:26:20Z" end-time="2026-09-12 16:26:20Z" duration="0.003497" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1053" name="GameHUDController_ShieldStateBinding_DisplaysActiveHitsOrReady" fullname="KinematicsGame.Tests.HazardAndHUDTests.GameHUDController_ShieldStateBinding_DisplaysActiveHitsOrReady" methodname="GameHUDController_ShieldStateBinding_DisplaysActiveHitsOrReady" classname="KinematicsGame.Tests.HazardAndHUDTests" runstate="Runnable" seed="1578566348" result="Passed" start-time="2026-09-12 16:26:20Z" end-time="2026-09-12 16:26:20Z" duration="0.002226" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1055" name="GameHUDController_WeaponAndCooldownBinding_DisplaysCurrentModeAndTimers" fullname="KinematicsGame.Tests.HazardAndHUDTests.GameHUDController_WeaponAndCooldownBinding_DisplaysCurrentModeAndTimers" methodname="GameHUDController_WeaponAndCooldownBinding_DisplaysCurrentModeAndTimers" classname="KinematicsGame.Tests.HazardAndHUDTests" runstate="Runnable" seed="1628899178" result="Passed" start-time="2026-09-12 16:26:20Z" end-time="2026-09-12 16:26:20Z" duration="0.003791" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1049" name="GemCore_Collision_AwardsCurrenciesAndDropsMiniBonuses" fullname="KinematicsGame.Tests.HazardAndHUDTests.GemCore_Collision_AwardsCurrenciesAndDropsMiniBonuses" methodname="GemCore_Collision_AwardsCurrenciesAndDropsMiniBonuses" classname="KinematicsGame.Tests.HazardAndHUDTests" runstate="Runnable" seed="1682515117" result="Passed" start-time="2026-09-12 16:26:20Z" end-time="2026-09-12 16:26:20Z" duration="0.002841" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1046" name="HazardMine_Collision_TriggersExplosionDespawnDamageAndSlow" fullname="KinematicsGame.Tests.HazardAndHUDTests.HazardMine_Collision_TriggersExplosionDespawnDamageAndSlow" methodname="HazardMine_Collision_TriggersExplosionDespawnDamageAndSlow" classname="KinematicsGame.Tests.HazardAndHUDTests" runstate="Runnable" seed="2091131113" result="Passed" start-time="2026-09-12 16:26:20Z" end-time="2026-09-12 16:26:20Z" duration="0.002992" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1047" name="HazardMine_ShieldActive_AbsorbsDamagePreservingHpAndArmor" fullname="KinematicsGame.Tests.HazardAndHUDTests.HazardMine_ShieldActive_AbsorbsDamagePreservingHpAndArmor" methodname="HazardMine_ShieldActive_AbsorbsDamagePreservingHpAndArmor" classname="KinematicsGame.Tests.HazardAndHUDTests" runstate="Runnable" seed="1228885902" result="Passed" start-time="2026-09-12 16:26:20Z" end-time="2026-09-12 16:26:20Z" duration="0.003071" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1051" name="HazardSpawner_SpawnsAtPerimeter_OrientationAware" fullname="KinematicsGame.Tests.HazardAndHUDTests.HazardSpawner_SpawnsAtPerimeter_OrientationAware" methodname="HazardSpawner_SpawnsAtPerimeter_OrientationAware" classname="KinematicsGame.Tests.HazardAndHUDTests" runstate="Runnable" seed="352883528" result="Passed" start-time="2026-09-12 16:26:20Z" end-time="2026-09-12 16:26:20Z" duration="0.003071" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1048" name="SupplyCrate_Collision_RestoresArmorActivatesShieldBuffsSpeedAndUpgradesWeapon" fullname="KinematicsGame.Tests.HazardAndHUDTests.SupplyCrate_Collision_RestoresArmorActivatesShieldBuffsSpeedAndUpgradesWeapon" methodname="SupplyCrate_Collision_RestoresArmorActivatesShieldBuffsSpeedAndUpgradesWeapon" classname="KinematicsGame.Tests.HazardAndHUDTests" runstate="Runnable" seed="1102838392" result="Passed" start-time="2026-09-12 16:26:20Z" end-time="2026-09-12 16:26:20Z" duration="0.004004" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+          </test-suite>
+          <test-suite type="TestFixture" id="1056" name="PlayerControllerTests" fullname="KinematicsGame.Tests.PlayerControllerTests" classname="KinematicsGame.Tests.PlayerControllerTests" runstate="Runnable" testcasecount="6" result="Passed" start-time="2026-09-12 16:26:20Z" end-time="2026-09-12 16:26:20Z" duration="0.072093" total="6" passed="6" failed="0" inconclusive="0" skipped="0" asserts="0">
+            <properties />
+            <test-case id="1057" name="PlayerController_ClampsPosition_StrictlyInsideScreenBounds" fullname="KinematicsGame.Tests.PlayerControllerTests.PlayerController_ClampsPosition_StrictlyInsideScreenBounds" methodname="PlayerController_ClampsPosition_StrictlyInsideScreenBounds" classname="KinematicsGame.Tests.PlayerControllerTests" runstate="Runnable" seed="1502971694" result="Passed" start-time="2026-09-12 16:26:20Z" end-time="2026-09-12 16:26:20Z" duration="0.002154" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1060" name="PlayerController_DiagonalMovement_ClampsMagnitude" fullname="KinematicsGame.Tests.PlayerControllerTests.PlayerController_DiagonalMovement_ClampsMagnitude" methodname="PlayerController_DiagonalMovement_ClampsMagnitude" classname="KinematicsGame.Tests.PlayerControllerTests" runstate="Runnable" seed="1555926084" result="Passed" start-time="2026-09-12 16:26:20Z" end-time="2026-09-12 16:26:20Z" duration="0.001409" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1059" name="PlayerController_FireCooldown_PreventsSpam" fullname="KinematicsGame.Tests.PlayerControllerTests.PlayerController_FireCooldown_PreventsSpam" methodname="PlayerController_FireCooldown_PreventsSpam" classname="KinematicsGame.Tests.PlayerControllerTests" runstate="Runnable" seed="840507690" result="Passed" start-time="2026-09-12 16:26:20Z" end-time="2026-09-12 16:26:20Z" duration="0.001313" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1058" name="PlayerController_FireProjectile_InstantiatesWithConfiguredKinematics" fullname="KinematicsGame.Tests.PlayerControllerTests.PlayerController_FireProjectile_InstantiatesWithConfiguredKinematics" methodname="PlayerController_FireProjectile_InstantiatesWithConfiguredKinematics" classname="KinematicsGame.Tests.PlayerControllerTests" runstate="Runnable" seed="696768089" result="Passed" start-time="2026-09-12 16:26:20Z" end-time="2026-09-12 16:26:20Z" duration="0.001503" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1062" name="PlayerController_FireVolume_DefaultsToReducedLevel_AndClampsWithinZeroToOne" fullname="KinematicsGame.Tests.PlayerControllerTests.PlayerController_FireVolume_DefaultsToReducedLevel_AndClampsWithinZeroToOne" methodname="PlayerController_FireVolume_DefaultsToReducedLevel_AndClampsWithinZeroToOne" classname="KinematicsGame.Tests.PlayerControllerTests" runstate="Runnable" seed="2101241210" result="Passed" start-time="2026-09-12 16:26:20Z" end-time="2026-09-12 16:26:20Z" duration="0.007821" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1061" name="PlayerController_NullPrefab_DoesNotThrow" fullname="KinematicsGame.Tests.PlayerControllerTests.PlayerController_NullPrefab_DoesNotThrow" methodname="PlayerController_NullPrefab_DoesNotThrow" classname="KinematicsGame.Tests.PlayerControllerTests" runstate="Runnable" seed="1644263831" result="Passed" start-time="2026-09-12 16:26:20Z" end-time="2026-09-12 16:26:20Z" duration="0.006346" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+          </test-suite>
+          <test-suite type="TestFixture" id="1063" name="PlayerStatsTests" fullname="KinematicsGame.Tests.PlayerStatsTests" classname="KinematicsGame.Tests.PlayerStatsTests" runstate="Runnable" testcasecount="10" result="Passed" start-time="2026-09-12 16:26:20Z" end-time="2026-09-12 16:26:21Z" duration="0.175603" total="10" passed="10" failed="0" inconclusive="0" skipped="0" asserts="0">
+            <properties />
+            <test-case id="1073" name="PlayerController_NullStats_DefaultsToBaselineMultiplier" fullname="KinematicsGame.Tests.PlayerStatsTests.PlayerController_NullStats_DefaultsToBaselineMultiplier" methodname="PlayerController_NullStats_DefaultsToBaselineMultiplier" classname="KinematicsGame.Tests.PlayerStatsTests" runstate="Runnable" seed="374640581" result="Passed" start-time="2026-09-12 16:26:21Z" end-time="2026-09-12 16:26:21Z" duration="0.004282" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1072" name="PlayerController_SimulateMovement_ScalesWithEffectiveSpeedMultiplier" fullname="KinematicsGame.Tests.PlayerStatsTests.PlayerController_SimulateMovement_ScalesWithEffectiveSpeedMultiplier" methodname="PlayerController_SimulateMovement_ScalesWithEffectiveSpeedMultiplier" classname="KinematicsGame.Tests.PlayerStatsTests" runstate="Runnable" seed="1003535633" result="Passed" start-time="2026-09-12 16:26:21Z" end-time="2026-09-12 16:26:21Z" duration="0.001626" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1069" name="PlayerStats_AddCurrency_AccumulatesAndFiresEvent" fullname="KinematicsGame.Tests.PlayerStatsTests.PlayerStats_AddCurrency_AccumulatesAndFiresEvent" methodname="PlayerStats_AddCurrency_AccumulatesAndFiresEvent" classname="KinematicsGame.Tests.PlayerStatsTests" runstate="Runnable" seed="2014110134" result="Passed" start-time="2026-09-12 16:26:21Z" end-time="2026-09-12 16:26:21Z" duration="0.000954" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1070" name="PlayerStats_ApplySpeedModifier_ScalesMultiplierAndClamps" fullname="KinematicsGame.Tests.PlayerStatsTests.PlayerStats_ApplySpeedModifier_ScalesMultiplierAndClamps" methodname="PlayerStats_ApplySpeedModifier_ScalesMultiplierAndClamps" classname="KinematicsGame.Tests.PlayerStatsTests" runstate="Runnable" seed="931113110" result="Passed" start-time="2026-09-12 16:26:21Z" end-time="2026-09-12 16:26:21Z" duration="0.000445" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1064" name="PlayerStats_InitializesWithDefaultValues" fullname="KinematicsGame.Tests.PlayerStatsTests.PlayerStats_InitializesWithDefaultValues" methodname="PlayerStats_InitializesWithDefaultValues" classname="KinematicsGame.Tests.PlayerStatsTests" runstate="Runnable" seed="423699904" result="Passed" start-time="2026-09-12 16:26:21Z" end-time="2026-09-12 16:26:21Z" duration="0.000427" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1068" name="PlayerStats_RestoreHealthAndArmor_ClampsToMax" fullname="KinematicsGame.Tests.PlayerStatsTests.PlayerStats_RestoreHealthAndArmor_ClampsToMax" methodname="PlayerStats_RestoreHealthAndArmor_ClampsToMax" classname="KinematicsGame.Tests.PlayerStatsTests" runstate="Runnable" seed="2030494110" result="Passed" start-time="2026-09-12 16:26:21Z" end-time="2026-09-12 16:26:21Z" duration="0.000943" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1065" name="PlayerStats_TakeDamage_AbsorbsWithArmorFirst" fullname="KinematicsGame.Tests.PlayerStatsTests.PlayerStats_TakeDamage_AbsorbsWithArmorFirst" methodname="PlayerStats_TakeDamage_AbsorbsWithArmorFirst" classname="KinematicsGame.Tests.PlayerStatsTests" runstate="Runnable" seed="1273430562" result="Passed" start-time="2026-09-12 16:26:21Z" end-time="2026-09-12 16:26:21Z" duration="0.001103" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1066" name="PlayerStats_TakeDamage_DepletesArmorAndExcessDamageReducesHealth" fullname="KinematicsGame.Tests.PlayerStatsTests.PlayerStats_TakeDamage_DepletesArmorAndExcessDamageReducesHealth" methodname="PlayerStats_TakeDamage_DepletesArmorAndExcessDamageReducesHealth" classname="KinematicsGame.Tests.PlayerStatsTests" runstate="Runnable" seed="824888603" result="Passed" start-time="2026-09-12 16:26:21Z" end-time="2026-09-12 16:26:21Z" duration="0.000764" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1067" name="PlayerStats_TakeDamage_FiresDeathEventWhenHpZero" fullname="KinematicsGame.Tests.PlayerStatsTests.PlayerStats_TakeDamage_FiresDeathEventWhenHpZero" methodname="PlayerStats_TakeDamage_FiresDeathEventWhenHpZero" classname="KinematicsGame.Tests.PlayerStatsTests" runstate="Runnable" seed="653791760" result="Passed" start-time="2026-09-12 16:26:21Z" end-time="2026-09-12 16:26:21Z" duration="0.000484" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1071" name="PlayerStats_UpdateModifiers_DecaysDurationAndRestoresBaseline" fullname="KinematicsGame.Tests.PlayerStatsTests.PlayerStats_UpdateModifiers_DecaysDurationAndRestoresBaseline" methodname="PlayerStats_UpdateModifiers_DecaysDurationAndRestoresBaseline" classname="KinematicsGame.Tests.PlayerStatsTests" runstate="Runnable" seed="1972827916" result="Passed" start-time="2026-09-12 16:26:21Z" end-time="2026-09-12 16:26:21Z" duration="0.000531" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+          </test-suite>
+          <test-suite type="TestFixture" id="1074" name="ProjectileTests" fullname="KinematicsGame.Tests.ProjectileTests" classname="KinematicsGame.Tests.ProjectileTests" runstate="Runnable" testcasecount="3" result="Passed" start-time="2026-09-12 16:26:21Z" end-time="2026-09-12 16:26:21Z" duration="0.168851" total="3" passed="3" failed="0" inconclusive="0" skipped="0" asserts="0">
+            <properties />
+            <test-case id="1077" name="Projectile_CullsWhenExceedingViewportWithExitBuffer" fullname="KinematicsGame.Tests.ProjectileTests.Projectile_CullsWhenExceedingViewportWithExitBuffer" methodname="Projectile_CullsWhenExceedingViewportWithExitBuffer" classname="KinematicsGame.Tests.ProjectileTests" runstate="Runnable" seed="1103934139" result="Passed" start-time="2026-09-12 16:26:21Z" end-time="2026-09-12 16:26:21Z" duration="0.110924" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1076" name="Projectile_HasKinematicRigidbodyAndTriggerCollider" fullname="KinematicsGame.Tests.ProjectileTests.Projectile_HasKinematicRigidbodyAndTriggerCollider" methodname="Projectile_HasKinematicRigidbodyAndTriggerCollider" classname="KinematicsGame.Tests.ProjectileTests" runstate="Runnable" seed="371616528" result="Passed" start-time="2026-09-12 16:26:21Z" end-time="2026-09-12 16:26:21Z" duration="0.002712" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1075" name="Projectile_InitializesDirectionAndSpeed" fullname="KinematicsGame.Tests.ProjectileTests.Projectile_InitializesDirectionAndSpeed" methodname="Projectile_InitializesDirectionAndSpeed" classname="KinematicsGame.Tests.ProjectileTests" runstate="Runnable" seed="1846942830" result="Passed" start-time="2026-09-12 16:26:21Z" end-time="2026-09-12 16:26:21Z" duration="0.001167" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+          </test-suite>
+          <test-suite type="TestFixture" id="1078" name="ScoreManagerTests" fullname="KinematicsGame.Tests.ScoreManagerTests" classname="KinematicsGame.Tests.ScoreManagerTests" runstate="Runnable" testcasecount="9" result="Passed" start-time="2026-09-12 16:26:21Z" end-time="2026-09-12 16:26:21Z" duration="0.028685" total="9" passed="9" failed="0" inconclusive="0" skipped="0" asserts="0">
+            <properties />
+            <test-case id="1083" name="AudioThrottlingGate_SuppressesSoundsWithin50msWindow" fullname="KinematicsGame.Tests.ScoreManagerTests.AudioThrottlingGate_SuppressesSoundsWithin50msWindow" methodname="AudioThrottlingGate_SuppressesSoundsWithin50msWindow" classname="KinematicsGame.Tests.ScoreManagerTests" runstate="Runnable" seed="1366795184" result="Passed" start-time="2026-09-12 16:26:21Z" end-time="2026-09-12 16:26:21Z" duration="0.002095" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1081" name="ComboDecay_ResetsMultiplierToOne_WhenTimerExpires" fullname="KinematicsGame.Tests.ScoreManagerTests.ComboDecay_ResetsMultiplierToOne_WhenTimerExpires" methodname="ComboDecay_ResetsMultiplierToOne_WhenTimerExpires" classname="KinematicsGame.Tests.ScoreManagerTests" runstate="Runnable" seed="665987084" result="Passed" start-time="2026-09-12 16:26:21Z" end-time="2026-09-12 16:26:21Z" duration="0.002031" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1080" name="ConsecutiveHits_RampComboMultiplierSequentially" fullname="KinematicsGame.Tests.ScoreManagerTests.ConsecutiveHits_RampComboMultiplierSequentially" methodname="ConsecutiveHits_RampComboMultiplierSequentially" classname="KinematicsGame.Tests.ScoreManagerTests" runstate="Runnable" seed="636196280" result="Passed" start-time="2026-09-12 16:26:21Z" end-time="2026-09-12 16:26:21Z" duration="0.002382" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1086" name="ExplosionVolume_DefaultsToReducedLevel_AndClampsWithinZeroToOne" fullname="KinematicsGame.Tests.ScoreManagerTests.ExplosionVolume_DefaultsToReducedLevel_AndClampsWithinZeroToOne" methodname="ExplosionVolume_DefaultsToReducedLevel_AndClampsWithinZeroToOne" classname="KinematicsGame.Tests.ScoreManagerTests" runstate="Runnable" seed="244209120" result="Passed" start-time="2026-09-12 16:26:21Z" end-time="2026-09-12 16:26:21Z" duration="0.001299" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1082" name="HighScore_UpdatesAndPersistsViaPlayerPrefs" fullname="KinematicsGame.Tests.ScoreManagerTests.HighScore_UpdatesAndPersistsViaPlayerPrefs" methodname="HighScore_UpdatesAndPersistsViaPlayerPrefs" classname="KinematicsGame.Tests.ScoreManagerTests" runstate="Runnable" seed="1681109344" result="Passed" start-time="2026-09-12 16:26:21Z" end-time="2026-09-12 16:26:21Z" duration="0.002330" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1079" name="Hit_IncrementsScore_ByPointValueMultipliedByCombo" fullname="KinematicsGame.Tests.ScoreManagerTests.Hit_IncrementsScore_ByPointValueMultipliedByCombo" methodname="Hit_IncrementsScore_ByPointValueMultipliedByCombo" classname="KinematicsGame.Tests.ScoreManagerTests" runstate="Runnable" seed="675797134" result="Passed" start-time="2026-09-12 16:26:21Z" end-time="2026-09-12 16:26:21Z" duration="0.002235" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1085" name="ResetScore_ClearsCurrentScoreAndCombo_RetainingHighScore" fullname="KinematicsGame.Tests.ScoreManagerTests.ResetScore_ClearsCurrentScoreAndCombo_RetainingHighScore" methodname="ResetScore_ClearsCurrentScoreAndCombo_RetainingHighScore" classname="KinematicsGame.Tests.ScoreManagerTests" runstate="Runnable" seed="45416021" result="Passed" start-time="2026-09-12 16:26:21Z" end-time="2026-09-12 16:26:21Z" duration="0.001821" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1087" name="SfxVolume_DefaultsToReducedLevel_AndClampsWithinZeroToOne" fullname="KinematicsGame.Tests.ScoreManagerTests.SfxVolume_DefaultsToReducedLevel_AndClampsWithinZeroToOne" methodname="SfxVolume_DefaultsToReducedLevel_AndClampsWithinZeroToOne" classname="KinematicsGame.Tests.ScoreManagerTests" runstate="Runnable" seed="47618046" result="Passed" start-time="2026-09-12 16:26:21Z" end-time="2026-09-12 16:26:21Z" duration="0.001204" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1084" name="TargetController_OnTargetHit_AutomaticallyNotifiesScoreManager" fullname="KinematicsGame.Tests.ScoreManagerTests.TargetController_OnTargetHit_AutomaticallyNotifiesScoreManager" methodname="TargetController_OnTargetHit_AutomaticallyNotifiesScoreManager" classname="KinematicsGame.Tests.ScoreManagerTests" runstate="Runnable" seed="1590302443" result="Passed" start-time="2026-09-12 16:26:21Z" end-time="2026-09-12 16:26:21Z" duration="0.001964" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+          </test-suite>
+          <test-suite type="TestFixture" id="1088" name="TargetControllerTests" fullname="KinematicsGame.Tests.TargetControllerTests" classname="KinematicsGame.Tests.TargetControllerTests" runstate="Runnable" testcasecount="10" result="Passed" start-time="2026-09-12 16:26:21Z" end-time="2026-09-12 16:26:21Z" duration="0.026088" total="10" passed="10" failed="0" inconclusive="0" skipped="0" asserts="0">
+            <properties />
+            <test-case id="1094" name="TargetController_AnchorPerpendicular_SynchronizesOnModeAndTeleport" fullname="KinematicsGame.Tests.TargetControllerTests.TargetController_AnchorPerpendicular_SynchronizesOnModeAndTeleport" methodname="TargetController_AnchorPerpendicular_SynchronizesOnModeAndTeleport" classname="KinematicsGame.Tests.TargetControllerTests" runstate="Runnable" seed="1225806681" result="Passed" start-time="2026-09-12 16:26:21Z" end-time="2026-09-12 16:26:21Z" duration="0.001723" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1095" name="TargetController_ApplyProfile_CalculatesEffectiveKinematicsWithoutCompounding" fullname="KinematicsGame.Tests.TargetControllerTests.TargetController_ApplyProfile_CalculatesEffectiveKinematicsWithoutCompounding" methodname="TargetController_ApplyProfile_CalculatesEffectiveKinematicsWithoutCompounding" classname="KinematicsGame.Tests.TargetControllerTests" runstate="Runnable" seed="538258195" result="Passed" start-time="2026-09-12 16:26:21Z" end-time="2026-09-12 16:26:21Z" duration="0.001455" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1091" name="TargetController_CheckBoundaryWrap_TeleportsToOppositeEdgeInHorizontalMode" fullname="KinematicsGame.Tests.TargetControllerTests.TargetController_CheckBoundaryWrap_TeleportsToOppositeEdgeInHorizontalMode" methodname="TargetController_CheckBoundaryWrap_TeleportsToOppositeEdgeInHorizontalMode" classname="KinematicsGame.Tests.TargetControllerTests" runstate="Runnable" seed="1010773141" result="Passed" start-time="2026-09-12 16:26:21Z" end-time="2026-09-12 16:26:21Z" duration="0.001168" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1092" name="TargetController_CheckBoundaryWrap_TeleportsToOppositeEdgeInVerticalMode" fullname="KinematicsGame.Tests.TargetControllerTests.TargetController_CheckBoundaryWrap_TeleportsToOppositeEdgeInVerticalMode" methodname="TargetController_CheckBoundaryWrap_TeleportsToOppositeEdgeInVerticalMode" classname="KinematicsGame.Tests.TargetControllerTests" runstate="Runnable" seed="1768210964" result="Passed" start-time="2026-09-12 16:26:21Z" end-time="2026-09-12 16:26:21Z" duration="0.002459" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1089" name="TargetController_HasKinematicRigidbodyAndTriggerCollider" fullname="KinematicsGame.Tests.TargetControllerTests.TargetController_HasKinematicRigidbodyAndTriggerCollider" methodname="TargetController_HasKinematicRigidbodyAndTriggerCollider" classname="KinematicsGame.Tests.TargetControllerTests" runstate="Runnable" seed="24250232" result="Passed" start-time="2026-09-12 16:26:21Z" end-time="2026-09-12 16:26:21Z" duration="0.001220" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1098" name="TargetController_IsPooled_DeactivatesOnBoundaryWrap" fullname="KinematicsGame.Tests.TargetControllerTests.TargetController_IsPooled_DeactivatesOnBoundaryWrap" methodname="TargetController_IsPooled_DeactivatesOnBoundaryWrap" classname="KinematicsGame.Tests.TargetControllerTests" runstate="Runnable" seed="295563273" result="Passed" start-time="2026-09-12 16:26:21Z" end-time="2026-09-12 16:26:21Z" duration="0.001386" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1097" name="TargetController_IsPooled_DeactivatesOnProjectileHit" fullname="KinematicsGame.Tests.TargetControllerTests.TargetController_IsPooled_DeactivatesOnProjectileHit" methodname="TargetController_IsPooled_DeactivatesOnProjectileHit" classname="KinematicsGame.Tests.TargetControllerTests" runstate="Runnable" seed="522653896" result="Passed" start-time="2026-09-12 16:26:21Z" end-time="2026-09-12 16:26:21Z" duration="0.002597" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1096" name="TargetController_OnTargetHit_FiresWithProfileAndImpactPosition" fullname="KinematicsGame.Tests.TargetControllerTests.TargetController_OnTargetHit_FiresWithProfileAndImpactPosition" methodname="TargetController_OnTargetHit_FiresWithProfileAndImpactPosition" classname="KinematicsGame.Tests.TargetControllerTests" runstate="Runnable" seed="1328965904" result="Passed" start-time="2026-09-12 16:26:21Z" end-time="2026-09-12 16:26:21Z" duration="0.001971" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1093" name="TargetController_OnTriggerEnter2D_HandlesProjectileHitAndRespawns" fullname="KinematicsGame.Tests.TargetControllerTests.TargetController_OnTriggerEnter2D_HandlesProjectileHitAndRespawns" methodname="TargetController_OnTriggerEnter2D_HandlesProjectileHitAndRespawns" classname="KinematicsGame.Tests.TargetControllerTests" runstate="Runnable" seed="1079980837" result="Passed" start-time="2026-09-12 16:26:21Z" end-time="2026-09-12 16:26:21Z" duration="0.001473" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1090" name="TargetController_UpdateKinematics_DriftsAndOscillates" fullname="KinematicsGame.Tests.TargetControllerTests.TargetController_UpdateKinematics_DriftsAndOscillates" methodname="TargetController_UpdateKinematics_DriftsAndOscillates" classname="KinematicsGame.Tests.TargetControllerTests" runstate="Runnable" seed="1863267800" result="Passed" start-time="2026-09-12 16:26:21Z" end-time="2026-09-12 16:26:21Z" duration="0.002284" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+          </test-suite>
+          <test-suite type="TestFixture" id="1111" name="TargetProfileTests" fullname="KinematicsGame.Tests.TargetProfileTests" classname="KinematicsGame.Tests.TargetProfileTests" runstate="Runnable" testcasecount="3" result="Passed" start-time="2026-09-12 16:26:21Z" end-time="2026-09-12 16:26:21Z" duration="0.008532" total="3" passed="3" failed="0" inconclusive="0" skipped="0" asserts="0">
+            <properties />
+            <test-case id="1112" name="TargetProfile_CreateDefaultPresets_ReturnsThreeDistinctArchetypes_ExcludingBird3" fullname="KinematicsGame.Tests.TargetProfileTests.TargetProfile_CreateDefaultPresets_ReturnsThreeDistinctArchetypes_ExcludingBird3" methodname="TargetProfile_CreateDefaultPresets_ReturnsThreeDistinctArchetypes_ExcludingBird3" classname="KinematicsGame.Tests.TargetProfileTests" runstate="Runnable" seed="1238158007" result="Passed" start-time="2026-09-12 16:26:21Z" end-time="2026-09-12 16:26:21Z" duration="0.002119" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1113" name="TargetProfile_CustomValues_RetainsAssignedProperties" fullname="KinematicsGame.Tests.TargetProfileTests.TargetProfile_CustomValues_RetainsAssignedProperties" methodname="TargetProfile_CustomValues_RetainsAssignedProperties" classname="KinematicsGame.Tests.TargetProfileTests" runstate="Runnable" seed="2102146201" result="Passed" start-time="2026-09-12 16:26:21Z" end-time="2026-09-12 16:26:21Z" duration="0.001838" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1114" name="TargetProfile_WeightedSelectionMath_ProducesValidProbabilities" fullname="KinematicsGame.Tests.TargetProfileTests.TargetProfile_WeightedSelectionMath_ProducesValidProbabilities" methodname="TargetProfile_WeightedSelectionMath_ProducesValidProbabilities" classname="KinematicsGame.Tests.TargetProfileTests" runstate="Runnable" seed="163226094" result="Passed" start-time="2026-09-12 16:26:21Z" end-time="2026-09-12 16:26:21Z" duration="0.000546" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+          </test-suite>
+          <test-suite type="TestFixture" id="1099" name="TargetSpawnerTests" fullname="KinematicsGame.Tests.TargetSpawnerTests" classname="KinematicsGame.Tests.TargetSpawnerTests" runstate="Runnable" testcasecount="6" result="Passed" start-time="2026-09-12 16:26:21Z" end-time="2026-09-12 16:26:21Z" duration="0.015802" total="6" passed="6" failed="0" inconclusive="0" skipped="0" asserts="0">
+            <properties />
+            <test-case id="1100" name="TargetSpawner_InitializePool_PrewarmsExactly15InstancesWithIsPooled" fullname="KinematicsGame.Tests.TargetSpawnerTests.TargetSpawner_InitializePool_PrewarmsExactly15InstancesWithIsPooled" methodname="TargetSpawner_InitializePool_PrewarmsExactly15InstancesWithIsPooled" classname="KinematicsGame.Tests.TargetSpawnerTests" runstate="Runnable" seed="749580809" result="Passed" start-time="2026-09-12 16:26:21Z" end-time="2026-09-12 16:26:21Z" duration="0.003648" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1105" name="TargetSpawner_PoolReusesInactiveInstancesWithoutNewAllocations" fullname="KinematicsGame.Tests.TargetSpawnerTests.TargetSpawner_PoolReusesInactiveInstancesWithoutNewAllocations" methodname="TargetSpawner_PoolReusesInactiveInstancesWithoutNewAllocations" classname="KinematicsGame.Tests.TargetSpawnerTests" runstate="Runnable" seed="1069160123" result="Passed" start-time="2026-09-12 16:26:21Z" end-time="2026-09-12 16:26:21Z" duration="0.001474" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1104" name="TargetSpawner_SetOrientation_SwitchesAxisAndRealignsTargets" fullname="KinematicsGame.Tests.TargetSpawnerTests.TargetSpawner_SetOrientation_SwitchesAxisAndRealignsTargets" methodname="TargetSpawner_SetOrientation_SwitchesAxisAndRealignsTargets" classname="KinematicsGame.Tests.TargetSpawnerTests" runstate="Runnable" seed="1789948042" result="Passed" start-time="2026-09-12 16:26:21Z" end-time="2026-09-12 16:26:21Z" duration="0.001792" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1102" name="TargetSpawner_SpawnTarget_AllocatesDistinctLanesWithoutOverlap" fullname="KinematicsGame.Tests.TargetSpawnerTests.TargetSpawner_SpawnTarget_AllocatesDistinctLanesWithoutOverlap" methodname="TargetSpawner_SpawnTarget_AllocatesDistinctLanesWithoutOverlap" classname="KinematicsGame.Tests.TargetSpawnerTests" runstate="Runnable" seed="577512936" result="Passed" start-time="2026-09-12 16:26:21Z" end-time="2026-09-12 16:26:21Z" duration="0.001768" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1101" name="TargetSpawner_UpdateDifficulty_ScalesQuotaAndSpawnInterval" fullname="KinematicsGame.Tests.TargetSpawnerTests.TargetSpawner_UpdateDifficulty_ScalesQuotaAndSpawnInterval" methodname="TargetSpawner_UpdateDifficulty_ScalesQuotaAndSpawnInterval" classname="KinematicsGame.Tests.TargetSpawnerTests" runstate="Runnable" seed="103449504" result="Passed" start-time="2026-09-12 16:26:21Z" end-time="2026-09-12 16:26:21Z" duration="0.001469" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1103" name="TargetSpawner_UpdateSpawner_RespectsActiveQuota" fullname="KinematicsGame.Tests.TargetSpawnerTests.TargetSpawner_UpdateSpawner_RespectsActiveQuota" methodname="TargetSpawner_UpdateSpawner_RespectsActiveQuota" classname="KinematicsGame.Tests.TargetSpawnerTests" runstate="Runnable" seed="1834710897" result="Passed" start-time="2026-09-12 16:26:21Z" end-time="2026-09-12 16:26:21Z" duration="0.001971" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+          </test-suite>
+          <test-suite type="TestFixture" id="1136" name="ViewportManagerTests" fullname="KinematicsGame.Tests.ViewportManagerTests" classname="KinematicsGame.Tests.ViewportManagerTests" runstate="Runnable" testcasecount="12" result="Passed" start-time="2026-09-12 16:26:21Z" end-time="2026-09-12 16:26:21Z" duration="0.022285" total="12" passed="12" failed="0" inconclusive="0" skipped="0" asserts="0">
+            <properties />
+            <test-case id="1138" name="GetViewportWorldPosition_Center_ReturnsOrigin" fullname="KinematicsGame.Tests.ViewportManagerTests.GetViewportWorldPosition_Center_ReturnsOrigin" methodname="GetViewportWorldPosition_Center_ReturnsOrigin" classname="KinematicsGame.Tests.ViewportManagerTests" runstate="Runnable" seed="565723177" result="Passed" start-time="2026-09-12 16:26:21Z" end-time="2026-09-12 16:26:21Z" duration="0.001490" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1139" name="GetViewportWorldPosition_Corners_MatchBounds" fullname="KinematicsGame.Tests.ViewportManagerTests.GetViewportWorldPosition_Corners_MatchBounds" methodname="GetViewportWorldPosition_Corners_MatchBounds" classname="KinematicsGame.Tests.ViewportManagerTests" runstate="Runnable" seed="2088164671" result="Passed" start-time="2026-09-12 16:26:21Z" end-time="2026-09-12 16:26:21Z" duration="0.000482" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1147" name="MatchObjectBounds_ForcesSizeParityBetweenDifferentSprites" fullname="KinematicsGame.Tests.ViewportManagerTests.MatchObjectBounds_ForcesSizeParityBetweenDifferentSprites" methodname="MatchObjectBounds_ForcesSizeParityBetweenDifferentSprites" classname="KinematicsGame.Tests.ViewportManagerTests" runstate="Runnable" seed="1391800147" result="Passed" start-time="2026-09-12 16:26:21Z" end-time="2026-09-12 16:26:21Z" duration="0.002110" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1148" name="MatchObjectSize_NonUniform_ScalesExactAxes" fullname="KinematicsGame.Tests.ViewportManagerTests.MatchObjectSize_NonUniform_ScalesExactAxes" methodname="MatchObjectSize_NonUniform_ScalesExactAxes" classname="KinematicsGame.Tests.ViewportManagerTests" runstate="Runnable" seed="1613160514" result="Passed" start-time="2026-09-12 16:26:21Z" end-time="2026-09-12 16:26:21Z" duration="0.001387" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1145" name="MatchObjectSize_YieldsIdenticalBoundsForDifferentNativeResolutions" fullname="KinematicsGame.Tests.ViewportManagerTests.MatchObjectSize_YieldsIdenticalBoundsForDifferentNativeResolutions" methodname="MatchObjectSize_YieldsIdenticalBoundsForDifferentNativeResolutions" classname="KinematicsGame.Tests.ViewportManagerTests" runstate="Runnable" seed="1971201996" result="Passed" start-time="2026-09-12 16:26:21Z" end-time="2026-09-12 16:26:21Z" duration="0.002404" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1146" name="MatchObjectUniformSize_NormalizesDominantDimension" fullname="KinematicsGame.Tests.ViewportManagerTests.MatchObjectUniformSize_NormalizesDominantDimension" methodname="MatchObjectUniformSize_NormalizesDominantDimension" classname="KinematicsGame.Tests.ViewportManagerTests" runstate="Runnable" seed="1058147868" result="Passed" start-time="2026-09-12 16:26:21Z" end-time="2026-09-12 16:26:21Z" duration="0.001129" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1149" name="MatchObjectUniformSize_NullSprite_DoesNotThrow" fullname="KinematicsGame.Tests.ViewportManagerTests.MatchObjectUniformSize_NullSprite_DoesNotThrow" methodname="MatchObjectUniformSize_NullSprite_DoesNotThrow" classname="KinematicsGame.Tests.ViewportManagerTests" runstate="Runnable" seed="1470036617" result="Passed" start-time="2026-09-12 16:26:21Z" end-time="2026-09-12 16:26:21Z" duration="0.000542" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1137" name="ViewportManager_CalculatesCorrectCameraBounds" fullname="KinematicsGame.Tests.ViewportManagerTests.ViewportManager_CalculatesCorrectCameraBounds" methodname="ViewportManager_CalculatesCorrectCameraBounds" classname="KinematicsGame.Tests.ViewportManagerTests" runstate="Runnable" seed="1218428847" result="Passed" start-time="2026-09-12 16:26:21Z" end-time="2026-09-12 16:26:21Z" duration="0.000371" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-suite type="ParameterizedMethod" id="1143" name="ViewportManager_SupportsArbitraryAspectRatios" fullname="KinematicsGame.Tests.ViewportManagerTests.ViewportManager_SupportsArbitraryAspectRatios" classname="KinematicsGame.Tests.ViewportManagerTests" runstate="Runnable" testcasecount="3" result="Passed" start-time="2026-09-12 16:26:21Z" end-time="2026-09-12 16:26:21Z" duration="0.002417" total="3" passed="3" failed="0" inconclusive="0" skipped="0" asserts="0">
+              <properties />
+              <test-case id="1140" name="ViewportManager_SupportsArbitraryAspectRatios(1.777778f)" fullname="KinematicsGame.Tests.ViewportManagerTests.ViewportManager_SupportsArbitraryAspectRatios(1.777778f)" methodname="ViewportManager_SupportsArbitraryAspectRatios" classname="KinematicsGame.Tests.ViewportManagerTests" runstate="Runnable" seed="383442646" result="Passed" start-time="2026-09-12 16:26:21Z" end-time="2026-09-12 16:26:21Z" duration="0.000493" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1141" name="ViewportManager_SupportsArbitraryAspectRatios(2.0f)" fullname="KinematicsGame.Tests.ViewportManagerTests.ViewportManager_SupportsArbitraryAspectRatios(2.0f)" methodname="ViewportManager_SupportsArbitraryAspectRatios" classname="KinematicsGame.Tests.ViewportManagerTests" runstate="Runnable" seed="1658456420" result="Passed" start-time="2026-09-12 16:26:21Z" end-time="2026-09-12 16:26:21Z" duration="0.000136" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1142" name="ViewportManager_SupportsArbitraryAspectRatios(1.333333f)" fullname="KinematicsGame.Tests.ViewportManagerTests.ViewportManager_SupportsArbitraryAspectRatios(1.333333f)" methodname="ViewportManager_SupportsArbitraryAspectRatios" classname="KinematicsGame.Tests.ViewportManagerTests" runstate="Runnable" seed="98161447" result="Passed" start-time="2026-09-12 16:26:21Z" end-time="2026-09-12 16:26:21Z" duration="0.000131" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+            </test-suite>
+            <test-case id="1144" name="ViewportManager_TracksCameraTranslation" fullname="KinematicsGame.Tests.ViewportManagerTests.ViewportManager_TracksCameraTranslation" methodname="ViewportManager_TracksCameraTranslation" classname="KinematicsGame.Tests.ViewportManagerTests" runstate="Runnable" seed="1900246531" result="Passed" start-time="2026-09-12 16:26:21Z" end-time="2026-09-12 16:26:21Z" duration="0.000541" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+              <output><![CDATA[Saving results to: /Users/nc/Library/Application Support/DefaultCompany/mini-game-2/TestResults.xml
+]]></output>
+            </test-case>
+          </test-suite>
+        </test-suite>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

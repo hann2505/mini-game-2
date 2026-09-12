@@ -3,6 +3,8 @@ using UnityEngine;
 using KinematicsGame.Player;
 using KinematicsGame.Enemy;
 using KinematicsGame.Combat;
+using KinematicsGame.Audio;
+using KinematicsGame.UI;
 
 namespace KinematicsGame.Core
 {
@@ -259,6 +261,12 @@ namespace KinematicsGame.Core
                 {
                     playerInstance.FireClip = fireSfx;
                 }
+
+                GameHUDController hud = FindFirstObjectByType<GameHUDController>();
+                if (hud != null)
+                {
+                    hud.BindPlayer(playerInstance);
+                }
             }
 
             // Setup Target (Object B)
@@ -509,6 +517,12 @@ namespace KinematicsGame.Core
 
         private void StartMusic()
         {
+            if (AudioManager.Instance != null && backgroundMusic != null)
+            {
+                AudioManager.Instance.PlayMusic(backgroundMusic, musicVolume, true);
+                return;
+            }
+
             if (musicSource == null)
             {
                 musicSource = GetComponent<AudioSource>();

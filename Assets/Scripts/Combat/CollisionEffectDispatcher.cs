@@ -106,10 +106,10 @@ namespace KinematicsGame.Combat
             }
             TriggeredEffectIds.Add(6);
 
-            // Effect 7: Weapon Upgrade (switch to Heavy Missile mode)
+            // Effect 7: Weapon Upgrade (temporary Missile mode for 10.0s)
             if (player.CombatSystem != null)
             {
-                player.CombatSystem.SelectWeapon(WeaponType.Missile);
+                player.CombatSystem.GrantTemporaryWeapon(WeaponType.Missile, 10.0f);
             }
             TriggeredEffectIds.Add(7);
 

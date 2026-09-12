@@ -181,6 +181,14 @@ namespace KinematicsGame.UI
         private void Update()
         {
             TickScorePopAnimation(Time.deltaTime);
+
+            if (weaponLabel != null && boundCombat != null)
+            {
+                if (boundCombat.IsTemporaryWeaponActive)
+                {
+                    weaponLabel.text = $"WEAPON: {boundCombat.CurrentWeapon} ({boundCombat.TemporaryWeaponTimeRemaining:F1}s)";
+                }
+            }
         }
 
         /// <summary>

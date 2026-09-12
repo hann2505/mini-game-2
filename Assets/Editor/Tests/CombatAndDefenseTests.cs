@@ -282,5 +282,26 @@ namespace KinematicsGame.Tests
             Assert.IsTrue(defenseSystem.CanActivateShield);
             Assert.IsTrue(defenseSystem.CanTriggerEmp);
         }
+
+        [Test]
+        public void PlayerCombatSystem_TemporaryWeapon_ExpiresAfterDuration()
+        {
+            Assert.AreEqual(WeaponType.Blaster, combatSystem.CurrentWeapon);
+
+            combatSystem.GrantTemporaryWeapon(WeaponType.Missile, 10.0f);
+            Assert.AreEqual(WeaponType.Missile, combatSystem.CurrentWeapon);
+            Assert.IsTrue(combatSystem.IsTemporaryWeaponActive);
+            Assert.AreEqual(10.0f, combatSystem.TemporaryWeaponTimeRemaining, 0.01f);
+
+            // Tick 5 seconds
+            combatSystem.UpdateCombat(5.0f);
+            Assert.AreEqual(WeaponType.Missile, combatSystem.CurrentWeapon);
+            Assert.AreEqual(5.0f, combatSystem.TemporaryWeaponTimeRemaining, 0.01f);
+
+            // Tick past expiration
+            combatSystem.UpdateCombat(6.0f);
+            Assert.AreEqual(WeaponType.Blaster, combatSystem.CurrentWeapon);
+            Assert.IsFalse(combatSystem.IsTemporaryWeaponActive);
+        }
     }
 }

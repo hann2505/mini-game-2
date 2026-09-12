@@ -65,6 +65,36 @@ namespace KinematicsGame.Player
         public AudioClip MissileFireClip { get => missileFireClip; set => missileFireClip = value; }
         public AudioClip BombDeployClip { get => bombDeployClip; set => bombDeployClip = value; }
 
+        [Header("Temporary Weapon Buff")]
+        [SerializeField] private float temporaryWeaponTimeRemaining = 0f;
+
+        public float TemporaryWeaponTimeRemaining => temporaryWeaponTimeRemaining;
+        public bool IsTemporaryWeaponActive => temporaryWeaponTimeRemaining > 0f;
+
+        public void GrantTemporaryWeapon(WeaponType weapon, float duration = 10.0f)
+        {
+            temporaryWeaponTimeRemaining = Mathf.Max(temporaryWeaponTimeRemaining, duration);
+            SelectWeapon(weapon);
+        }
+
+        private void Update()
+        {
+            UpdateCombat(Time.deltaTime);
+        }
+
+        public void UpdateCombat(float deltaTime)
+        {
+            if (temporaryWeaponTimeRemaining > 0f)
+            {
+                temporaryWeaponTimeRemaining -= deltaTime;
+                if (temporaryWeaponTimeRemaining <= 0f)
+                {
+                    temporaryWeaponTimeRemaining = 0f;
+                    SelectWeapon(WeaponType.Blaster);
+                }
+            }
+        }
+
         public void SelectWeapon(WeaponType weapon)
         {
             if (currentWeapon != weapon)

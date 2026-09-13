@@ -478,5 +478,80 @@ namespace KinematicsGame.Tests
             if (actualZ > 180f) actualZ -= 360f;
             Assert.AreEqual(expectedZ, actualZ, 1.0f, "Explosion should rotate horizontally matching the missile's flight direction");
         }
+
+        [Test]
+        public void PlayerCombatSystem_TemporaryMissile_FiresRapidlyWithoutDelay()
+        {
+            combatSystem.EnableSimulatedTime(0f);
+
+            // 1. Normal missile mode has 1.0s cooldown
+            combatSystem.SelectWeapon(WeaponType.Missile);
+            Assert.IsTrue(combatSystem.CanFireCurrent());
+            GameObject shot1 = combatSystem.FireCurrent(Vector2.right);
+            disposables.Add(shot1);
+
+            // At t = 0.15s: normal missile cannot fire yet (needs 1.0s)
+            combatSystem.EnableSimulatedTime(0.15f);
+            Assert.IsFalse(combatSystem.CanFireCurrent(), "Normal missile should have 1.0s cooldown");
+
+            // 2. Granted temporary missile buff from Object Y
+            combatSystem.GrantTemporaryWeapon(WeaponType.Missile, 10.0f);
+            // Immediately ready to fire without delay
+            Assert.IsTrue(combatSystem.CanFireCurrent(), "Temporary missile should be ready to fire immediately without delay");
+
+            GameObject buffShot1 = combatSystem.FireCurrent(Vector2.right);
+            disposables.Add(buffShot1);
+
+            // At t = 0.27s (0.12s later): ready to fire again rapidly!
+            combatSystem.EnableSimulatedTime(0.27f);
+            Assert.IsTrue(combatSystem.CanFireCurrent(), "Temporary missile should be ready to fire after rapid cooldown (0.12s)");
+
+            GameObject buffShot2 = combatSystem.FireCurrent(Vector2.right);
+            disposables.Add(buffShot2);
+
+            // At t = 0.39s (another 0.12s): ready to fire third missile
+            combatSystem.EnableSimulatedTime(0.39f);
+            Assert.IsTrue(combatSystem.CanFireCurrent(), "Should fire third missile continuously");
+        }
+
+        [Test]
+        public void PlayerController_IsAttackHeld_FiresContinuously()
+        {
+            GameObject pGo = new GameObject("ContinuousFirePlayer");
+            disposables.Add(pGo);
+            PlayerCombatSystem pcs = pGo.AddComponent<PlayerCombatSystem>();
+            pcs.EnableSimulatedTime(0f);
+            pcs.BlasterPrefab = blasterPrefab;
+            pcs.MissilePrefab = missilePrefab;
+            pcs.BombPrefab = bombPrefab;
+
+            PlayerController pc = pGo.AddComponent<PlayerController>();
+            pc.CombatSystem = pcs;
+            pc.ProjectilePrefab = blasterPrefab;
+
+            // Attack is held down
+            pc.IsAttackHeld = true;
+
+            int fireCount = 0;
+            pcs.OnWeaponFired += (w, obj) =>
+            {
+                fireCount++;
+                disposables.Add(obj);
+            };
+
+            // First fire
+            pc.FireProjectile();
+            Assert.AreEqual(1, fireCount);
+
+            // Cannot fire again before cooldown (at 0.05s < 0.12s)
+            pcs.EnableSimulatedTime(0.05f);
+            pc.FireProjectile();
+            Assert.AreEqual(1, fireCount);
+
+            // Can fire when cooldown elapses (at 0.13s >= 0.12s)
+            pcs.EnableSimulatedTime(0.13f);
+            pc.FireProjectile();
+            Assert.AreEqual(2, fireCount, "Holding fire should trigger continuous rapid fire upon cooldown elapsed");
+        }
     }
 }

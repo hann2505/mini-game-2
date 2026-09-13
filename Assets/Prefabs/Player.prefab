@@ -16,6 +16,7 @@ GameObject:
   - component: {fileID: 9025024446769657137}
   - component: {fileID: 1783182430206239909}
   - component: {fileID: 4562351888294688667}
+  - component: {fileID: 6011566142018167887}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -82,7 +83,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 5
-  m_Sprite: {fileID: 413986153270297580, guid: e5ec8f70ce74a4891b8eb71975de32c9, type: 3}
+  m_Sprite: {fileID: 2000897910201995071, guid: 49ffa4a7966704014a764867fe218d51, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -265,12 +266,14 @@ MonoBehaviour:
   blasterCooldown: 0.12
   missileCooldown: 1
   bombCooldown: 2.5
+  temporaryMissileCooldown: 0.12
   blasterSpeed: 14
   missileSpeed: 6
   bombSpeed: 1
   blasterFireClip: {fileID: 8300000, guid: 764f95ab148974084960a7aff12b1417, type: 3}
   missileFireClip: {fileID: 8300000, guid: 2e77415d6f266402e9a1d515b9a45a35, type: 3}
   bombDeployClip: {fileID: 8300000, guid: 764f95ab148974084960a7aff12b1417, type: 3}
+  temporaryWeaponTimeRemaining: 0
 --- !u!114 &1783182430206239909
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -318,3 +321,30 @@ MonoBehaviour:
   playerStats: {fileID: 8854508408800127291}
   combatSystem: {fileID: 9025024446769657137}
   defenseSystem: {fileID: 1783182430206239909}
+--- !u!50 &6011566142018167887
+Rigidbody2D:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5115854509880047781}
+  m_BodyType: 0
+  m_Simulated: 1
+  m_UseFullKinematicContacts: 0
+  m_UseAutoMass: 0
+  m_Mass: 1
+  m_LinearDamping: 0
+  m_AngularDamping: 0.05
+  m_GravityScale: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_Interpolate: 0
+  m_SleepingMode: 1
+  m_CollisionDetection: 0
+  m_Constraints: 0

@@ -31,6 +31,7 @@ namespace KinematicsGame.Player
         [SerializeField] private float blasterCooldown = 0.12f;
         [SerializeField] private float missileCooldown = 1.0f;
         [SerializeField] private float bombCooldown = 2.5f;
+        [SerializeField] private float temporaryMissileCooldown = 0.12f;
 
         [Header("Kinematic Speeds")]
         [SerializeField] private float blasterSpeed = 14f;
@@ -56,6 +57,11 @@ namespace KinematicsGame.Player
         public float BlasterCooldown => blasterCooldown;
         public float MissileCooldown => missileCooldown;
         public float BombCooldown => bombCooldown;
+        public float TemporaryMissileCooldown
+        {
+            get => temporaryMissileCooldown;
+            set => temporaryMissileCooldown = Mathf.Max(0.01f, value);
+        }
 
         public GameObject BlasterPrefab { get => blasterPrefab; set => blasterPrefab = value; }
         public GameObject MissilePrefab { get => missilePrefab; set => missilePrefab = value; }
@@ -74,6 +80,7 @@ namespace KinematicsGame.Player
         public void GrantTemporaryWeapon(WeaponType weapon, float duration = 10.0f)
         {
             temporaryWeaponTimeRemaining = Mathf.Max(temporaryWeaponTimeRemaining, duration);
+            lastMissileTime = -100f;
             SelectWeapon(weapon);
         }
 
@@ -129,7 +136,10 @@ namespace KinematicsGame.Player
                 case WeaponType.Blaster:
                     return now - lastBlasterTime >= blasterCooldown;
                 case WeaponType.Missile:
-                    return now - lastMissileTime >= missileCooldown;
+                    float activeCooldown = (IsTemporaryWeaponActive && currentWeapon == WeaponType.Missile)
+                        ? temporaryMissileCooldown
+                        : missileCooldown;
+                    return now - lastMissileTime >= activeCooldown;
                 case WeaponType.Bomb:
                     return now - lastBombTime >= bombCooldown;
                 default:

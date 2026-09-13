@@ -38,6 +38,14 @@ namespace KinematicsGame.Player
         [SerializeField] private PlayerCombatSystem combatSystem;
         [SerializeField] private PlayerDefenseSystem defenseSystem;
 
+        private bool isAttackHeld = false;
+
+        public bool IsAttackHeld
+        {
+            get => isAttackHeld;
+            set => isAttackHeld = value;
+        }
+
         public float MoveSpeed
         {
             get => moveSpeed;
@@ -185,6 +193,10 @@ namespace KinematicsGame.Player
         {
             HandleDirectInputFallback();
             HandleMovement();
+            if (isAttackHeld)
+            {
+                FireProjectile();
+            }
         }
 
         /// <summary>
@@ -269,6 +281,8 @@ namespace KinematicsGame.Player
                 return;
             }
 
+            bool directAttack = false;
+
             // Keyboard movement fallback
             if (Keyboard.current != null)
             {
@@ -305,22 +319,31 @@ namespace KinematicsGame.Player
                     defenseSystem?.TriggerEmpStun();
                 }
 
-                if (Keyboard.current.spaceKey.wasPressedThisFrame || Keyboard.current.enterKey.wasPressedThisFrame)
+                if (Keyboard.current.spaceKey.isPressed || Keyboard.current.enterKey.isPressed)
                 {
-                    FireProjectile();
+                    directAttack = true;
                 }
             }
 
-            // Mouse click fallback
-            if (Mouse.current != null && Mouse.current.leftButton.wasPressedThisFrame)
+            // Mouse click/hold fallback
+            if (Mouse.current != null && Mouse.current.leftButton.isPressed)
             {
-                FireProjectile();
+                directAttack = true;
             }
 
-            // Touch tap fallback
-            if (Touchscreen.current != null && Touchscreen.current.primaryTouch.press.wasPressedThisFrame)
+            // Touch tap/hold fallback
+            if (Touchscreen.current != null && Touchscreen.current.primaryTouch.press.isPressed)
             {
-                FireProjectile();
+                directAttack = true;
+            }
+
+            if (playerInput == null || !playerInput.enabled)
+            {
+                isAttackHeld = directAttack;
+            }
+            else if (directAttack)
+            {
+                isAttackHeld = true;
             }
         }
 
@@ -339,7 +362,8 @@ namespace KinematicsGame.Player
         /// </summary>
         public void OnAttack(InputValue value)
         {
-            if (value.isPressed)
+            isAttackHeld = value.isPressed;
+            if (isAttackHeld)
             {
                 FireProjectile();
             }

@@ -284,16 +284,25 @@ namespace KinematicsGame.Combat
                 explosionPrefab = UnityEditor.AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Prefabs/Missile_Explosion.prefab");
             }
 #endif
+            Quaternion explosionRotation = transform.rotation;
+            if (direction.sqrMagnitude > 0.001f)
+            {
+                float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg - 90f;
+                explosionRotation = Quaternion.Euler(0f, 0f, angle);
+            }
+
             GameObject expGo = null;
             if (explosionPrefab != null)
             {
-                expGo = Instantiate(explosionPrefab, spawnPos, Quaternion.identity);
+                expGo = Instantiate(explosionPrefab, spawnPos, explosionRotation);
+                expGo.transform.rotation = explosionRotation;
                 expGo.transform.localScale = Vector3.one * 0.5f;
             }
             else if (explosionFrames != null && explosionFrames.Length > 0)
             {
                 expGo = new GameObject("Missile_Explosion");
                 expGo.transform.position = spawnPos;
+                expGo.transform.rotation = explosionRotation;
                 expGo.transform.localScale = Vector3.one * 0.5f;
                 SpriteRenderer expSr = expGo.AddComponent<SpriteRenderer>();
                 expSr.sortingOrder = 15;
@@ -307,6 +316,7 @@ namespace KinematicsGame.Combat
             if (expGo != null)
             {
                 expGo.transform.position = spawnPos;
+                expGo.transform.rotation = explosionRotation;
                 SpriteRenderer expSr = expGo.GetComponent<SpriteRenderer>();
                 if (expSr != null)
                 {

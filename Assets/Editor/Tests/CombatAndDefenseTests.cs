@@ -471,6 +471,12 @@ namespace KinematicsGame.Tests
                 disposables.Add(spawnedExplosion);
             }
             Assert.IsNotNull(spawnedExplosion, "Missile_Explosion GameObject should be spawned upon kinematic contact with Object B");
+
+            // Verify explosion is rotated horizontally (-90 deg or 270 deg) matching Vector2.right flight direction
+            float expectedZ = -90f;
+            float actualZ = spawnedExplosion.transform.rotation.eulerAngles.z;
+            if (actualZ > 180f) actualZ -= 360f;
+            Assert.AreEqual(expectedZ, actualZ, 1.0f, "Explosion should rotate horizontally matching the missile's flight direction");
         }
     }
 }

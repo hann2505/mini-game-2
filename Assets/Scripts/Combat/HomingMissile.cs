@@ -138,6 +138,38 @@ namespace KinematicsGame.Combat
             }
 
             UpdateFlyingAnimation(dt);
+            CheckTargetCollision();
+        }
+
+        public override void EnsureComponents()
+        {
+            base.EnsureComponents();
+            if (rb != null)
+            {
+                rb.bodyType = RigidbodyType2D.Kinematic;
+                rb.useFullKinematicContacts = true;
+                rb.collisionDetectionMode = CollisionDetectionMode2D.Continuous;
+            }
+        }
+
+        private void CheckTargetCollision()
+        {
+            if (hasDetonated) return;
+
+            float radius = col != null ? (col is CircleCollider2D cc ? cc.radius * transform.localScale.x : 0.6f) : 0.6f;
+            Collider2D[] hits = Physics2D.OverlapCircleAll(transform.position, Mathf.Max(0.5f, radius));
+            for (int i = 0; i < hits.Length; i++)
+            {
+                Collider2D hit = hits[i];
+                if (hit == null || hit.gameObject == gameObject) continue;
+
+                TargetController target = hit.GetComponent<TargetController>() ?? hit.GetComponentInParent<TargetController>();
+                if (target != null && target.gameObject.activeInHierarchy)
+                {
+                    Detonate();
+                    return;
+                }
+            }
         }
 
         public void UpdateFlyingAnimation(float dt)
@@ -244,6 +276,8 @@ namespace KinematicsGame.Combat
 
         private void SpawnExplosionEffect()
         {
+            Vector3 spawnPos = new Vector3(transform.position.x, transform.position.y, 0f);
+
 #if UNITY_EDITOR
             if (explosionPrefab == null)
             {
@@ -253,13 +287,14 @@ namespace KinematicsGame.Combat
             GameObject expGo = null;
             if (explosionPrefab != null)
             {
-                expGo = Instantiate(explosionPrefab, transform.position, Quaternion.identity);
+                expGo = Instantiate(explosionPrefab, spawnPos, Quaternion.identity);
+                expGo.transform.localScale = Vector3.one * 0.5f;
             }
             else if (explosionFrames != null && explosionFrames.Length > 0)
             {
                 expGo = new GameObject("Missile_Explosion");
-                expGo.transform.position = transform.position;
-                expGo.transform.localScale = Vector3.one * 0.3f;
+                expGo.transform.position = spawnPos;
+                expGo.transform.localScale = Vector3.one * 0.5f;
                 SpriteRenderer expSr = expGo.AddComponent<SpriteRenderer>();
                 expSr.sortingOrder = 15;
                 AnimatedSpriteEffect effect = expGo.AddComponent<AnimatedSpriteEffect>();
@@ -271,7 +306,12 @@ namespace KinematicsGame.Combat
 
             if (expGo != null)
             {
-                expGo.transform.position = transform.position;
+                expGo.transform.position = spawnPos;
+                SpriteRenderer expSr = expGo.GetComponent<SpriteRenderer>();
+                if (expSr != null)
+                {
+                    expSr.sortingOrder = 15;
+                }
                 expGo.SetActive(true);
             }
         }

@@ -23,7 +23,18 @@ namespace KinematicsGame.Combat
         public Sprite[] Frames
         {
             get => frames;
-            set => frames = value;
+            set
+            {
+                frames = value;
+                if (frames != null && frames.Length > 0)
+                {
+                    if (sr == null) sr = GetComponent<SpriteRenderer>();
+                    if (sr != null)
+                    {
+                        sr.sprite = frames[0];
+                    }
+                }
+            }
         }
 
         public float FramesPerSecond
@@ -56,6 +67,10 @@ namespace KinematicsGame.Combat
         private void Awake()
         {
             if (sr == null) sr = GetComponent<SpriteRenderer>();
+            if (frames != null && frames.Length > 0 && sr != null)
+            {
+                sr.sprite = frames[0];
+            }
         }
 
         private void Start()

@@ -432,5 +432,45 @@ namespace KinematicsGame.Tests
             Assert.AreEqual(1, effect.Frames.Length);
             Assert.AreEqual(expSprite, effect.Frames[0]);
         }
+
+        [Test]
+        public void HomingMissile_KinematicsMovement_DetonatesOnOverlapWithTarget()
+        {
+            // Target at (3, 0, 0) with a collider
+            GameObject targetGo = new GameObject("TargetEnemy_KinematicTest");
+            disposables.Add(targetGo);
+            targetGo.transform.position = new Vector3(3f, 0f, 0f);
+            CircleCollider2D targetCol = targetGo.AddComponent<CircleCollider2D>();
+            targetCol.radius = 0.5f;
+            targetCol.isTrigger = true;
+            TargetController target = targetGo.AddComponent<TargetController>();
+
+            // Missile approaching target from (2.7, 0, 0)
+            GameObject missileGo = new GameObject("MissileApproaching");
+            missileGo.transform.position = new Vector3(2.7f, 0f, 0f);
+            CircleCollider2D missileCol = missileGo.AddComponent<CircleCollider2D>();
+            missileCol.radius = 0.5f;
+            missileCol.isTrigger = true;
+            HomingMissile missile = missileGo.AddComponent<HomingMissile>();
+
+            Texture2D tex = new Texture2D(32, 32);
+            disposables.Add(tex);
+            Sprite expSprite = Sprite.Create(tex, new Rect(0, 0, 32, 32), Vector2.zero);
+            disposables.Add(expSprite);
+            missile.ExplosionFrames = new[] { expSprite };
+            missile.Initialize(Vector2.right, 6f);
+
+            // One kinematics tick moves missile into target bounds
+            missile.UpdateKinematics(0.05f);
+
+            Assert.IsTrue(missile.HasDetonated, "Missile should have detonated upon reaching target");
+
+            GameObject spawnedExplosion = GameObject.Find("Missile_Explosion");
+            if (spawnedExplosion != null)
+            {
+                disposables.Add(spawnedExplosion);
+            }
+            Assert.IsNotNull(spawnedExplosion, "Missile_Explosion GameObject should be spawned upon kinematic contact with Object B");
+        }
     }
 }

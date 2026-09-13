@@ -215,7 +215,7 @@ namespace KinematicsGame.Editor
             if (existing != null) return existing;
 
             GameObject expGo = new GameObject("Missile_Explosion");
-            expGo.transform.localScale = new Vector3(0.3f, 0.3f, 1f);
+            expGo.transform.localScale = new Vector3(0.5f, 0.5f, 1f);
             SpriteRenderer sr = expGo.AddComponent<SpriteRenderer>();
             sr.sortingOrder = 15;
             if (explosionSprites != null && explosionSprites.Length > 0)
@@ -228,12 +228,6 @@ namespace KinematicsGame.Editor
             effect.FramesPerSecond = 15f;
             effect.Loop = false;
             effect.AutoDestroy = true;
-
-            if (controller != null)
-            {
-                Animator anim = expGo.AddComponent<Animator>();
-                anim.runtimeAnimatorController = controller;
-            }
 
             GameObject prefab = PrefabUtility.SaveAsPrefabAsset(expGo, ExplosionPrefabPath);
             Object.DestroyImmediate(expGo);

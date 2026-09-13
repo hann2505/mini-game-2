@@ -55,7 +55,7 @@ namespace KinematicsGame.Combat
             if (rb != null)
             {
                 rb.bodyType = RigidbodyType2D.Kinematic;
-                rb.useFullKinematicContacts = false;
+                rb.useFullKinematicContacts = true;
             }
 
             if (col == null)

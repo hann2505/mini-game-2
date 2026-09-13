@@ -55,6 +55,30 @@ namespace KinematicsGame.Combat
             {
                 Detonate();
             }
+            else if (IsArmed)
+            {
+                CheckTargetCollision();
+            }
+        }
+
+        private void CheckTargetCollision()
+        {
+            if (hasDetonated || !IsArmed) return;
+
+            float radius = col != null ? (col is CircleCollider2D cc ? cc.radius * transform.localScale.x : 0.5f) : 0.5f;
+            Collider2D[] hits = Physics2D.OverlapCircleAll(transform.position, Mathf.Max(0.4f, radius));
+            for (int i = 0; i < hits.Length; i++)
+            {
+                Collider2D hit = hits[i];
+                if (hit == null || hit.gameObject == gameObject) continue;
+
+                TargetController target = hit.GetComponent<TargetController>() ?? hit.GetComponentInParent<TargetController>();
+                if (target != null && target.gameObject.activeInHierarchy)
+                {
+                    Detonate();
+                    return;
+                }
+            }
         }
 
         private void OnTriggerEnter2D(Collider2D other)

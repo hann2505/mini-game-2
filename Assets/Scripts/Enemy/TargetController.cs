@@ -167,7 +167,7 @@ namespace KinematicsGame.Enemy
             if (rb != null)
             {
                 rb.bodyType = RigidbodyType2D.Kinematic;
-                rb.useFullKinematicContacts = false;
+                rb.useFullKinematicContacts = true;
             }
 
             if (col == null)
@@ -475,8 +475,22 @@ namespace KinematicsGame.Enemy
                 return;
             }
 
+            Combat.HomingMissile missile = other.GetComponent<Combat.HomingMissile>() ?? other.GetComponentInParent<Combat.HomingMissile>();
+            if (missile != null)
+            {
+                missile.Detonate();
+                return;
+            }
+
+            Combat.ClusterBomb bomb = other.GetComponent<Combat.ClusterBomb>() ?? other.GetComponentInParent<Combat.ClusterBomb>();
+            if (bomb != null)
+            {
+                bomb.Detonate();
+                return;
+            }
+
             // Type-safe lookup independent of external TagManager settings
-            if (other.TryGetComponent<BaseProjectile>(out _) || other.TryGetComponent<Projectile>(out _) || other.gameObject.name.Contains("Projectile"))
+            if (other.TryGetComponent<BaseProjectile>(out _) || other.TryGetComponent<Projectile>(out _) || other.gameObject.name.Contains("Projectile") || other.gameObject.name.Contains("Missile") || other.gameObject.name.Contains("Bomb"))
             {
                 HandleHitByProjectile(other.gameObject);
             }

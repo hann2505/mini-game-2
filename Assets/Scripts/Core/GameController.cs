@@ -330,6 +330,10 @@ namespace KinematicsGame.Core
             {
                 // Normalize Player to target uniform world unit size
                 ViewportManager.Instance.MatchObjectUniformSize(srPlayer, targetUniformSize);
+                if (playerInstance != null)
+                {
+                    playerInstance.EnsureCollider();
+                }
             }
 
             if (srTarget != null && srTarget.sprite != null && srPlayer != null && srPlayer.sprite != null)

@@ -29,12 +29,24 @@ namespace KinematicsGame.Audio
         [SerializeField, Range(0f, 1f)] private float defaultMusicVolume = 0.25f;
         [SerializeField, Range(0f, 1f)] private float defaultSfxVolume = 0.25f;
 
+        [Header("Warning Cooldown")]
+        [SerializeField] private float warningCooldown = 2.0f;
+        private float lastWarningEndTime = -100f;
+
         private int currentSfxIndex = 0;
         private Coroutine warningRoutine;
 
         public bool IsSfxMuted { get; private set; }
         public bool IsMusicMuted { get; private set; }
         public int WarningPulseCount { get; private set; }
+
+        public bool IsWarningPlaying => warningRoutine != null || (warningSource != null && warningSource.isPlaying);
+        public bool IsWarningOnCooldown => Time.time < lastWarningEndTime + warningCooldown;
+        public float WarningCooldown
+        {
+            get => warningCooldown;
+            set => warningCooldown = Mathf.Max(0f, value);
+        }
 
         public float SfxVolume
         {
@@ -176,6 +188,11 @@ namespace KinematicsGame.Audio
                     }
                 }
             }
+
+            if (warningSource != null)
+            {
+                warningSource.mute = IsSfxMuted;
+            }
         }
 
         public void PlayMusic(AudioClip clip, float volume = -1f, bool loop = true)
@@ -231,36 +248,95 @@ namespace KinematicsGame.Audio
             }
         }
 
-        public void PlayWarningAlarm(AudioClip clip, int pulses = 4, float interval = 0.35f)
+        public bool PlayWarningAlarm(AudioClip clip, int pulses = 4, float interval = 0.35f, bool forceRestart = false)
         {
-            if (clip == null) return;
+            if (clip == null) return false;
             if (warningSource == null) InitializeChannels();
+
+            // Anti-spam guard: do not interrupt currently playing alarm unless explicitly forced
+            if (!forceRestart && IsWarningPlaying)
+            {
+                return false;
+            }
+
+            // Cooldown guard: do not restart alarm during cooldown window unless explicitly forced
+            if (!forceRestart && IsWarningOnCooldown)
+            {
+                return false;
+            }
 
             if (warningRoutine != null)
             {
                 StopCoroutine(warningRoutine);
+                warningRoutine = null;
             }
 
+            warningSource.Stop();
             warningRoutine = StartCoroutine(WarningRoutine(clip, pulses, interval));
+            return true;
+        }
+
+        public void StopWarningAlarm()
+        {
+            if (warningRoutine != null)
+            {
+                StopCoroutine(warningRoutine);
+                warningRoutine = null;
+            }
+
+            if (warningSource != null)
+            {
+                warningSource.Stop();
+            }
+
+            lastWarningEndTime = Time.time;
         }
 
         private IEnumerator WarningRoutine(AudioClip clip, int pulses, float interval)
         {
+            float pulseDelay = CalculateWarningPulseDelay(clip, interval);
+            float clipDuration = clip != null ? clip.length : 0f;
+
             for (int i = 0; i < pulses; i++)
             {
                 if (!IsSfxMuted && warningSource != null)
                 {
-                    warningSource.PlayOneShot(clip, defaultSfxVolume);
+                    warningSource.clip = clip;
+                    warningSource.volume = defaultSfxVolume;
+                    warningSource.Play();
                 }
                 WarningPulseCount++;
-                yield return new WaitForSeconds(interval);
+
+                if (i < pulses - 1)
+                {
+                    yield return new WaitForSeconds(pulseDelay);
+                }
             }
+
+            // Wait for final pulse clip to complete before resetting routine & starting cooldown
+            if (clipDuration > 0f)
+            {
+                yield return new WaitForSeconds(clipDuration);
+            }
+
+            lastWarningEndTime = Time.time;
             warningRoutine = null;
+        }
+
+        public static float CalculateWarningPulseDelay(AudioClip clip, float interval)
+        {
+            float clipDuration = clip != null ? clip.length : 0f;
+            return Mathf.Max(clipDuration, Mathf.Max(0f, interval));
         }
 
         public void SimulatePulseSequence(int count)
         {
             WarningPulseCount += count;
+        }
+
+        public void ResetWarningCooldown()
+        {
+            lastWarningEndTime = -100f;
         }
 
         public static void ResetInstanceForTesting(AudioManager instance = null)

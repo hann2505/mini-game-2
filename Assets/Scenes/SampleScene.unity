@@ -151,8 +151,18 @@ MonoBehaviour:
   hazardMinePrefab: {fileID: 3953553143709675006, guid: 029395d026752424cbe276477d856320, type: 3}
   supplyCratePrefab: {fileID: 7282411298855485528, guid: f034f0d03647f4c67ab1a3e70ede0525, type: 3}
   gemCorePrefab: {fileID: 8317362022656133800, guid: ad02abd2642a5456383015bb14d2e929, type: 3}
-  spawnInterval: 8
-  autoSpawn: 1
+  spawnInterval: 3
+  spawnChance: 0.8
+  minSpawnInterval: 2
+  maxSpawnPerCycle: 1
+  multiSpawnChance: 0
+  prewarmViewport: 0
+  initialPrewarmCount: 0
+  enemyDropChance: 1
+  hazardMineWeight: 0.25
+  supplyCrateWeight: 0.25
+  gemCoreWeight: 0.5
+  autoSpawn: 0
   spawnTimer: 0
   isHorizontal: 1
 --- !u!4 &60245296
@@ -494,7 +504,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "\U0001F48E 0"
+  m_text: 'GEMS: 0'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -516,7 +526,7 @@ MonoBehaviour:
   m_spriteAsset: {fileID: 0}
   m_tintAllSprites: 0
   m_StyleSheet: {fileID: 0}
-  m_TextStyleHashCode: 0
+  m_TextStyleHashCode: -1183493901
   m_overrideHtmlColors: 0
   m_faceColor:
     serializedVersion: 2
@@ -652,7 +662,7 @@ MonoBehaviour:
   m_spriteAsset: {fileID: 0}
   m_tintAllSprites: 0
   m_StyleSheet: {fileID: 0}
-  m_TextStyleHashCode: 0
+  m_TextStyleHashCode: -1183493901
   m_overrideHtmlColors: 0
   m_faceColor:
     serializedVersion: 2
@@ -765,8 +775,8 @@ MonoBehaviour:
   - {fileID: 1300399371}
   warningSource: {fileID: 1946484882}
   sfxPoolSize: 4
-  defaultMusicVolume: 0.25
-  defaultSfxVolume: 0.25
+  defaultMusicVolume: 0.5
+  defaultSfxVolume: 1
 --- !u!4 &381981932
 Transform:
   m_ObjectHideFlags: 0
@@ -1117,7 +1127,7 @@ MonoBehaviour:
   m_spriteAsset: {fileID: 0}
   m_tintAllSprites: 0
   m_StyleSheet: {fileID: 0}
-  m_TextStyleHashCode: 0
+  m_TextStyleHashCode: -1183493901
   m_overrideHtmlColors: 0
   m_faceColor:
     serializedVersion: 2
@@ -1363,8 +1373,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a7c35e099ffbf4b2fa4250666a661332, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  warningClip: {fileID: 8300000, guid: 2e77415d6f266402e9a1d515b9a45a35, type: 3}
-  pulseCount: 4
+  warningClip: {fileID: 8300000, guid: 645286ffeca44913beba9457afa09023, type: 3}
+  minPulseCount: 3
+  maxPulseCount: 6
   pulseInterval: 0.35
   debounceTime: 3
   zoneViewportRatio: 0.2
@@ -1627,7 +1638,7 @@ MonoBehaviour:
   m_spriteAsset: {fileID: 0}
   m_tintAllSprites: 0
   m_StyleSheet: {fileID: 0}
-  m_TextStyleHashCode: 0
+  m_TextStyleHashCode: -1183493901
   m_overrideHtmlColors: 0
   m_faceColor:
     serializedVersion: 2
@@ -2241,7 +2252,7 @@ MonoBehaviour:
   m_spriteAsset: {fileID: 0}
   m_tintAllSprites: 0
   m_StyleSheet: {fileID: 0}
-  m_TextStyleHashCode: 0
+  m_TextStyleHashCode: -1183493901
   m_overrideHtmlColors: 0
   m_faceColor:
     serializedVersion: 2
@@ -2484,7 +2495,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 'ARMOR: 50/50'
+  m_text: 'ARMOR: 0/50'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -2506,7 +2517,7 @@ MonoBehaviour:
   m_spriteAsset: {fileID: 0}
   m_tintAllSprites: 0
   m_StyleSheet: {fileID: 0}
-  m_TextStyleHashCode: 0
+  m_TextStyleHashCode: -1183493901
   m_overrideHtmlColors: 0
   m_faceColor:
     serializedVersion: 2
@@ -2837,7 +2848,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "\U0001FA99 0"
+  m_text: 'GOLD: 0'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -2859,7 +2870,7 @@ MonoBehaviour:
   m_spriteAsset: {fileID: 0}
   m_tintAllSprites: 0
   m_StyleSheet: {fileID: 0}
-  m_TextStyleHashCode: 0
+  m_TextStyleHashCode: -1183493901
   m_overrideHtmlColors: 0
   m_faceColor:
     serializedVersion: 2
@@ -3330,6 +3341,7 @@ GameObject:
   - component: {fileID: 1886685730}
   - component: {fileID: 1886685729}
   - component: {fileID: 1886685728}
+  - component: {fileID: 1886685731}
   m_Layer: 0
   m_Name: EventSystem
   m_TagString: Untagged
@@ -3387,6 +3399,28 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!95 &1886685731
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1886685727}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 69f6831619fd64dae9c0dffcd896d9d0, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage:
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &1908095689
 GameObject:
   m_ObjectHideFlags: 0

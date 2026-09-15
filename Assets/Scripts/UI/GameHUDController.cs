@@ -1,5 +1,6 @@
 using UnityEngine;
 using TMPro;
+using UnityEngine.UI;
 using KinematicsGame.Combat;
 using KinematicsGame.Player;
 
@@ -15,6 +16,9 @@ namespace KinematicsGame.UI
     {
         public const float ScorePopDuration = 0.25f;
         public const float ScorePopScale = 1.35f;
+        public const float VitalBarWidth = 360f;
+        public const float VitalBarHeight = 56f;
+        public const float VitalFontSize = 30f;
 
         [Header("Score Display")]
         [SerializeField] private TextMeshProUGUI scoreLabel;
@@ -43,6 +47,7 @@ namespace KinematicsGame.UI
         [SerializeField] private TextMeshProUGUI hpLabel;
         [SerializeField] private UnityEngine.UI.Slider hpSlider;
         [SerializeField] private TextMeshProUGUI armorLabel;
+        [SerializeField] private Slider armorSlider;
         [SerializeField] private TextMeshProUGUI shieldLabel;
 
         [Header("Currency Display")]
@@ -74,6 +79,7 @@ namespace KinematicsGame.UI
         public TextMeshProUGUI HpLabel => hpLabel;
         public UnityEngine.UI.Slider HpSlider => hpSlider;
         public TextMeshProUGUI ArmorLabel => armorLabel;
+        public Slider ArmorSlider => armorSlider;
         public TextMeshProUGUI ShieldLabel => shieldLabel;
         public TextMeshProUGUI GoldLabel => goldLabel;
         public TextMeshProUGUI DiamondLabel => diamondLabel;
@@ -154,6 +160,7 @@ namespace KinematicsGame.UI
 
         private void Start()
         {
+            EnsureVitalBars();
             // Initialize display from ScoreManager if already active
             if (ScoreManager.Instance != null)
             {
@@ -180,7 +187,12 @@ namespace KinematicsGame.UI
 
         private void Update()
         {
-            TickScorePopAnimation(Time.deltaTime);
+            UpdateHUD(Time.deltaTime);
+        }
+
+        public void UpdateHUD(float deltaTime = 0f)
+        {
+            TickScorePopAnimation(deltaTime);
 
             if (weaponLabel != null && boundCombat != null)
             {
@@ -319,6 +331,112 @@ namespace KinematicsGame.UI
             weaponLabel = weaponLbl;
             hpSlider = slider;
             cooldownLabel = cooldownLbl;
+            EnsureVitalBars();
+        }
+
+        /// <summary>Upgrades existing scene labels without requiring a scene rebuild.</summary>
+        public void EnsureVitalBars()
+        {
+            ApplyReadableHudLayout();
+            if (hpSlider == null) hpSlider = CreateVitalBar(hpLabel, "HealthBar", new Color(0.10f, 0.38f, 0.23f));
+            if (armorSlider == null) armorSlider = CreateVitalBar(armorLabel, "ArmorBar", new Color(0.08f, 0.31f, 0.52f));
+            ConfigureVitalBar(hpSlider);
+            ConfigureVitalBar(armorSlider);
+            HandleHealthChanged(boundStats != null ? boundStats.CurrentHealth : 100,
+                boundStats != null ? boundStats.MaxHealth : 100);
+            HandleArmorChanged(boundStats != null ? boundStats.CurrentArmor : 0,
+                boundStats != null ? boundStats.MaxArmor : 50);
+        }
+
+        private static void ConfigureVitalBar(Slider slider)
+        {
+            if (slider == null) return;
+            RectTransform rect = slider.GetComponent<RectTransform>();
+            rect.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, VitalBarWidth);
+            rect.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, VitalBarHeight);
+            slider.interactable = false;
+            slider.transition = Selectable.Transition.None;
+            slider.navigation = new Navigation { mode = Navigation.Mode.None };
+            slider.minValue = 0;
+            slider.wholeNumbers = true;
+            foreach (Graphic graphic in slider.GetComponentsInChildren<Graphic>())
+                graphic.raycastTarget = false;
+        }
+
+        private void ApplyReadableHudLayout()
+        {
+            ConfigureLabel(hpLabel, new Vector2(170f, -32f), new Vector2(VitalBarWidth, VitalBarHeight), VitalFontSize,
+                TextAlignmentOptions.Center, true);
+            ConfigureLabel(armorLabel, new Vector2(170f, -96f), new Vector2(VitalBarWidth, VitalBarHeight), VitalFontSize,
+                TextAlignmentOptions.Center, true);
+            ConfigureLabel(shieldLabel, new Vector2(170f, -158f), new Vector2(360f, 38f), 24f,
+                TextAlignmentOptions.Left, true);
+            ConfigureLabel(goldLabel, new Vector2(550f, -30f), new Vector2(180f, 40f), 27f,
+                TextAlignmentOptions.Left, true);
+            ConfigureLabel(diamondLabel, new Vector2(550f, -76f), new Vector2(180f, 40f), 27f,
+                TextAlignmentOptions.Left, true);
+            ConfigureLabel(weaponLabel, new Vector2(550f, -122f), new Vector2(250f, 40f), 25f,
+                TextAlignmentOptions.Left, true);
+            ConfigureLabel(cooldownLabel, new Vector2(550f, -166f), new Vector2(250f, 38f), 21f,
+                TextAlignmentOptions.Left, false);
+        }
+
+        private static void ConfigureLabel(
+            TextMeshProUGUI label,
+            Vector2 position,
+            Vector2 size,
+            float fontSize,
+            TextAlignmentOptions alignment,
+            bool bold)
+        {
+            if (label == null || label.GetComponentInParent<Canvas>() == null) return;
+            RectTransform rect = label.rectTransform;
+            rect.anchoredPosition = position;
+            rect.sizeDelta = size;
+            label.fontSize = fontSize;
+            label.fontStyle = bold ? FontStyles.Bold : FontStyles.Normal;
+            label.alignment = alignment;
+            label.enableAutoSizing = false;
+            label.raycastTarget = false;
+        }
+
+        private static Slider CreateVitalBar(TextMeshProUGUI label, string name, Color color)
+        {
+            if (label == null || label.GetComponentInParent<Canvas>() == null) return null;
+            RectTransform source = label.rectTransform;
+            Transform existing = source.parent.Find(name);
+            if (existing != null && existing.TryGetComponent<Slider>(out var existingSlider))
+                return existingSlider;
+            var root = new GameObject(name, typeof(RectTransform), typeof(Image), typeof(Slider));
+            var rect = (RectTransform)root.transform;
+            rect.SetParent(source.parent, false);
+            rect.anchorMin = source.anchorMin;
+            rect.anchorMax = source.anchorMax;
+            rect.pivot = source.pivot;
+            rect.anchoredPosition = source.anchoredPosition;
+            rect.sizeDelta = new Vector2(VitalBarWidth, VitalBarHeight);
+            rect.SetSiblingIndex(source.GetSiblingIndex());
+            root.GetComponent<Image>().color = new Color(0.035f, 0.055f, 0.09f, 0.96f);
+
+            var fill = new GameObject("Fill", typeof(RectTransform), typeof(Image));
+            var fillRect = (RectTransform)fill.transform;
+            fillRect.SetParent(rect, false);
+            fillRect.anchorMin = Vector2.zero;
+            fillRect.anchorMax = Vector2.one;
+            fillRect.offsetMin = new Vector2(2f, 2f);
+            fillRect.offsetMax = new Vector2(-2f, -2f);
+            fill.GetComponent<Image>().color = color;
+            var slider = root.GetComponent<Slider>();
+            slider.fillRect = fillRect;
+            slider.direction = Slider.Direction.LeftToRight;
+
+            label.color = Color.white;
+            label.fontSize = VitalFontSize;
+            label.fontStyle = FontStyles.Bold;
+            label.alignment = TextAlignmentOptions.Center;
+            label.raycastTarget = false;
+            source.sizeDelta = new Vector2(VitalBarWidth, VitalBarHeight);
+            return slider;
         }
 
         public void BindPlayer(PlayerController player)
@@ -393,8 +511,12 @@ namespace KinematicsGame.UI
             }
             if (hpSlider != null)
             {
-                hpSlider.maxValue = max;
-                hpSlider.value = current;
+                hpSlider.maxValue = Mathf.Max(1, max);
+                hpSlider.SetValueWithoutNotify(current);
+                if (hpSlider.fillRect != null && hpSlider.fillRect.TryGetComponent<Image>(out var fill))
+                    fill.color = current <= max * 0.25f
+                        ? new Color(0.62f, 0.12f, 0.15f)
+                        : new Color(0.10f, 0.38f, 0.23f);
             }
         }
 
@@ -403,6 +525,11 @@ namespace KinematicsGame.UI
             if (armorLabel != null)
             {
                 armorLabel.text = $"ARMOR: {current}/{max}";
+            }
+            if (armorSlider != null)
+            {
+                armorSlider.maxValue = Mathf.Max(1, max);
+                armorSlider.SetValueWithoutNotify(current);
             }
         }
 
@@ -418,11 +545,11 @@ namespace KinematicsGame.UI
         {
             if (goldLabel != null)
             {
-                goldLabel.text = $"🪙 {gold}";
+                goldLabel.text = $"GOLD: {gold}";
             }
             if (diamondLabel != null)
             {
-                diamondLabel.text = $"💎 {diamonds}";
+                diamondLabel.text = $"GEMS: {diamonds}";
             }
         }
 

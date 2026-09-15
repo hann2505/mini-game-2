@@ -129,7 +129,7 @@ CircleCollider2D:
   m_CompositeOperation: 0
   m_CompositeOrder: 0
   m_Offset: {x: 0, y: 0}
-  m_Radius: 7.68
+  m_Radius: 0.6663
 --- !u!82 &7523573933802529302
 AudioSource:
   m_ObjectHideFlags: 0
@@ -242,7 +242,7 @@ MonoBehaviour:
   maxHealth: 100
   currentHealth: 100
   maxArmor: 50
-  currentArmor: 50
+  currentArmor: 0
   gold: 0
   diamonds: 0
   speedMultiplier: 1
@@ -321,6 +321,8 @@ MonoBehaviour:
   playerStats: {fileID: 8854508408800127291}
   combatSystem: {fileID: 9025024446769657137}
   defenseSystem: {fileID: 1783182430206239909}
+  hitboxRadius: 0.38
+  playerCollider: {fileID: 8596158096833049667}
 --- !u!50 &6011566142018167887
 Rigidbody2D:
   serializedVersion: 5

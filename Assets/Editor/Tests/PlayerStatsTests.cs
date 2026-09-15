@@ -45,7 +45,7 @@ namespace KinematicsGame.Tests
             Assert.AreEqual(100, playerStats.MaxHealth);
             Assert.AreEqual(100, playerStats.CurrentHealth);
             Assert.AreEqual(50, playerStats.MaxArmor);
-            Assert.AreEqual(50, playerStats.CurrentArmor);
+            Assert.AreEqual(0, playerStats.CurrentArmor);
             Assert.AreEqual(0, playerStats.Gold);
             Assert.AreEqual(0, playerStats.Diamonds);
             Assert.AreEqual(1.0f, playerStats.EffectiveSpeedMultiplier);
@@ -63,6 +63,7 @@ namespace KinematicsGame.Tests
                 recordedArmor = cur;
             };
 
+            playerStats.RestoreArmor(50);
             playerStats.TakeDamage(30);
 
             Assert.AreEqual(20, playerStats.CurrentArmor);
@@ -82,6 +83,7 @@ namespace KinematicsGame.Tests
                 recordedHp = cur;
             };
 
+            playerStats.RestoreArmor(50);
             playerStats.TakeDamage(70);
 
             Assert.AreEqual(0, playerStats.CurrentArmor);
@@ -106,6 +108,7 @@ namespace KinematicsGame.Tests
         [Test]
         public void PlayerStats_RestoreHealthAndArmor_ClampsToMax()
         {
+            playerStats.RestoreArmor(50);
             playerStats.TakeDamage(80); // 0 armor, 70 HP
             Assert.AreEqual(0, playerStats.CurrentArmor);
             Assert.AreEqual(70, playerStats.CurrentHealth);

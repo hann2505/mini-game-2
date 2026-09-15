@@ -51,6 +51,7 @@
     <Analyzer Include="/Users/nc/Develop/Game/mini-game-2/Library/PackageCache/com.unity.pipeline@9bb4172c603c/Runtime/Analyzers/IlInterpreterAnalyzer.dll" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Assets/Scripts/Combat/LaserBeam.cs" />
     <Compile Include="Assets/Scripts/Combat/CollisionEffectDispatcher.cs" />
     <Compile Include="Assets/Scripts/Combat/Projectile.cs" />
     <Compile Include="Assets/Scripts/Combat/AnimatedSpriteEffect.cs" />

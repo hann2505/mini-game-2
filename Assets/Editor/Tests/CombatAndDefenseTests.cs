@@ -553,5 +553,126 @@ namespace KinematicsGame.Tests
             pc.FireProjectile();
             Assert.AreEqual(2, fireCount, "Holding fire should trigger continuous rapid fire upon cooldown elapsed");
         }
+
+        [Test]
+        public void PlayerCombatSystem_LaserBeam_ActivatesOnHold_AndDeactivatesOnRelease()
+        {
+            combatSystem.GrantTemporaryWeapon(WeaponType.Laser, 10.0f);
+            Assert.AreEqual(WeaponType.Laser, combatSystem.CurrentWeapon);
+
+            LaserBeam beam = combatSystem.LaserBeamInstance;
+            Assert.IsNotNull(beam);
+            Assert.IsFalse(beam.IsBeamActive);
+
+            // Hold attack
+            combatSystem.MaintainLaserBeam(true, Vector2.right, playerGo.transform);
+            Assert.IsTrue(beam.IsBeamActive, "Laser beam must be active while attack is held");
+            Assert.IsTrue(beam.LineRenderer.enabled);
+
+            // Release attack
+            combatSystem.MaintainLaserBeam(false, Vector2.right, playerGo.transform);
+            Assert.IsFalse(beam.IsBeamActive, "Laser beam must deactivate immediately upon releasing attack");
+            Assert.IsFalse(beam.LineRenderer.enabled);
+        }
+
+        [Test]
+        public void PlayerCombatSystem_LaserBeam_ExpiresAfterTenSeconds()
+        {
+            combatSystem.GrantTemporaryWeapon(WeaponType.Laser, 10.0f);
+            combatSystem.MaintainLaserBeam(true, Vector2.right, playerGo.transform);
+            LaserBeam beam = combatSystem.LaserBeamInstance;
+            Assert.IsTrue(beam.IsBeamActive);
+
+            // Advance 9.5 seconds - still laser
+            combatSystem.UpdateCombat(9.5f);
+            Assert.AreEqual(WeaponType.Laser, combatSystem.CurrentWeapon);
+            combatSystem.MaintainLaserBeam(true, Vector2.right, playerGo.transform);
+            Assert.IsTrue(beam.IsBeamActive);
+
+            // Advance remaining 0.6 seconds (total 10.1s)
+            combatSystem.UpdateCombat(0.6f);
+            Assert.AreEqual(WeaponType.Blaster, combatSystem.CurrentWeapon, "Should revert to Blaster upon expiry");
+            Assert.IsFalse(beam.IsBeamActive, "Beam should shut off immediately upon buff expiry");
+        }
+
+        [Test]
+        public void PlayerCombatSystem_LaserBeam_PiercesAndDamagesMultipleTargets()
+        {
+            // Spawn 3 targets along the beam trajectory (x = 3, x = 6, x = 9)
+            GameObject t1 = new GameObject("Target1");
+            disposables.Add(t1);
+            t1.transform.position = new Vector3(3f, 0f, 0f);
+            t1.AddComponent<CircleCollider2D>().radius = 0.5f;
+            TargetController tc1 = t1.AddComponent<TargetController>();
+
+            GameObject t2 = new GameObject("Target2");
+            disposables.Add(t2);
+            t2.transform.position = new Vector3(6f, 0f, 0f);
+            t2.AddComponent<CircleCollider2D>().radius = 0.5f;
+            TargetController tc2 = t2.AddComponent<TargetController>();
+
+            GameObject t3 = new GameObject("Target3");
+            disposables.Add(t3);
+            t3.transform.position = new Vector3(9f, 0f, 0f);
+            t3.AddComponent<CircleCollider2D>().radius = 0.5f;
+            TargetController tc3 = t3.AddComponent<TargetController>();
+
+            int hitCount = 0;
+            TargetController.OnTargetHit += (target, profile, pos) =>
+            {
+                hitCount++;
+            };
+
+            combatSystem.GrantTemporaryWeapon(WeaponType.Laser, 10.0f);
+            LaserBeam beam = combatSystem.LaserBeamInstance;
+            beam.EnableSimulatedTime(0f);
+
+            // Activate and update beam
+            combatSystem.MaintainLaserBeam(true, Vector2.right, playerGo.transform);
+
+            // All 3 targets should be pierced and hit in one sweep
+            Assert.AreEqual(3, hitCount, "Laser beam should pierce all 3 targets in a single sweep");
+
+            // Cleaning event subscribers
+            TargetController.ClearEventSubscribers();
+        }
+
+        [Test]
+        public void CollisionEffectDispatcher_GemCore_GrantsMissileOrLaserBasedOnRoll()
+        {
+            try
+            {
+                // Test roll for Laser
+                CollisionEffectDispatcher.GemWeaponSelector = () => WeaponType.Laser;
+
+                GameObject gemGo = new GameObject("GemCoreLaser");
+                disposables.Add(gemGo);
+                InteractiveEntity gemLaser = gemGo.AddComponent<InteractiveEntity>();
+                gemLaser.Type = EntityType.GemCore;
+
+                PlayerController pc = playerGo.AddComponent<PlayerController>();
+                pc.CombatSystem = combatSystem;
+
+                CollisionEffectDispatcher.ResolveCollision(gemLaser, pc);
+                Assert.AreEqual(WeaponType.Laser, combatSystem.CurrentWeapon);
+                Assert.AreEqual(10f, combatSystem.TemporaryWeaponTimeRemaining);
+
+                // Test roll for Missile
+                CollisionEffectDispatcher.GemWeaponSelector = () => WeaponType.Missile;
+
+                GameObject gemGo2 = new GameObject("GemCoreMissile");
+                disposables.Add(gemGo2);
+                InteractiveEntity gemMissile = gemGo2.AddComponent<InteractiveEntity>();
+                gemMissile.Type = EntityType.GemCore;
+
+                CollisionEffectDispatcher.ResolveCollision(gemMissile, pc);
+                Assert.AreEqual(WeaponType.Missile, combatSystem.CurrentWeapon);
+                Assert.AreEqual(10f, combatSystem.TemporaryWeaponTimeRemaining);
+            }
+            finally
+            {
+                CollisionEffectDispatcher.ResetTracking();
+            }
+        }
     }
 }

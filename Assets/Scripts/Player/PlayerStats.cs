@@ -17,7 +17,7 @@ namespace KinematicsGame.Player
         [SerializeField] private int maxHealth = 100;
         [SerializeField] private int currentHealth = 100;
         [SerializeField] private int maxArmor = 50;
-        [SerializeField] private int currentArmor = 50;
+        [SerializeField] private int currentArmor = 0;
 
         [Header("Currencies")]
         [SerializeField] private int gold = 0;
@@ -55,7 +55,7 @@ namespace KinematicsGame.Player
         private void Awake()
         {
             currentHealth = maxHealth;
-            currentArmor = maxArmor;
+            currentArmor = 0;
         }
 
         private void Update()
@@ -63,12 +63,12 @@ namespace KinematicsGame.Player
             UpdateModifiers(Time.deltaTime);
         }
 
-        public void Initialize(int health = 100, int armor = 50, int startGold = 0, int startDiamonds = 0)
+        public void Initialize(int health = 100, int armor = 50, int startGold = 0, int startDiamonds = 0, int startArmor = 0)
         {
             maxHealth = health;
             currentHealth = health;
             maxArmor = armor;
-            currentArmor = armor;
+            currentArmor = Mathf.Clamp(startArmor, 0, maxArmor);
             gold = startGold;
             diamonds = startDiamonds;
             speedMultiplier = 1.0f;

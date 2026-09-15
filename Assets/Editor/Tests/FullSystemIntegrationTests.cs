@@ -88,6 +88,18 @@ namespace KinematicsGame.Tests
             InteractiveEntity mineEntity = minePrefab.GetComponent<InteractiveEntity>();
             Assert.IsNotNull(mineEntity, "Hazard_Mine should have InteractiveEntity component.");
             Assert.AreEqual(EntityType.HazardMine, mineEntity.Type);
+            AnimatedSpriteEffect idleAnimation = minePrefab.GetComponent<AnimatedSpriteEffect>();
+            Assert.IsNotNull(idleAnimation, "Object X should use the Bomb_3 idle animation.");
+            Assert.AreEqual(10, idleAnimation.Frames.Length);
+            Assert.IsTrue(idleAnimation.Loop);
+            StringAssert.StartsWith("Bomb_3_Idle_", idleAnimation.Frames[0].name);
+            Assert.IsNotNull(mineEntity.InteractionEffectPrefab);
+            AnimatedSpriteEffect explosion = mineEntity.InteractionEffectPrefab.GetComponent<AnimatedSpriteEffect>();
+            Assert.IsNotNull(explosion, "Object X should spawn the Bomb_3 explosion animation.");
+            Assert.AreEqual(9, explosion.Frames.Length);
+            Assert.IsFalse(explosion.Loop);
+            Assert.IsTrue(explosion.AutoDestroy);
+            StringAssert.StartsWith("Bomb_3_Explosion_", explosion.Frames[0].name);
 
             // Verify Tech Supply Crate Prefab (Object Y)
             GameObject cratePrefab = AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Prefabs/Supply_Crate.prefab");
@@ -219,7 +231,7 @@ namespace KinematicsGame.Tests
             Assert.IsTrue(absorbed);
             Assert.AreEqual(2, pds.RemainingShieldHits);
             Assert.AreEqual(100, ps.CurrentHealth);
-            Assert.AreEqual(50, ps.CurrentArmor);
+            Assert.AreEqual(0, ps.CurrentArmor);
 
             // 5. Activate EMP Stun Wave on nearby enemy
             GameObject enemyGo = new GameObject("EnemyTarget");
@@ -260,9 +272,9 @@ namespace KinematicsGame.Tests
             Assert.IsTrue(CollisionEffectDispatcher.TriggeredEffectIds.Contains(1), "Effect 1 should trigger.");
             Assert.IsTrue(CollisionEffectDispatcher.TriggeredEffectIds.Contains(2), "Effect 2 should trigger.");
 
-            // Effect 3: Damage dealt (25 absorbed by Armor: 50 -> 25, HP 100)
-            Assert.AreEqual(100, ps.CurrentHealth);
-            Assert.AreEqual(25, ps.CurrentArmor);
+            // X deals five health damage without armor.
+            Assert.AreEqual(95, ps.CurrentHealth);
+            Assert.AreEqual(0, ps.CurrentArmor);
             Assert.IsTrue(CollisionEffectDispatcher.TriggeredEffectIds.Contains(3), "Effect 3 should trigger.");
 
             // Effect 4: Speed debuff applied
@@ -276,8 +288,8 @@ namespace KinematicsGame.Tests
 
             CollisionEffectDispatcher.ResolveCollision(crate, pc);
 
-            // Effect 5: Restore Armor (+50 -> 75 capped at MaxArmor 50) & deploy Energy Shield
-            Assert.AreEqual(50, ps.CurrentArmor);
+            // Y grants five armor and shield immunity.
+            Assert.AreEqual(5, ps.CurrentArmor);
             Assert.IsTrue(pds.IsShieldActive);
             Assert.IsTrue(CollisionEffectDispatcher.TriggeredEffectIds.Contains(5), "Effect 5 should trigger.");
 
@@ -285,24 +297,37 @@ namespace KinematicsGame.Tests
             Assert.AreEqual(1.5f, ps.EffectiveSpeedMultiplier, 0.01f);
             Assert.IsTrue(CollisionEffectDispatcher.TriggeredEffectIds.Contains(6), "Effect 6 should trigger.");
 
-            // Effect 7: Switch weapon to Missile
-            Assert.AreEqual(WeaponType.Missile, pcs.CurrentWeapon);
-            Assert.IsTrue(CollisionEffectDispatcher.TriggeredEffectIds.Contains(7), "Effect 7 should trigger.");
+            Assert.AreEqual(WeaponType.Blaster, pcs.CurrentWeapon);
 
             // ── Collision with Object Z (Gem Core) ──────────────────────────
             GameObject gemGo = new GameObject("Gem");
+            disposables.Add(gemGo);
             InteractiveEntity gem = gemGo.AddComponent<InteractiveEntity>();
             gem.Type = EntityType.GemCore;
 
             CollisionEffectDispatcher.ResolveCollision(gem, pc);
+
+            // Effect 7: Switch weapon to Missile
+            Assert.AreEqual(WeaponType.Missile, pcs.CurrentWeapon);
+            Assert.IsTrue(CollisionEffectDispatcher.TriggeredEffectIds.Contains(7), "Effect 7 should trigger.");
 
             // Effect 8: Currencies awarded (+50 Gold, +5 Diamonds)
             Assert.AreEqual(50, ps.Gold);
             Assert.AreEqual(5, ps.Diamonds);
             Assert.IsTrue(CollisionEffectDispatcher.TriggeredEffectIds.Contains(8), "Effect 8 should trigger.");
 
-            // Effect 9: 3 mini-bonus pickups spawned
-            Assert.IsTrue(CollisionEffectDispatcher.TriggeredEffectIds.Contains(9), "Effect 9 should trigger.");
+            // Gem Core by default does NOT split into 3 mini-bonuses
+            Assert.IsFalse(CollisionEffectDispatcher.TriggeredEffectIds.Contains(9), "Effect 9 should NOT trigger by default (does not split).");
+
+            // When SplitIntoMiniBonuses is enabled, Effect 9 triggers and 3 mini-bonus pickups spawn
+            GameObject gemSplitGo = new GameObject("GemSplit");
+            disposables.Add(gemSplitGo);
+            InteractiveEntity gemSplit = gemSplitGo.AddComponent<InteractiveEntity>();
+            gemSplit.Type = EntityType.GemCore;
+            gemSplit.SplitIntoMiniBonuses = true;
+
+            CollisionEffectDispatcher.ResolveCollision(gemSplit, pc);
+            Assert.IsTrue(CollisionEffectDispatcher.TriggeredEffectIds.Contains(9), "Effect 9 should trigger when split is enabled.");
             InteractiveEntity[] bonuses = Object.FindObjectsByType<InteractiveEntity>(FindObjectsSortMode.None);
             int miniBonusCount = 0;
             foreach (InteractiveEntity entity in bonuses)
@@ -313,7 +338,7 @@ namespace KinematicsGame.Tests
                     disposables.Add(entity.gameObject);
                 }
             }
-            Assert.AreEqual(3, miniBonusCount, "Exactly 3 MiniBonus pickups should spawn from Gem Core.");
+            Assert.AreEqual(3, miniBonusCount, "Exactly 3 MiniBonus pickups should spawn from Gem Core when split is enabled.");
 
             // Assert all 9 distinct effects were executed
             for (int i = 1; i <= 9; i++)
@@ -355,7 +380,7 @@ namespace KinematicsGame.Tests
 
             // Verify initial HUD text
             Assert.IsTrue(hpLbl.text.Contains("100/100"));
-            Assert.IsTrue(armorLbl.text.Contains("50/50"));
+            Assert.IsTrue(armorLbl.text.Contains("0/50"));
             Assert.IsTrue(shieldLbl.text.Contains("SHIELD: READY"));
             Assert.IsTrue(goldLbl.text.Contains("0"));
             Assert.IsTrue(diamondLbl.text.Contains("0"));
@@ -363,11 +388,12 @@ namespace KinematicsGame.Tests
             Assert.IsTrue(cdLbl.text.Contains("S: READY"));
 
             // Simulate damage, currencies, and weapon switch
-            ps.TakeDamage(25); // Armor absorbs 25 -> 25/50
+            ps.TakeDamage(5); // No starting armor: health absorbs the hit.
             ps.AddCurrency(100, 10);
             pcs.SelectWeapon(WeaponType.Bomb);
 
-            Assert.IsTrue(armorLbl.text.Contains("25/50"));
+            Assert.IsTrue(armorLbl.text.Contains("0/50"));
+            Assert.IsTrue(hpLbl.text.Contains("95/100"));
             Assert.IsTrue(goldLbl.text.Contains("100"));
             Assert.IsTrue(diamondLbl.text.Contains("10"));
             Assert.IsTrue(weaponLbl.text.Contains("Bomb"));
@@ -433,6 +459,9 @@ namespace KinematicsGame.Tests
                     "AudioManager must exist in SampleScene.");
                 Assert.IsNotNull(Object.FindFirstObjectByType<HazardSpawner>(),
                     "HazardSpawner must exist in SampleScene.");
+                var hazardSpawner = Object.FindFirstObjectByType<HazardSpawner>();
+                Assert.LessOrEqual(hazardSpawner.SpawnInterval, 3.0f,
+                    "HazardSpawner should have increased spawn frequency (interval <= 3.0s).");
                 Assert.IsNotNull(Object.FindFirstObjectByType<RestrictedZoneTrigger>(),
                     "RestrictedZoneTrigger must exist in SampleScene.");
                 Assert.IsNotNull(Object.FindFirstObjectByType<GameHUDController>(),

@@ -9,7 +9,8 @@ namespace KinematicsGame.Player
     {
         Blaster = 0,
         Missile = 1,
-        Bomb = 2
+        Bomb = 2,
+        Laser = 3
     }
 
     /// <summary>
@@ -67,6 +68,19 @@ namespace KinematicsGame.Player
         public GameObject MissilePrefab { get => missilePrefab; set => missilePrefab = value; }
         public GameObject BombPrefab { get => bombPrefab; set => bombPrefab = value; }
 
+        [Header("Laser Beam")]
+        [SerializeField] private LaserBeam laserBeamInstance;
+
+        public LaserBeam LaserBeamInstance
+        {
+            get
+            {
+                EnsureLaserBeam();
+                return laserBeamInstance;
+            }
+            set => laserBeamInstance = value;
+        }
+
         public AudioClip BlasterFireClip { get => blasterFireClip; set => blasterFireClip = value; }
         public AudioClip MissileFireClip { get => missileFireClip; set => missileFireClip = value; }
         public AudioClip BombDeployClip { get => bombDeployClip; set => bombDeployClip = value; }
@@ -89,6 +103,42 @@ namespace KinematicsGame.Player
             UpdateCombat(Time.deltaTime);
         }
 
+        public void EnsureLaserBeam()
+        {
+            if (laserBeamInstance == null)
+            {
+                laserBeamInstance = GetComponentInChildren<LaserBeam>();
+                if (laserBeamInstance == null)
+                {
+                    GameObject beamObj = new GameObject("LaserBeam");
+                    beamObj.transform.SetParent(transform, false);
+                    laserBeamInstance = beamObj.AddComponent<LaserBeam>();
+                }
+            }
+        }
+
+        public void MaintainLaserBeam(bool isHeld, Vector2 direction, Transform firePoint = null, Vector3 fallbackPos = default)
+        {
+            EnsureLaserBeam();
+
+            if (currentWeapon != WeaponType.Laser || !isHeld)
+            {
+                if (laserBeamInstance != null && laserBeamInstance.IsBeamActive)
+                {
+                    laserBeamInstance.SetBeamActive(false);
+                }
+                return;
+            }
+
+            if (!laserBeamInstance.IsBeamActive)
+            {
+                laserBeamInstance.SetBeamActive(true);
+            }
+
+            Vector3 origin = firePoint != null ? firePoint.position : (fallbackPos != default ? fallbackPos : transform.position);
+            laserBeamInstance.UpdateBeam(origin, direction);
+        }
+
         public void UpdateCombat(float deltaTime)
         {
             if (temporaryWeaponTimeRemaining > 0f)
@@ -97,6 +147,10 @@ namespace KinematicsGame.Player
                 if (temporaryWeaponTimeRemaining <= 0f)
                 {
                     temporaryWeaponTimeRemaining = 0f;
+                    if (currentWeapon == WeaponType.Laser && laserBeamInstance != null)
+                    {
+                        laserBeamInstance.SetBeamActive(false);
+                    }
                     SelectWeapon(WeaponType.Blaster);
                 }
             }
@@ -106,6 +160,10 @@ namespace KinematicsGame.Player
         {
             if (currentWeapon != weapon)
             {
+                if (currentWeapon == WeaponType.Laser && laserBeamInstance != null)
+                {
+                    laserBeamInstance.SetBeamActive(false);
+                }
                 currentWeapon = weapon;
                 OnWeaponChanged?.Invoke(currentWeapon);
             }
@@ -113,13 +171,15 @@ namespace KinematicsGame.Player
 
         public void SelectNextWeapon()
         {
-            int next = ((int)currentWeapon + 1) % 3;
+            int current = (int)currentWeapon;
+            int next = (current >= 0 && current < 3) ? (current + 1) % 3 : 0;
             SelectWeapon((WeaponType)next);
         }
 
         public void SelectPreviousWeapon()
         {
-            int prev = ((int)currentWeapon + 2) % 3;
+            int current = (int)currentWeapon;
+            int prev = (current >= 0 && current < 3) ? (current + 2) % 3 : 0;
             SelectWeapon((WeaponType)prev);
         }
 

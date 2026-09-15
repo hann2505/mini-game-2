@@ -38,7 +38,23 @@ namespace KinematicsGame.Player
         [SerializeField] private PlayerCombatSystem combatSystem;
         [SerializeField] private PlayerDefenseSystem defenseSystem;
 
+        [Header("Hitbox & Collision")]
+        [SerializeField] private float hitboxRadius = 0.38f;
+        [SerializeField] private CircleCollider2D playerCollider;
+
         private bool isAttackHeld = false;
+
+        public float HitboxRadius
+        {
+            get => hitboxRadius;
+            set
+            {
+                hitboxRadius = Mathf.Max(0.05f, value);
+                EnsureCollider();
+            }
+        }
+
+        public CircleCollider2D PlayerCollider => playerCollider != null ? playerCollider : GetComponent<CircleCollider2D>();
 
         public bool IsAttackHeld
         {
@@ -178,14 +194,42 @@ namespace KinematicsGame.Player
                 rb.useFullKinematicContacts = true;
             }
 
-            CircleCollider2D col = GetComponent<CircleCollider2D>();
-            if (col == null)
+            EnsureCollider();
+        }
+
+        private void Start()
+        {
+            EnsureCollider();
+        }
+
+#if UNITY_EDITOR
+        private void OnValidate()
+        {
+            EnsureCollider();
+        }
+#endif
+
+        /// <summary>
+        /// Configures the player's trigger CircleCollider2D to snugly match the designated world radius (0.38 world units),
+        /// eliminating ghost hitbox bloat and ensuring physical contact is required for interaction.
+        /// </summary>
+        public void EnsureCollider()
+        {
+            if (playerCollider == null)
             {
-                col = gameObject.AddComponent<CircleCollider2D>();
+                playerCollider = GetComponent<CircleCollider2D>();
+                if (playerCollider == null)
+                {
+                    playerCollider = gameObject.AddComponent<CircleCollider2D>();
+                }
             }
-            if (col != null)
+
+            if (playerCollider != null)
             {
-                col.isTrigger = true;
+                playerCollider.isTrigger = true;
+                playerCollider.offset = Vector2.zero;
+                float currentScale = Mathf.Max(0.0001f, Mathf.Max(transform.lossyScale.x, transform.lossyScale.y));
+                playerCollider.radius = hitboxRadius / currentScale;
             }
         }
 
@@ -193,9 +237,22 @@ namespace KinematicsGame.Player
         {
             HandleDirectInputFallback();
             HandleMovement();
-            if (isAttackHeld)
+
+            if (combatSystem != null && combatSystem.CurrentWeapon == WeaponType.Laser)
             {
-                FireProjectile();
+                combatSystem.MaintainLaserBeam(isAttackHeld, projectileDirection, firePoint, transform.position);
+            }
+            else
+            {
+                if (combatSystem != null && combatSystem.LaserBeamInstance != null && combatSystem.LaserBeamInstance.IsBeamActive)
+                {
+                    combatSystem.LaserBeamInstance.SetBeamActive(false);
+                }
+
+                if (isAttackHeld)
+                {
+                    FireProjectile();
+                }
             }
         }
 
@@ -365,7 +422,10 @@ namespace KinematicsGame.Player
             isAttackHeld = value.isPressed;
             if (isAttackHeld)
             {
-                FireProjectile();
+                if (combatSystem == null || combatSystem.CurrentWeapon != WeaponType.Laser)
+                {
+                    FireProjectile();
+                }
             }
         }
 
@@ -436,7 +496,7 @@ namespace KinematicsGame.Player
                 entity = other.GetComponentInParent<InteractiveEntity>();
             }
 
-            if (entity != null && !entity.IsConsumed)
+            if (entity != null && !entity.IsConsumed && entity.IsArmed)
             {
                 entity.IsConsumed = true;
                 CollisionEffectDispatcher.ResolveCollision(entity, this);

@@ -102,7 +102,7 @@ flowchart TD
 
 - [ ] Audio system manages 3 distinct channels without voice limit starvation during rapid fire.
 - [ ] In-place Sound and Music toggle buttons swap sprites on a single 64x64 RectTransform with 0px layout drift.
-- [ ] Restricted Zone detects Object B entrance and fires 3–6 alarm beeps with 3.0s anti-spam debounce.
+- [x] Restricted Zone detects Object B entrance and fires 3–6 alarm beeps with 3.0s anti-spam debounce.
 - [ ] Object A moves in 4/8 directions with dynamic speed buffs/debuffs clamped to camera viewport extents.
 - [ ] 3 attack mechanisms (Blaster, Missile, Bomb) and 2 defense mechanisms (Shield, EMP) function with dedicated cooldowns.
 - [ ] Collisions with Objects X, Y, Z reliably execute 9 distinct observable gameplay effects.

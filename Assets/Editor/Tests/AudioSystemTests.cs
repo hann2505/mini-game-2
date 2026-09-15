@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using NUnit.Framework;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.UI;
 using KinematicsGame.Audio;
@@ -132,6 +133,24 @@ namespace KinematicsGame.Tests
         }
 
         [Test]
+        public void AudioManager_WarningPulseDelay_WaitsForClipToFinishBeforeNextPulse()
+        {
+            AudioClip clip = AudioClip.Create("SequentialWarning", 44100, 1, 44100, false);
+            disposables.Add(clip);
+
+            Assert.AreEqual(1f, AudioManager.CalculateWarningPulseDelay(clip, 0.35f), 0.001f);
+            Assert.AreEqual(1.5f, AudioManager.CalculateWarningPulseDelay(clip, 1.5f), 0.001f);
+        }
+
+        [Test]
+        public void WarningClip_IsImportedFromExpectedPath()
+        {
+            AudioClip clip = AssetDatabase.LoadAssetAtPath<AudioClip>("Assets/Audio/SFX/warning.mp3");
+
+            Assert.IsNotNull(clip);
+        }
+
+        [Test]
         public void AudioToggleButton_Click_TogglesAudioManagerStateAndSwapsSpriteInPlace()
         {
             GameObject btnGo = new GameObject("SoundToggleButton");
@@ -207,7 +226,21 @@ namespace KinematicsGame.Tests
 
             Assert.IsTrue(triggered);
             Assert.AreEqual(1, zone.TriggerCount);
+            Assert.That(zone.LastPulseCount, Is.InRange(3, 6));
             Assert.IsTrue(warningInvoked);
+        }
+
+        [Test]
+        public void RestrictedZoneTrigger_SelectPulseCount_AlwaysReturnsThreeToSixPulses()
+        {
+            GameObject zoneGo = new GameObject("RestrictedZonePulseRange");
+            disposables.Add(zoneGo);
+            RestrictedZoneTrigger zone = zoneGo.AddComponent<RestrictedZoneTrigger>();
+
+            for (int i = 0; i < 100; i++)
+            {
+                Assert.That(zone.SelectPulseCount(), Is.InRange(3, 6));
+            }
         }
 
         [Test]
@@ -277,6 +310,51 @@ namespace KinematicsGame.Tests
             Assert.AreEqual(expectedVHeight, zone.BoxCollider.size.y, 0.01f);
             Assert.AreEqual(expectedVX, zone.transform.position.x, 0.01f);
             Assert.AreEqual(expectedVY, zone.transform.position.y, 0.01f);
+        }
+
+        [Test]
+        public void AudioManager_PlayWarningAlarm_RejectsWhenAlreadyPlayingUnlessForced()
+        {
+            AudioClip clip = AudioClip.Create("AntiSpamTest", 44100, 1, 44100, false);
+            disposables.Add(clip);
+
+            bool firstAccepted = audioManager.PlayWarningAlarm(clip, 2, 0.5f);
+            Assert.IsTrue(firstAccepted);
+            Assert.IsTrue(audioManager.IsWarningPlaying);
+
+            // Second call while first is playing must be rejected to prevent spam
+            bool secondAccepted = audioManager.PlayWarningAlarm(clip, 2, 0.5f);
+            Assert.IsFalse(secondAccepted);
+
+            // Explicit force restart should be accepted
+            bool forcedAccepted = audioManager.PlayWarningAlarm(clip, 2, 0.5f, forceRestart: true);
+            Assert.IsTrue(forcedAccepted);
+
+            audioManager.StopWarningAlarm();
+            Assert.IsFalse(audioManager.IsWarningPlaying);
+        }
+
+        [Test]
+        public void RestrictedZoneTrigger_TryTriggerAlarm_RejectsWhenAudioManagerWarningIsPlaying()
+        {
+            AudioClip clip = AudioClip.Create("ZoneAntiSpamTest", 44100, 1, 44100, false);
+            disposables.Add(clip);
+
+            GameObject zoneGo = new GameObject("RestrictedZoneLiveTest");
+            disposables.Add(zoneGo);
+            RestrictedZoneTrigger zone = zoneGo.AddComponent<RestrictedZoneTrigger>();
+            zone.WarningClip = clip;
+
+            // Start alarm on AudioManager
+            audioManager.PlayWarningAlarm(clip, 2, 0.5f);
+            Assert.IsTrue(audioManager.IsWarningPlaying);
+
+            // Live zone trigger must be rejected while audio manager alarm is sounding
+            bool triggered = zone.TryTriggerAlarm();
+            Assert.IsFalse(triggered);
+
+            audioManager.StopWarningAlarm();
+            audioManager.ResetWarningCooldown();
         }
     }
 }

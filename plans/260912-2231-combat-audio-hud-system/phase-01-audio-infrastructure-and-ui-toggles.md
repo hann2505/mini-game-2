@@ -19,7 +19,7 @@ Delivers the foundational audio architecture and user interface controls. Establ
   - Sound toggle: Clicking `SoundOff` mutes SFX and swaps displayed sprite to `SoundOn` in-place; clicking `SoundOn` restores SFX and swaps back to `SoundOff`.
   - Music toggle: Clicking `MusicOn` plays BGM and swaps displayed sprite to `MusicOff` in-place; clicking `MusicOff` halts BGM and swaps back to `MusicOn`.
   - Both toggle buttons share identical `RectTransform` dimensions (64x64) and positions.
-  - `RestrictedZoneTrigger` detects when `TargetController` (Object B) enters its 2D trigger volume and initiates a 3–6 pulse warning alarm (default: 4 pulses, 0.35s interval).
+  - `RestrictedZoneTrigger` detects when `TargetController` (Object B) enters its 2D trigger volume and initiates a random 3–6 pulse warning alarm; each pulse finishes before the next one starts.
   - 3.0s anti-spam debounce timer prevents audio cacophony when multiple enemies breach simultaneously.
 - Non-functional:
   - Zero audio voice clipping during high-rate weapon firing.
@@ -50,8 +50,8 @@ Delivers the foundational audio architecture and user interface controls. Establ
 - [ ] Clicking Sound button toggles SFX mute and swaps sprite between `sound_off.png` and `sound_on.png` without moving.
 - [ ] Clicking Music button toggles BGM and swaps sprite between `music_TurnOn.png` and `music_TurnOff.png` without moving.
 - [ ] Both buttons have identical size (64x64) and stable positions across orientation changes.
-- [ ] Restricted Zone detects Object B ingress and triggers 3 to 6 warning beeps with 3.0s debounce.
-- [ ] All new unit tests in `AudioSystemTests.cs` pass 100% green.
+- [x] Restricted Zone detects Object B ingress and triggers 3 to 6 warning beeps with 3.0s debounce.
+- [x] All new unit tests in `AudioSystemTests.cs` pass 100% green.
 
 ## Risk Assessment
 - **Risk**: Rapid enemy wave triggering overlapping warning coroutines.

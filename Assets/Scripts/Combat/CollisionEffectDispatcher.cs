@@ -12,10 +12,12 @@ namespace KinematicsGame.Combat
     public static class CollisionEffectDispatcher
     {
         public static HashSet<int> TriggeredEffectIds { get; } = new HashSet<int>();
+        public static System.Func<WeaponType> GemWeaponSelector { get; set; }
 
         public static void ResetTracking()
         {
             TriggeredEffectIds.Clear();
+            GemWeaponSelector = null;
         }
 
         public static void ResolveCollision(InteractiveEntity entity, PlayerController player)
@@ -43,11 +45,15 @@ namespace KinematicsGame.Combat
         /// Object X (Hazard Mine):
         /// - Effect 1: Explosion SFX
         /// - Effect 2: Despawn self
-        /// - Effect 3: Deduct 25 Armor/HP (or absorbed by Shield)
+        /// - Effect 3: Deduct 5 Armor/HP (or absorbed by Shield)
         /// - Effect 4: -40% speed debuff (0.6x) for 3.0s
         /// </summary>
         private static void ResolveHazardMine(InteractiveEntity entity, PlayerController player)
         {
+            // The bomb remains visible long enough to hand its position to a separate
+            // one-shot effect before the hazardous entity is removed.
+            entity.SpawnInteractionEffect();
+
             // Effect 1: Explosion SFX
             if (AudioManager.Instance != null && entity.InteractionSfx != null)
             {
@@ -55,7 +61,7 @@ namespace KinematicsGame.Combat
             }
             TriggeredEffectIds.Add(1);
 
-            // Effect 3: Damage (25 pts, absorbed by Shield if active)
+            // Effect 3: Damage (5 pts, absorbed by Shield if active)
             bool absorbed = false;
             if (player.DefenseSystem != null && player.DefenseSystem.IsShieldActive)
             {
@@ -64,12 +70,12 @@ namespace KinematicsGame.Combat
 
             if (!absorbed && player.Stats != null)
             {
-                player.Stats.TakeDamage(25);
+                player.Stats.TakeDamage(5);
             }
             TriggeredEffectIds.Add(3);
 
-            // Effect 4: Speed Debuff (-40%, 0.6x for 3.0s)
-            if (player.Stats != null)
+            // Effect 4: Shield immunity also prevents the slowdown.
+            if (!absorbed && player.Stats != null)
             {
                 player.Stats.ApplySpeedModifier(0.6f, 3.0f);
             }
@@ -82,16 +88,15 @@ namespace KinematicsGame.Combat
 
         /// <summary>
         /// Object Y (Tech Supply Crate):
-        /// - Effect 5: Restore +50 Armor & deploy Shield if absent
+        /// - Effect 5: Restore +5 Armor & deploy Shield if absent
         /// - Effect 6: +50% haste speed boost (1.5x) for 4.0s
-        /// - Effect 7: Switch weapon to Missile mode
         /// </summary>
         private static void ResolveSupplyCrate(InteractiveEntity entity, PlayerController player)
         {
-            // Effect 5: Restore +50 Armor & grant Shield Barrier if depleted
+            // Effect 5: Restore +5 Armor & grant Shield Barrier if depleted
             if (player.Stats != null)
             {
-                player.Stats.RestoreArmor(50);
+                player.Stats.RestoreArmor(5);
             }
             if (player.DefenseSystem != null && !player.DefenseSystem.IsShieldActive)
             {
@@ -106,13 +111,6 @@ namespace KinematicsGame.Combat
             }
             TriggeredEffectIds.Add(6);
 
-            // Effect 7: Weapon Upgrade (temporary Missile mode for 10.0s)
-            if (player.CombatSystem != null)
-            {
-                player.CombatSystem.GrantTemporaryWeapon(WeaponType.Missile, 10.0f);
-            }
-            TriggeredEffectIds.Add(7);
-
             if (AudioManager.Instance != null && entity.InteractionSfx != null)
             {
                 AudioManager.Instance.PlaySfx(entity.InteractionSfx);
@@ -123,11 +121,22 @@ namespace KinematicsGame.Combat
 
         /// <summary>
         /// Object Z (Gem Core / Bounty):
+        /// - Effect 7: Temporary rocket attack for 10 seconds
         /// - Effect 8: Currency windfall (+50 Gold, +5 Diamonds)
         /// - Effect 9: Spawn 3 mini-bonus collectible pickups nearby
         /// </summary>
         private static void ResolveGemCore(InteractiveEntity entity, PlayerController player)
         {
+            // Effect 7: Weapon Upgrade (temporary Missile or Laser mode for 10.0s with 50/50 distribution)
+            if (player.CombatSystem != null)
+            {
+                WeaponType weaponToGrant = GemWeaponSelector != null
+                    ? GemWeaponSelector()
+                    : (UnityEngine.Random.value < 0.5f ? WeaponType.Laser : WeaponType.Missile);
+                player.CombatSystem.GrantTemporaryWeapon(weaponToGrant, 10.0f);
+            }
+            TriggeredEffectIds.Add(7);
+
             // Effect 8: Currency Windfall (+50 Gold, +5 Diamonds)
             if (player.Stats != null)
             {
@@ -139,42 +148,45 @@ namespace KinematicsGame.Combat
             }
             TriggeredEffectIds.Add(8);
 
-            // Effect 9: Subsidiary Rewards (3 mini-bonus pickups scattered nearby)
-            Vector3 origin = entity.transform.position;
-            Vector3[] offsets = new Vector3[]
+            // Effect 9: Subsidiary Rewards (optional mini-bonus pickups scattered nearby, disabled by default)
+            if (entity.SplitIntoMiniBonuses)
             {
-                new Vector3(0.5f, 0.7f, 0f),
-                new Vector3(-0.5f, 0.5f, 0f),
-                new Vector3(0f, -0.8f, 0f)
-            };
+                Vector3 origin = entity.transform.position;
+                Vector3[] offsets = new Vector3[]
+                {
+                    new Vector3(0.5f, 0.7f, 0f),
+                    new Vector3(-0.5f, 0.5f, 0f),
+                    new Vector3(0f, -0.8f, 0f)
+                };
 
-            for (int i = 0; i < offsets.Length; i++)
-            {
-                GameObject miniGo = null;
-                if (entity.MiniBonusPrefab != null)
+                for (int i = 0; i < offsets.Length; i++)
                 {
-                    miniGo = Object.Instantiate(entity.MiniBonusPrefab, origin + offsets[i], Quaternion.identity);
-                }
-                else
-                {
-                    miniGo = new GameObject($"MiniBonus_{i}");
-                    miniGo.transform.position = origin + offsets[i];
-                    SpriteRenderer sr = miniGo.AddComponent<SpriteRenderer>();
-                    SpriteRenderer parentSr = entity.GetComponent<SpriteRenderer>();
-                    if (parentSr != null)
+                    GameObject miniGo = null;
+                    if (entity.MiniBonusPrefab != null)
                     {
-                        sr.sprite = parentSr.sprite;
-                        sr.sortingOrder = parentSr.sortingOrder;
+                        miniGo = Object.Instantiate(entity.MiniBonusPrefab, origin + offsets[i], Quaternion.identity);
                     }
-                    CircleCollider2D cc = miniGo.AddComponent<CircleCollider2D>();
-                    cc.isTrigger = true;
-                    InteractiveEntity ie = miniGo.AddComponent<InteractiveEntity>();
-                    ie.Type = EntityType.MiniBonus;
-                    ie.TargetSize = 0.5f;
-                    ie.ApplyTargetSize();
+                    else
+                    {
+                        miniGo = new GameObject($"MiniBonus_{i}");
+                        miniGo.transform.position = origin + offsets[i];
+                        SpriteRenderer sr = miniGo.AddComponent<SpriteRenderer>();
+                        SpriteRenderer parentSr = entity.GetComponent<SpriteRenderer>();
+                        if (parentSr != null)
+                        {
+                            sr.sprite = parentSr.sprite;
+                            sr.sortingOrder = parentSr.sortingOrder;
+                        }
+                        CircleCollider2D cc = miniGo.AddComponent<CircleCollider2D>();
+                        cc.isTrigger = true;
+                        InteractiveEntity ie = miniGo.AddComponent<InteractiveEntity>();
+                        ie.Type = EntityType.MiniBonus;
+                        ie.TargetSize = 0.5f;
+                        ie.ApplyTargetSize();
+                    }
                 }
+                TriggeredEffectIds.Add(9);
             }
-            TriggeredEffectIds.Add(9);
 
             entity.Despawn();
         }

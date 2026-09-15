@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
@@ -16,10 +17,15 @@ namespace KinematicsGame.Editor
     /// <summary>
     /// Editor utility to construct combat prefabs, configure audio, HUD toggles,
     /// restricted zone, and assemble SampleScene.unity on demand.
-    /// Access via menu item: Kinematics Game -> Setup Scene & Prefabs
+    /// Access via menu item: Kinematics Game -> Setup Scene & Prefabs (updated)
     /// </summary>
     public static class SceneSetupHelper
     {
+        private const string Bomb3IdleFolder = "Assets/Sprites/Weapons/Bombs/Bomb_3/Idle";
+        private const string Bomb3ExplosionFolder = "Assets/Sprites/Weapons/Bombs/Bomb_3/Explosion";
+        private const string Bomb3ExplosionPrefabPath = "Assets/Prefabs/Bomb_3_Explosion.prefab";
+        private const string HazardMinePrefabPath = "Assets/Prefabs/Hazard_Mine.prefab";
+
         [MenuItem("Kinematics Game/Setup Scene & Prefabs", false, 1)]
         public static void SetupAll()
         {
@@ -67,7 +73,7 @@ namespace KinematicsGame.Editor
             Sprite bombSprite = LoadSprite("Assets/Sprites/Weapons/Bombs/Bomb_1/Idle/Bomb_1_Idle_000.png");
             Sprite mineSprite = LoadSprite("Assets/Sprites/Items/Bonuses/Enemy_Destroy_Bonus.png");
             Sprite crateSprite = LoadSprite("Assets/Sprites/Items/Bonuses/Armor_Bonus.png");
-            Sprite gemSprite = LoadSprite("Assets/Sprites/Items/Collectibles/diamond.png");
+            Sprite gemSprite = LoadSprite("Assets/Sprites/Items/Collectibles/star3.png");
             Sprite shieldSprite = LoadSprite("Assets/Sprites/Items/Bonuses/Barrier_Bonus.png");
             Sprite shipSprite = LoadSprite("Assets/Sprites/Characters/Players/Ships/spaceship1.png");
             Sprite birdSprite = LoadSprite("Assets/Sprites/Characters/Enemies/Birds/bird1.png");
@@ -130,30 +136,9 @@ namespace KinematicsGame.Editor
             }
 
             // 4. Hazard Mine Prefab (Object X)
-            string minePath = "Assets/Prefabs/Hazard_Mine.prefab";
-            GameObject existingMine = AssetDatabase.LoadAssetAtPath<GameObject>(minePath);
-            if (existingMine == null || existingMine.GetComponent<Rigidbody2D>() == null)
-            {
-                GameObject mineGo = new GameObject("Hazard_Mine");
-                SpriteRenderer sr = mineGo.AddComponent<SpriteRenderer>();
-                sr.sprite = mineSprite != null ? mineSprite : bulletSprite;
-                sr.sortingOrder = 8;
-                Rigidbody2D rb = mineGo.AddComponent<Rigidbody2D>();
-                rb.bodyType = RigidbodyType2D.Kinematic;
-                rb.useFullKinematicContacts = true;
-                CircleCollider2D col = mineGo.AddComponent<CircleCollider2D>();
-                col.isTrigger = true;
-                InteractiveEntity ie = mineGo.AddComponent<InteractiveEntity>();
-                ie.Type = EntityType.HazardMine;
-                ie.TargetSize = 1.0f;
-                ie.ApplyTargetSize();
-                ie.InteractionSfx = explosionClip;
+            ConfigureBomb3Hazard();
 
-                PrefabUtility.SaveAsPrefabAsset(mineGo, minePath);
-                Object.DestroyImmediate(mineGo);
-            }
-
-            // 5. Tech Supply Crate Prefab (Object Y)
+            // 5. Supply Crate Prefab (Object Y)
             string cratePath = "Assets/Prefabs/Supply_Crate.prefab";
             GameObject existingCrate = AssetDatabase.LoadAssetAtPath<GameObject>(cratePath);
             if (existingCrate == null || existingCrate.GetComponent<Rigidbody2D>() == null)
@@ -191,15 +176,33 @@ namespace KinematicsGame.Editor
                 rb.useFullKinematicContacts = true;
                 CircleCollider2D col = gemGo.AddComponent<CircleCollider2D>();
                 col.isTrigger = true;
-                if (col.radius < 0.6f) col.radius = 0.6f;
                 InteractiveEntity ie = gemGo.AddComponent<InteractiveEntity>();
                 ie.Type = EntityType.GemCore;
                 ie.TargetSize = 1.5f;
+                ie.SplitIntoMiniBonuses = false;
                 ie.ApplyTargetSize();
                 ie.InteractionSfx = eatClip;
 
                 PrefabUtility.SaveAsPrefabAsset(gemGo, gemPath);
                 Object.DestroyImmediate(gemGo);
+            }
+            else
+            {
+                SpriteRenderer existingSr = existingGem.GetComponent<SpriteRenderer>();
+                if (existingSr != null && gemSprite != null && existingSr.sprite != gemSprite)
+                {
+                    GameObject root = PrefabUtility.LoadPrefabContents(gemPath);
+                    var rSr = root.GetComponent<SpriteRenderer>();
+                    if (rSr != null) rSr.sprite = gemSprite;
+                    var rIe = root.GetComponent<InteractiveEntity>();
+                    if (rIe != null)
+                    {
+                        rIe.TargetSize = 1.5f;
+                        rIe.ApplyTargetSize();
+                    }
+                    PrefabUtility.SaveAsPrefabAsset(root, gemPath);
+                    PrefabUtility.UnloadPrefabContents(root);
+                }
             }
 
             // 7. Shield Overlay Prefab
@@ -230,6 +233,8 @@ namespace KinematicsGame.Editor
                 rb.useFullKinematicContacts = true;
                 CircleCollider2D col = playerGo.AddComponent<CircleCollider2D>();
                 col.isTrigger = true;
+                col.offset = Vector2.zero;
+                col.radius = 0.6663f;
                 AudioSource audio = playerGo.AddComponent<AudioSource>();
                 audio.playOnAwake = false;
 
@@ -252,6 +257,8 @@ namespace KinematicsGame.Editor
                 pc.Stats = ps;
                 pc.CombatSystem = pcs;
                 pc.DefenseSystem = pds;
+                pc.HitboxRadius = 0.38f;
+                pc.EnsureCollider();
 
                 PrefabUtility.SaveAsPrefabAsset(playerGo, playerPath);
                 Object.DestroyImmediate(playerGo);
@@ -393,7 +400,18 @@ namespace KinematicsGame.Editor
             hazardSpawner.HazardMinePrefab = AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Prefabs/Hazard_Mine.prefab");
             hazardSpawner.SupplyCratePrefab = AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Prefabs/Supply_Crate.prefab");
             hazardSpawner.GemCorePrefab = AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Prefabs/Gem_Core.prefab");
-            hazardSpawner.SpawnInterval = 8.0f;
+            hazardSpawner.SpawnInterval = 3.0f;
+            hazardSpawner.MinSpawnInterval = 2.0f;
+            hazardSpawner.SpawnChance = 0.8f;
+            hazardSpawner.MaxSpawnPerCycle = 1;
+            hazardSpawner.MultiSpawnChance = 0.0f;
+            hazardSpawner.PrewarmViewport = false;
+            hazardSpawner.InitialPrewarmCount = 0;
+            hazardSpawner.AutoSpawn = false;
+            hazardSpawner.EnemyDropChance = 1.0f;
+            hazardSpawner.HazardMineWeight = 0.25f;
+            hazardSpawner.SupplyCrateWeight = 0.25f;
+            hazardSpawner.GemCoreWeight = 0.50f;
 
             // ── RestrictedZoneTrigger ────────────────────────────────────────────
             RestrictedZoneTrigger zoneTrigger = Object.FindFirstObjectByType<RestrictedZoneTrigger>();
@@ -401,8 +419,8 @@ namespace KinematicsGame.Editor
             {
                 GameObject rzGo = new GameObject("RestrictedZone");
                 zoneTrigger = rzGo.AddComponent<RestrictedZoneTrigger>();
-                zoneTrigger.WarningClip = AssetDatabase.LoadAssetAtPath<AudioClip>("Assets/Audio/SFX/bomb.mp3");
             }
+            zoneTrigger.WarningClip = AssetDatabase.LoadAssetAtPath<AudioClip>("Assets/Audio/SFX/warning.mp3");
             zoneTrigger.AlignToViewport(gc.Orientation);
 
             // ── ScoreManager ─────────────────────────────────────────────────────
@@ -494,13 +512,13 @@ namespace KinematicsGame.Editor
             }
 
             // Player vitals & currency labels
-            TextMeshProUGUI hpLbl = CreateOrFindLabel(canvasGo, "HpLabel", "HP: 100/100", 22, new Vector2(170f, -22f), new Vector2(180f, 30f));
-            TextMeshProUGUI armorLbl = CreateOrFindLabel(canvasGo, "ArmorLabel", "ARMOR: 50/50", 20, new Vector2(170f, -50f), new Vector2(180f, 30f));
-            TextMeshProUGUI goldLbl = CreateOrFindLabel(canvasGo, "GoldLabel", "🪙 0", 22, new Vector2(360f, -22f), new Vector2(120f, 30f));
-            TextMeshProUGUI diamondLbl = CreateOrFindLabel(canvasGo, "DiamondLabel", "💎 0", 22, new Vector2(360f, -50f), new Vector2(120f, 30f));
-            TextMeshProUGUI weaponLbl = CreateOrFindLabel(canvasGo, "WeaponLabel", "WEAPON: Blaster", 20, new Vector2(490f, -22f), new Vector2(200f, 30f));
-            TextMeshProUGUI cdLbl = CreateOrFindLabel(canvasGo, "CooldownLabel", "SHIELD: READY | EMP: READY", 16, new Vector2(490f, -50f), new Vector2(250f, 30f));
-            TextMeshProUGUI shieldLbl = CreateOrFindLabel(canvasGo, "ShieldLabel", "SHIELD: READY", 16, new Vector2(170f, -74f), new Vector2(180f, 25f));
+            TextMeshProUGUI hpLbl = CreateOrFindLabel(canvasGo, "HpLabel", "HP: 100/100", 30, new Vector2(170f, -32f), new Vector2(360f, 56f));
+            TextMeshProUGUI armorLbl = CreateOrFindLabel(canvasGo, "ArmorLabel", "ARMOR: 0/50", 30, new Vector2(170f, -96f), new Vector2(360f, 56f));
+            TextMeshProUGUI goldLbl = CreateOrFindLabel(canvasGo, "GoldLabel", "GOLD: 0", 27, new Vector2(550f, -30f), new Vector2(180f, 40f));
+            TextMeshProUGUI diamondLbl = CreateOrFindLabel(canvasGo, "DiamondLabel", "GEMS: 0", 27, new Vector2(550f, -76f), new Vector2(180f, 40f));
+            TextMeshProUGUI weaponLbl = CreateOrFindLabel(canvasGo, "WeaponLabel", "WEAPON: Blaster", 25, new Vector2(550f, -122f), new Vector2(250f, 40f));
+            TextMeshProUGUI cdLbl = CreateOrFindLabel(canvasGo, "CooldownLabel", "SHIELD: READY | EMP: READY", 21, new Vector2(550f, -166f), new Vector2(250f, 38f));
+            TextMeshProUGUI shieldLbl = CreateOrFindLabel(canvasGo, "ShieldLabel", "SHIELD: READY", 24, new Vector2(170f, -158f), new Vector2(360f, 38f));
 
             // Score & Combo labels
             TextMeshProUGUI scoreLabel = CreateOrFindLabel(canvasGo, "ScoreLabel", "0", 72, new Vector2(-20f, -20f), new Vector2(400f, 90f), TextAlignmentOptions.TopRight, new Vector2(1f, 1f));
@@ -514,6 +532,112 @@ namespace KinematicsGame.Editor
             EditorSceneManager.MarkSceneDirty(EditorSceneManager.GetActiveScene());
             EditorSceneManager.SaveOpenScenes();
             Debug.Log("[Kinematics Game] Scene and prefabs successfully configured and saved!");
+        }
+
+        [MenuItem("Kinematics Game/Generate Bomb 3 Hazard", false, 6)]
+        public static void ConfigureBomb3Hazard()
+        {
+            Sprite[] idleFrames = LoadSpritesSorted(Bomb3IdleFolder);
+            Sprite[] explosionFrames = LoadSpritesSorted(Bomb3ExplosionFolder);
+            if (idleFrames.Length == 0 || explosionFrames.Length == 0)
+            {
+                Debug.LogWarning("[SceneSetupHelper] Bomb_3 animation frames are missing.");
+                return;
+            }
+
+            GameObject explosionPrefab = CreateBomb3ExplosionPrefab(explosionFrames);
+            bool loadedExistingMine = AssetDatabase.LoadAssetAtPath<GameObject>(HazardMinePrefabPath) != null;
+            GameObject mineRoot = loadedExistingMine
+                ? PrefabUtility.LoadPrefabContents(HazardMinePrefabPath)
+                : new GameObject("Hazard_Mine");
+            try
+            {
+                SpriteRenderer renderer = GetOrAddComponent<SpriteRenderer>(mineRoot);
+                renderer.sprite = idleFrames[0];
+                renderer.sortingOrder = 8;
+
+                Rigidbody2D body = GetOrAddComponent<Rigidbody2D>(mineRoot);
+                body.bodyType = RigidbodyType2D.Kinematic;
+                body.useFullKinematicContacts = true;
+
+                CircleCollider2D collider = GetOrAddComponent<CircleCollider2D>(mineRoot);
+                collider.isTrigger = true;
+
+                InteractiveEntity entity = GetOrAddComponent<InteractiveEntity>(mineRoot);
+                entity.Type = EntityType.HazardMine;
+                entity.TargetSize = 1f;
+                entity.InteractionEffectPrefab = explosionPrefab;
+                AudioClip explosionClip = AssetDatabase.LoadAssetAtPath<AudioClip>("Assets/Audio/SFX/explosion.wav");
+                if (explosionClip != null) entity.InteractionSfx = explosionClip;
+
+                AnimatedSpriteEffect idleAnimation = GetOrAddComponent<AnimatedSpriteEffect>(mineRoot);
+                idleAnimation.Frames = idleFrames;
+                idleAnimation.FramesPerSecond = 12f;
+                idleAnimation.Loop = true;
+                idleAnimation.AutoDestroy = false;
+                entity.ApplyTargetSize();
+
+                PrefabUtility.SaveAsPrefabAsset(mineRoot, HazardMinePrefabPath);
+            }
+            finally
+            {
+                if (loadedExistingMine)
+                    PrefabUtility.UnloadPrefabContents(mineRoot);
+                else
+                    Object.DestroyImmediate(mineRoot);
+            }
+
+            AssetDatabase.SaveAssets();
+        }
+
+        private static GameObject CreateBomb3ExplosionPrefab(Sprite[] frames)
+        {
+            bool loadedExistingPrefab = AssetDatabase.LoadAssetAtPath<GameObject>(Bomb3ExplosionPrefabPath) != null;
+            GameObject root = loadedExistingPrefab
+                ? PrefabUtility.LoadPrefabContents(Bomb3ExplosionPrefabPath)
+                : new GameObject("Bomb_3_Explosion");
+            try
+            {
+                root.name = "Bomb_3_Explosion";
+                root.transform.localScale = new Vector3(0.5f, 0.5f, 1f);
+                SpriteRenderer renderer = GetOrAddComponent<SpriteRenderer>(root);
+                renderer.sprite = frames[0];
+                renderer.sortingOrder = 15;
+
+                AnimatedSpriteEffect animation = GetOrAddComponent<AnimatedSpriteEffect>(root);
+                animation.Frames = frames;
+                animation.FramesPerSecond = 15f;
+                animation.Loop = false;
+                animation.AutoDestroy = true;
+                return PrefabUtility.SaveAsPrefabAsset(root, Bomb3ExplosionPrefabPath);
+            }
+            finally
+            {
+                if (loadedExistingPrefab)
+                    PrefabUtility.UnloadPrefabContents(root);
+                else
+                    Object.DestroyImmediate(root);
+            }
+        }
+
+        private static Sprite[] LoadSpritesSorted(string folderPath)
+        {
+            string[] guids = AssetDatabase.FindAssets("t:Sprite", new[] { folderPath });
+            var sprites = new List<Sprite>();
+            foreach (string guid in guids)
+            {
+                string path = AssetDatabase.GUIDToAssetPath(guid);
+                Sprite sprite = LoadSprite(path);
+                if (sprite != null && !sprites.Contains(sprite)) sprites.Add(sprite);
+            }
+            sprites.Sort((left, right) => string.CompareOrdinal(left.name, right.name));
+            return sprites.ToArray();
+        }
+
+        private static T GetOrAddComponent<T>(GameObject go) where T : Component
+        {
+            T component = go.GetComponent<T>();
+            return component != null ? component : go.AddComponent<T>();
         }
 
         private static TextMeshProUGUI CreateOrFindLabel(

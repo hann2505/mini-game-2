@@ -18,22 +18,37 @@ namespace KinematicsGame.Combat
 
         [Header("Warning Configuration")]
         [SerializeField] private AudioClip warningClip;
-        [SerializeField, Range(3, 6)] private int pulseCount = 4;
+        [SerializeField, Range(3, 6)] private int minPulseCount = 3;
+        [SerializeField, Range(3, 6)] private int maxPulseCount = 6;
         [SerializeField] private float pulseInterval = 0.35f;
         [SerializeField] private float debounceTime = 3.0f;
+        [SerializeField] private float cooldownTime = 4.0f;
         [SerializeField, Range(0.05f, 0.5f)] private float zoneViewportRatio = 0.2f;
 
         [Header("Components")]
         [SerializeField] private BoxCollider2D boxCollider;
+        [SerializeField] private Rigidbody2D rb;
 
         private float lastTriggerTime = -100f;
         private float simulatedTime = 0f;
         private bool useSimulatedTime = false;
 
         public int TriggerCount { get; private set; }
-        public int PulseCount => pulseCount;
+        public int LastPulseCount { get; private set; }
+        public int MinPulseCount => Mathf.Min(minPulseCount, maxPulseCount);
+        public int MaxPulseCount => Mathf.Max(minPulseCount, maxPulseCount);
         public float PulseInterval => pulseInterval;
-        public float DebounceTime => debounceTime;
+        public float DebounceTime
+        {
+            get => debounceTime;
+            set => debounceTime = Mathf.Max(0f, value);
+        }
+        public float CooldownTime
+        {
+            get => cooldownTime;
+            set => cooldownTime = Mathf.Max(0f, value);
+        }
+        public float EffectiveCooldown => Mathf.Max(debounceTime, cooldownTime);
         public float ZoneViewportRatio => zoneViewportRatio;
         public BoxCollider2D BoxCollider => boxCollider;
 
@@ -46,6 +61,14 @@ namespace KinematicsGame.Combat
         private void Awake()
         {
             EnsureComponents();
+        }
+
+        private void Start()
+        {
+            if (ViewportManager.Instance != null)
+            {
+                AlignToViewport(GameController.Instance != null ? GameController.Instance.Orientation : GameOrientation.Horizontal);
+            }
         }
 
         private void OnEnable()
@@ -64,6 +87,11 @@ namespace KinematicsGame.Combat
             GameController.OnOrientationChanged -= AlignToViewport;
         }
 
+        private void Update()
+        {
+            CheckZoneBreach();
+        }
+
         public void EnsureComponents()
         {
             if (boxCollider == null)
@@ -75,6 +103,27 @@ namespace KinematicsGame.Combat
                 }
             }
             boxCollider.isTrigger = true;
+
+            if (rb == null)
+            {
+                rb = GetComponent<Rigidbody2D>();
+                if (rb == null)
+                {
+                    rb = gameObject.AddComponent<Rigidbody2D>();
+                }
+            }
+            if (rb != null)
+            {
+                rb.bodyType = RigidbodyType2D.Kinematic;
+                rb.useFullKinematicContacts = true;
+            }
+
+#if UNITY_EDITOR
+            if (warningClip == null)
+            {
+                warningClip = UnityEditor.AssetDatabase.LoadAssetAtPath<AudioClip>("Assets/Audio/SFX/warning.mp3");
+            }
+#endif
         }
 
         private void OnTriggerEnter2D(Collider2D other)
@@ -87,30 +136,87 @@ namespace KinematicsGame.Combat
                 target = other.GetComponentInParent<TargetController>();
             }
 
-            if (target != null)
+            if (target != null && target.gameObject.activeInHierarchy)
             {
                 TryTriggerAlarm();
             }
         }
 
-        public bool TryTriggerAlarm()
+        /// <summary>
+        /// Proximity check ensuring immediate breach detection in Update,
+        /// independent of kinematic trigger dispatch timing.
+        /// </summary>
+        public void CheckZoneBreach()
+        {
+            if (boxCollider == null) return;
+
+            // Fast exit if still on cooldown or if warning alarm is actively playing
+            if (!IsCooldownElapsed()) return;
+
+            if (!useSimulatedTime && AudioManager.Instance != null)
+            {
+                if (AudioManager.Instance.IsWarningPlaying || AudioManager.Instance.IsWarningOnCooldown)
+                {
+                    return;
+                }
+            }
+
+            Collider2D[] hits = Physics2D.OverlapBoxAll(boxCollider.bounds.center, boxCollider.bounds.size, 0f);
+            for (int i = 0; i < hits.Length; i++)
+            {
+                Collider2D hit = hits[i];
+                if (hit == null || hit.gameObject == gameObject) continue;
+
+                TargetController target = hit.GetComponent<TargetController>() ?? hit.GetComponentInParent<TargetController>();
+                if (target != null && target.gameObject.activeInHierarchy)
+                {
+                    if (TryTriggerAlarm())
+                    {
+                        break;
+                    }
+                }
+            }
+        }
+
+        public bool IsCooldownElapsed()
         {
             float currentTime = useSimulatedTime ? simulatedTime : Time.time;
-            if (currentTime - lastTriggerTime < debounceTime)
+            float cd = useSimulatedTime ? debounceTime : EffectiveCooldown;
+            return currentTime - lastTriggerTime >= cd;
+        }
+
+        public bool TryTriggerAlarm()
+        {
+            if (!IsCooldownElapsed())
             {
                 return false;
             }
 
+            if (!useSimulatedTime && AudioManager.Instance != null)
+            {
+                if (AudioManager.Instance.IsWarningPlaying || AudioManager.Instance.IsWarningOnCooldown)
+                {
+                    return false;
+                }
+            }
+
+            float currentTime = useSimulatedTime ? simulatedTime : Time.time;
             lastTriggerTime = currentTime;
             TriggerCount++;
+            LastPulseCount = SelectPulseCount();
 
             if (AudioManager.Instance != null)
             {
-                AudioManager.Instance.PlayWarningAlarm(warningClip, pulseCount, pulseInterval);
+                AudioManager.Instance.PlayWarningAlarm(warningClip, LastPulseCount, pulseInterval);
             }
 
             OnWarningTriggered?.Invoke();
             return true;
+        }
+
+        public int SelectPulseCount()
+        {
+            return UnityEngine.Random.Range(MinPulseCount, MaxPulseCount + 1);
         }
 
         public void AlignToViewport(GameOrientation orientation)
@@ -162,6 +268,7 @@ namespace KinematicsGame.Combat
         public void ResetTriggerState()
         {
             TriggerCount = 0;
+            LastPulseCount = 0;
             lastTriggerTime = -100f;
             simulatedTime = 0f;
         }
